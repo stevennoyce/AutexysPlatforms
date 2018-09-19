@@ -646,12 +646,14 @@ void Set_Vds_Rel(int16 value) {
 	
 	Vds_Index_Goal_Relative = (int16)value;
 	
+	//Now that we have set our DAC, try to put back the reference in a nice place
 	uint16 Vds_minRefRaw = Vds_Index_Goal_Relative > 0? 0: -Vds_Index_Goal_Relative;
 	uint16 Vds_maxRefRaw = Vds_Index_Goal_Relative > 0? 255 - Vds_Index_Goal_Relative: 255;
 	uint16 Vgs_minRefRaw = Vgs_Index_Goal_Relative > 0? 0: -Vgs_Index_Goal_Relative;
 	uint16 Vgs_maxRefRaw = Vgs_Index_Goal_Relative > 0? 255 - Vgs_Index_Goal_Relative: 255;
 	
-	uint16 newRefRaw = VDAC_Ref_Data;
+	//Preferred reference voltage is in the middle of its range
+	uint16 newRefRaw = 128;
 	
 	if (newRefRaw < Vgs_minRefRaw) newRefRaw = Vgs_minRefRaw;
 	if (newRefRaw > Vgs_maxRefRaw) newRefRaw = Vgs_maxRefRaw;
@@ -680,12 +682,14 @@ void Set_Vgs_Rel(int16 value) {
 	
 	Vgs_Index_Goal_Relative = (int16)value;
 	
+	//Now that we have set our DAC, try to put back the reference in a nice place
 	uint16 Vds_minRefRaw = Vds_Index_Goal_Relative > 0? 0: -Vds_Index_Goal_Relative;
 	uint16 Vds_maxRefRaw = Vds_Index_Goal_Relative > 0? 255 - Vds_Index_Goal_Relative: 255;
 	uint16 Vgs_minRefRaw = Vgs_Index_Goal_Relative > 0? 0: -Vgs_Index_Goal_Relative;
 	uint16 Vgs_maxRefRaw = Vgs_Index_Goal_Relative > 0? 255 - Vgs_Index_Goal_Relative: 255;
 	
-	uint16 newRefRaw = VDAC_Ref_Data;
+	//Preferred reference voltage is in the middle of its range
+	uint16 newRefRaw = 128;
 	
 	if (newRefRaw < Vds_minRefRaw) newRefRaw = Vds_minRefRaw;
 	if (newRefRaw > Vds_maxRefRaw) newRefRaw = Vds_maxRefRaw;
@@ -776,6 +780,8 @@ void Measure(uint32 deltaSigmaSampleCount, uint32 SAR1_SampleCount, uint32 SAR2_
 	
 	sprintf(TransmitBuffer, "[%e,%f,%f,%e]\r\n", IdsAverageAmps, Get_Vgs(), Get_Vds(), SAR1);
 	sendTransmitBuffer();
+	//sprintf(TransmitBuffer, "[%d,%d,%d]\r\n", VDAC_Ref_Data, VDAC_Vds_Data, VDAC_Vgs_Data);
+	//sendTransmitBuffer();
 }
 
 // Repeatedly take measurements of the system
@@ -1098,7 +1104,7 @@ int main(void) {
 			newData = 0;
 			
 			if (strstr(ReceiveBuffer, "measure ") == &ReceiveBuffer[0]) {
-				Measure(100, 20, 20);
+				Measure(100, 100, 10);
 			} else 
 			if (strstr(ReceiveBuffer, "measure-multiple ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
