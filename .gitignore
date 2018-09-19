@@ -1,0 +1,59 @@
+#ignore all files except those that have an extension
+*
+!*/
+!**/*.*
+
+#don't ignore makefiles
+!makefile
+!Makefile
+
+#ignore data files
+*.json
+data/
+
+#ignore generated plots
+*.png
+*.pdf
+*.svg
+
+#ignore compiled files
+*.pyc
+*.jar
+*.exe
+
+#ignore annoying OS and backup files
+*.DS_Store
+*.db
+*~
+*#
+*.bak
+
+#ignore PSoC files
+*.o
+Archive/
+Backup/
+Debug/
+Release/
+Export/
+codegentemp/
+Generated_Source/
+*_datasheet.pdf
+*_timing.html
+*.cycdx
+*.cyfit
+*.rpt
+*.svd
+
+*.log
+*.cyprj.*
+*.cywrk.*
+*.v
+*.vh2
+bitstream.txt
+autoseltemp/
+ComponentUpdateLog.txt
+
+
+
+
+

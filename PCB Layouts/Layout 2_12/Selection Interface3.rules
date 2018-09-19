@@ -1,0 +1,129 @@
+
+(rules PCB Selection Interface3
+  (snap_angle 
+    fortyfive_degree
+  )
+  (autoroute_settings
+    (fanout off)
+    (autoroute on)
+    (postroute on)
+    (vias on)
+    (via_costs 50)
+    (plane_via_costs 5)
+    (start_ripup_costs 100)
+    (start_pass_no 881)
+    (layer_rule F.Cu
+      (active on)
+      (preferred_direction horizontal)
+      (preferred_direction_trace_costs 1.8)
+      (against_preferred_direction_trace_costs 3.0)
+    )
+    (layer_rule In1.Cu
+      (active on)
+      (preferred_direction vertical)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 1.8)
+    )
+    (layer_rule In2.Cu
+      (active on)
+      (preferred_direction horizontal)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 2.2)
+    )
+    (layer_rule B.Cu
+      (active on)
+      (preferred_direction vertical)
+      (preferred_direction_trace_costs 1.8)
+      (against_preferred_direction_trace_costs 2.6)
+    )
+  )
+  (rule
+    (width 254.0)
+    (clear 203.4)
+    (clear 127.0 (type smd_to_turn_gap))
+    (clear 50.8 (type smd_smd))
+  )
+  (padstack "Via[0-3]_600:300_um"
+    (shape
+      (circle F.Cu 600.0 0.0 0.0)
+    )
+    (shape
+      (circle In1.Cu 600.0 0.0 0.0)
+    )
+    (shape
+      (circle In2.Cu 600.0 0.0 0.0)
+    )
+    (shape
+      (circle B.Cu 600.0 0.0 0.0)
+    )
+    (attach off)
+  )
+  (via 
+    "Via[0-3]_600:300_um" "Via[0-3]_600:300_um" default
+  )
+  (via 
+    "Via[0-3]_600:300_um-kicad_default" "Via[0-3]_600:300_um" "kicad_default"
+  )
+  (via 
+    "Via[0-3]_600:300_um-In" "Via[0-3]_600:300_um" In
+  )
+  (via_rule
+    default "Via[0-3]_600:300_um"
+  )
+  (via_rule
+    "kicad_default" "Via[0-3]_600:300_um-kicad_default"
+  )
+  (via_rule
+    In "Via[0-3]_600:300_um-In"
+  )
+  (class default
+    (clearance_class default)
+    (via_rule default)
+    (rule
+      (width 254.0)
+    )
+    (circuit 
+      (use_layer F.Cu In1.Cu In2.Cu B.Cu)
+    )
+  )
+  (class "kicad_default"
+    VDDD GND "Net-(C11-Pad1)" "Net-(C16-Pad1)" "Net-(C18-Pad1)" "Net-(C19-Pad1)" "Net-(C21-Pad1)" "Net-(C36-Pad1)"
+    "Net-(C37-Pad1)" "Net-(C42-Pad1)" "Net-(C44-Pad1)" "Net-(C48-Pad1)" "Net-(C50-Pad1)" "Net-(C60-Pad1)" "Net-(C69-Pad1)" "Net-(C70-Pad1)"
+    "Net-(FB1-Pad1)" "Net-(FB7-Pad1)" "Net-(P1-Pad2)" "Net-(P2-Pad2)" BackGate "Net-(P3-Pad2)" I3 "Net-(P4-Pad2)"
+    I4 "Net-(P5-Pad2)" I5 "Net-(P6-Pad2)" I7 I6 I8 I9
+    "Net-(P6-Pad14)" I10 I11 I12 "Net-(P7-Pad2)" "BT1_RX" "BT1_TX" "Net-(P9-Pad2)"
+    "BT2_RX" "BT2_TX" "Net-(P11-Pad2)" "Net-(P12-Pad2)" DisplayMISO DisplaySCK DisplayMOSI DisplayCS
+    CardCS DisplayDataOrCommand DisplayReset "Net-(P14-Pad2)" "Net-(P15-Pad2)" "Net-(P16-Pad2)" D18 D17
+    D50 D49 "I2C0_SCL" "I2C0_SDA" "Net-(R3-Pad1)" "Net-(R4-Pad1)" "Net-(R5-Pad1)" "Net-(R5-Pad2)"
+    "Net-(R6-Pad1)" "Net-(R6-Pad2)" "Net-(R7-Pad1)" "Net-(R7-Pad2)" "Net-(R8-Pad1)" "Net-(R8-Pad2)" "Net-(R9-Pad1)" "Net-(R10-Pad1)"
+    "Net-(R11-Pad1)" "Net-(R11-Pad2)" "Net-(R12-Pad1)" "Net-(R12-Pad2)" "Net-(R13-Pad1)" "Net-(R13-Pad2)" "Net-(R14-Pad1)" "Net-(R14-Pad2)"
+    D8 D9 D10 D11 D12 D13 D14 D15
+    D16 D19 D20 D21 D22 D23 D24 D25
+    D26 D27 D28 D29 D30 D31 D32 D1
+    D2 D3 D4 D5 D6 D7 D40 D41
+    D42 D43 D44 D45 D46 D47 D48 D51
+    D52 D53 D54 D55 D56 D57 D58 D59
+    D60 D61 D62 D63 D64 D33 D34 D35
+    D36 D37 D38 D39 D17P D18P D49P D50P
+    SWDIO6 SWDCLK6 XRES6 SWDIO5 SWDCLK5 XRES5 XRES1 XRES2
+    XRES4 XRES3 "Net-(R3-Pad2)" "Net-(R4-Pad2)" "Net-(R9-Pad2)" "Net-(R10-Pad2)"
+    (clearance_class "kicad_default")
+    (via_rule kicad_default)
+    (rule
+      (width 254.0)
+    )
+    (circuit 
+      (use_layer F.Cu In1.Cu In2.Cu B.Cu)
+    )
+  )
+  (class In
+    (clearance_class In)
+    (via_rule In)
+    (rule
+      (width 400.0)
+    )
+    (circuit 
+      (use_layer F.Cu In1.Cu In2.Cu B.Cu)
+    )
+  )
+)
