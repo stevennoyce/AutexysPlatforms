@@ -14,12 +14,13 @@ from neo import io
 
 # The software that generates the files is based on IGOR, a plotting software
 
-file = io.IgorIO(filename='AFM_Test_Files/EFM_0002.ibw')
+file = io.IgorIO(filename='AFM_Test_Files/SGM0003.ibw')
 seg1 = file.read_segment()
 
-# The end number can be anywhere from 0 to 5, corresponding to channels
-plt.plot(np.array(seg1.analogsignals[0])[...,0])
-plt.show()
+# The measurement has 6 channels
+for channel in range(6):
+	plt.plot(np.array(seg1.analogsignals[0])[..., channel])
+	plt.show()
 
 # I got this simple demo working with the neo package
 # The neo package uses/requires the igor package
