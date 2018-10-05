@@ -1,4 +1,5 @@
 from matplotlib import pyplot as plt
+import numpy as np
 from neo import io
 
 # Gwyddion can be used to view .ibw AFM files
@@ -16,7 +17,9 @@ from neo import io
 file = io.IgorIO(filename='AFM_Test_Files/EFM_0002.ibw')
 seg1 = file.read_segment()
 
-plt.plot(np.array(seg1.analogsignals[0])[...,0]); plt.show()
+# The end number can be anywhere from 0 to 5, corresponding to channels
+plt.plot(np.array(seg1.analogsignals[0])[...,0])
+plt.show()
 
 # I got this simple demo working with the neo package
 # The neo package uses/requires the igor package
