@@ -26,3 +26,12 @@ plt.show()
 # It would be preferable to use the igor package directly, but we can stick with neo if necessary
 
 
+# Here are a few links I have found that are somewhat helpful
+#	- https://media.readthedocs.org/pdf/neo/latest/neo.pdf
+#	- https://github.com/wking/igor/tree/master/igor
+#	- https://github.com/reflectometry/igor.py/blob/master/igor.py
+
+# Note that the igor.py package is different from the igor package
+# igor is based on igor.py, but has a different interface
+
+
