@@ -1,6 +1,9 @@
 from matplotlib import pyplot as plt
 import numpy as np
 from neo import io
+# neo depends on igor
+# pip install igor
+# pip install neo
 
 # Gwyddion can be used to view .ibw AFM files
 # We want to be able to plot similar images
