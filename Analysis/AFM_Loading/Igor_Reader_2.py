@@ -50,13 +50,24 @@ def loadAFM(path):
 	return data
 
 
-def getAFMTimestamp(path):
+def getAFMTimeMetrics(path):
+	afm = loadAFM(path)
+	
+	timeMetrics = {
+		'DateTime': afm['wave']['note']['Date'] + ' ' + afm['wave']['note']['Time'],
+		'Timestamp1990': afm['wave']['note']['Seconds'],
+		'FrameTime': afm['wave']['note']['ImageFrameTime']
+	}
+	
+	return timeMetrics
+
+def getAFMMetaData(path):
 	importantNoteNames = ['Date','Time','Seconds','ImageFrameTime','NapHeight','labels','NapTipVoltage','NapSurfaceVoltage','ScanSize','FastScanSize','SlowScanSize','ScanRate','ScanPoints','ScanLines','ScanAngle','NapMode','Channel1DataType','Channel2DataType','Channel3DataType','Channel4DataType','Channel5DataType','Channel6DataType','Channel7DataType','Channel8DataType','Chip','ScanSpeed','IntegralGain','ProportionalGain','AmplitudeSetpointVolts','AmplitudeSetpointMeters','DriveAmplitude','DriveFrequency','SlowScanEnabled','ScanDown','StartHeadTemp','StartScannerTemp','EndHeadTemp','EndScannerTemp','TipVoltage','SurfaceVoltage','User0Voltage','User1Voltage','FreeAirAmplitude','FreeAirPhase','NapIntegralGain','NapProportionalGain','NapAmplitudeSetpointVolts','NapDriveAmplitude','NapDriveFrequency','NapStartHeight','NapTime']
 	
 	afm = loadAFM(path)
 	
 	importantNotes = {name: afm['wave']['note'][name] for name in importantNoteNames}
-	print(importantNotes)
+	return importantNotes
 	
 # 'Date': '2018-09-26'
 # 'Time': '12:05:27 PM'
@@ -113,7 +124,8 @@ def getAFMTimestamp(path):
 
 
 if __name__ == '__main__':
-	print(loadAFM('AFM_Test_Files/SGM0000.ibw'))
+	# print(loadAFM('AFM_Test_Files/SGM0000.ibw'))
+	print(getAFMTimeMetrics('AFM_Test_Files/SGM0000.ibw'))
 	# print(getAFMTimestamp('AFM_Test_Files/SGM0000.ibw'))
 
 
