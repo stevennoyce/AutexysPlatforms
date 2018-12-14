@@ -21,16 +21,16 @@ import igor.binarywave as igorbinary
 # The software that generates the files is based on IGOR, a plotting software
 
 def main_method(fn):
-	file = io.IgorIO(filename=fn)
-	seg1 = file.read_segment()
+	# file = io.IgorIO(filename=fn)
+	# seg1 = file.read_segment()
 
-	# https://media.readthedocs.org/pdf/neo/latest/neo.pdf  : Page 10
-	# above shows all components of segment
-	print("analogsignals: " , seg1.analogsignals)
-	print("epochs: ",seg1.epochs)
-	print("events: " , seg1.events)
-	print("irregularlysampledsignals: ", seg1.irregularlysampledsignals)
-	print("spiketrains: ", seg1.spiketrains)
+	# # https://media.readthedocs.org/pdf/neo/latest/neo.pdf  : Page 10
+	# # above shows all components of segment
+	# print("analogsignals: " , seg1.analogsignals)
+	# print("epochs: ",seg1.epochs)
+	# print("events: " , seg1.events)
+	# print("irregularlysampledsignals: ", seg1.irregularlysampledsignals)
+	# print("spiketrains: ", seg1.spiketrains)
 
 	data = igorbinary.load(fn)
 	print(data)
