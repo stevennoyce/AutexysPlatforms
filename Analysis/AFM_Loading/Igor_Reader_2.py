@@ -124,8 +124,8 @@ def getAFMMetaData(path):
 
 
 if __name__ == '__main__':
-	# print(loadAFM('AFM_Test_Files/SGM0000.ibw'))
-	print(getAFMTimeMetrics('AFM_Test_Files/SGM0000.ibw'))
+	print(loadAFM('AFM_Test_Files/SGM0000.ibw'))
+	# print(getAFMTimeMetrics('AFM_Test_Files/SGM0000.ibw'))
 	# print(getAFMTimestamp('AFM_Test_Files/SGM0000.ibw'))
 
 
