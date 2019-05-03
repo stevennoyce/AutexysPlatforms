@@ -31,27 +31,31 @@ inst.values_format.use_binary('d', False, np.array)
 
 channels = [1,2]
 Npoints = 10000
-Vds = 0.01
-Vgs = -15
+Vds = 1
+Vgs = 0
 voltageSetpoints = [None, Vds, Vgs]
 
 for channel in channels:
 	inst.write(':source{}:function:mode voltage'.format(channel))
-	inst.write(':sense{}:function current'.format(channel))
+	# inst.write(':sense{}:function current'.format(channel))
+	
 	# inst.write(':sense{}:current:nplc 1'.format(channel))
 	# inst.write(':sense{}:current:prot 10e-6'.format(channel))
 	
 	inst.write(':sense{}:current:range:auto on'.format(channel))
 	inst.write(':sense{}:current:range 1E-6'.format(channel))
+	
 	# inst.write(':sense{}:current:range:auto:mode speed'.format(channel))
 	# inst.write(':sense{}:current:range:auto:THR 80'.format(channel))
+	
 	inst.write(':sense{}:current:range:auto:LLIM 1E-8'.format(channel))
 	
-	inst.write(':source{}:voltage:mode sweep'.format(channel))
-
-	inst.write(':source{}:voltage:start {}'.format(channel, voltageSetpoints[channel]))
-	inst.write(':source{}:voltage:stop {}'.format(channel, voltageSetpoints[channel])) 
-	inst.write(':source{}:voltage:points {}'.format(channel, Npoints))
+	# inst.write(':source{}:voltage:mode sweep'.format(channel))
+	
+	# inst.write(':source{}:voltage:start {}'.format(channel, voltageSetpoints[channel]))
+	# inst.write(':source{}:voltage:stop {}'.format(channel, voltageSetpoints[channel])) 
+	# inst.write(':source{}:voltage:points {}'.format(channel, Npoints))
+	
 	# inst.write(':source2:voltage:start {}'.format(Vgs))
 	# inst.write(':source2:voltage:stop {}'.format(Vgs)) 
 	# inst.write(':source2:voltage:points {}'.format(Npoints))
@@ -61,12 +65,12 @@ for channel in channels:
 inst.write("*WAI")
 time.sleep(0.1)
 
-for vds in np.linspace(0,Vds,30):
+for vds in np.linspace(0,Vds,2):
 	inst.write(':source1:voltage {}'.format(vds))
 	time.sleep(0.01)
 	inst.query_binary_values(':measure? (@1:2)')
 
-for vgs in np.linspace(0,Vgs,30):
+for vgs in np.linspace(0,Vgs,2):
 	inst.write(':source2:voltage {}'.format(vgs))
 	time.sleep(0.01)
 	inst.query_binary_values(':measure? (@1:2)')
@@ -85,7 +89,7 @@ for channel in channels:
 	inst.write(':trig{}:count {}'.format(channel, Npoints))
 	# inst.write(':trig{}:ACQ:DEL 1E-4'.format(channel))
 	# inst.write(':sense{}:current:APER 1E-4'.format(channel))
-
+	
 	# smu.write(':source{}:voltage:mode sweep'.format(channel))
 	# smu.write(':source{}:voltage:start 0'.format(channel, src1start))
 	# smu.write(':source{}:voltage:stop 0'.format(channel, src1stop)) 
