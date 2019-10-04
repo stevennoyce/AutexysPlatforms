@@ -424,6 +424,7 @@ void Measure_Current_Vss(float* currentAverageIn, float* currentStdDevIn, uint32
 	float TIA1_Feedback_R = TIA1_Resistor_Values[TIA1_Selected_Resistor];
 	int32 TIA1_Offset_uV = TIA1_Offsets_uV[TIA1_Selected_Resistor];
 	float unitConversion = -1.0e-6/TIA1_Feedback_R;
+	//unitConversion = -1.0e-6/20e3; //override internal TIA resistor value
 	
 	// Allow for the first measurement (normally not correct) to take place
 	ADC_Measure_uV(&ADC_Voltage, &ADC_Voltage_SD, 3);
