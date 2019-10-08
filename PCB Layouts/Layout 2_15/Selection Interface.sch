@@ -3026,4 +3026,59 @@ Wire Wire Line
 	4400 2100 4400 2200
 Wire Wire Line
 	4400 2200 4400 2300
+$Comp
+L Mechanical:MountingHole MH3
+U 1 1 5D9EABCE
+P 10100 5250
+F 0 "MH3" H 10200 5296 50  0000 L CNN
+F 1 "MountingHole" H 10200 5205 50  0000 L CNN
+F 2 "Custom_Footprint_Library:MountingHole_5.1mm" H 10100 5250 50  0001 C CNN
+F 3 "~" H 10100 5250 50  0001 C CNN
+	1    10100 5250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole MH2
+U 1 1 5D9EBACA
+P 10100 5000
+F 0 "MH2" H 10200 5046 50  0000 L CNN
+F 1 "MountingHole" H 10200 4955 50  0000 L CNN
+F 2 "Custom_Footprint_Library:MountingHole_5.1mm" H 10100 5000 50  0001 C CNN
+F 3 "~" H 10100 5000 50  0001 C CNN
+	1    10100 5000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole MH5
+U 1 1 5DA59D68
+P 10100 5750
+F 0 "MH5" H 10200 5796 50  0000 L CNN
+F 1 "MountingHole" H 10200 5705 50  0000 L CNN
+F 2 "Custom_Footprint_Library:MountingHole_5.1mm" H 10100 5750 50  0001 C CNN
+F 3 "~" H 10100 5750 50  0001 C CNN
+	1    10100 5750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole MH6
+U 1 1 5DA59F0E
+P 10100 6000
+F 0 "MH6" H 10200 6046 50  0000 L CNN
+F 1 "MountingHole" H 10200 5955 50  0000 L CNN
+F 2 "Custom_Footprint_Library:MountingHole_5.1mm" H 10100 6000 50  0001 C CNN
+F 3 "~" H 10100 6000 50  0001 C CNN
+	1    10100 6000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole MH1
+U 1 1 5DA5A0AE
+P 10100 4750
+F 0 "MH1" H 10200 4796 50  0000 L CNN
+F 1 "MountingHole" H 10200 4705 50  0000 L CNN
+F 2 "Custom_Footprint_Library:MountingHole_5.1mm" H 10100 4750 50  0001 C CNN
+F 3 "~" H 10100 4750 50  0001 C CNN
+	1    10100 4750
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
