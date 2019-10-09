@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source "/Users/jaydoherty/Documents/myWorkspaces/Research/Autexys/AutexysPlatforms/PCB Layouts/Layout 2_15/Selection Interface.sch")
-    (date "Tuesday, October 08, 2019 at 06:31:22 PM")
+    (date "Wednesday, October 09, 2019 at 01:01:30 AM")
     (tool "Eeschema (5.0.0-3-g5ebb6b6)")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -1622,7 +1622,7 @@
       (node (ref C45) (pin 2)))
     (net (code 85) (name "Net-(U3-Pad24)")
       (node (ref U3) (pin 24)))
-    (net (code 86) (name BackGate)
+    (net (code 86) (name I2)
       (node (ref P6) (pin 3))
       (node (ref P2) (pin 1))
       (node (ref U7) (pin 25))
@@ -1636,7 +1636,7 @@
       (node (ref U7) (pin 28))
       (node (ref U5) (pin 33))
       (node (ref U3) (pin 28)))
-    (net (code 89) (name I4)
+    (net (code 89) (name BackGate)
       (node (ref P6) (pin 7))
       (node (ref U5) (pin 68))
       (node (ref P4) (pin 1))

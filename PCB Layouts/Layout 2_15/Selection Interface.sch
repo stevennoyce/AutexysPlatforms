@@ -28,9 +28,9 @@ $EndComp
 Text GLabel 1150 800  0    39   Input ~ 0
 LocalGates
 Text GLabel 1150 900  0    39   Input ~ 0
-BackGate
-Text GLabel 1150 1000 0    39   Input ~ 0
 SolutionGate
+Text GLabel 1150 1000 0    39   Input ~ 0
+BackGate
 Text GLabel 1150 1200 0    60   Input ~ 0
 D1
 Text GLabel 1150 1300 0    60   Input ~ 0
@@ -2280,9 +2280,9 @@ LocalGates
 Text GLabel 3900 1400 0    39   Input ~ 0
 GND
 Text GLabel 3900 1700 0    39   Input ~ 0
-SolutionGate
-Text GLabel 3900 1500 0    39   Input ~ 0
 BackGate
+Text GLabel 3900 1500 0    39   Input ~ 0
+SolutionGate
 Text GLabel 3050 3100 0    39   Input ~ 0
 I1
 Text GLabel 3050 3200 0    39   Input ~ 0
@@ -2306,11 +2306,11 @@ S1
 Text GLabel 3150 3100 2    39   Input ~ 0
 GND
 Text GLabel 3150 3200 2    39   Input ~ 0
-BackGate
+SolutionGate
 Text GLabel 3150 3300 2    39   Input ~ 0
 LocalGates
 Text GLabel 3150 3400 2    39   Input ~ 0
-SolutionGate
+BackGate
 Text GLabel 3150 3600 2    39   Input ~ 0
 S2
 Text GLabel 3150 3700 2    39   Input ~ 0
@@ -2494,19 +2494,19 @@ $EndComp
 Text GLabel 2800 5800 1    39   Input ~ 0
 I1
 Text GLabel 3300 5800 1    39   Input ~ 0
-I2
+SolutionGate
 Text GLabel 3800 5800 1    39   Input ~ 0
-I3
+LocalGates
 Text GLabel 4300 5800 1    39   Input ~ 0
-I4
+BackGate
 Text GLabel 4800 5800 1    39   Input ~ 0
-I5
+S1
 Text GLabel 5300 5800 1    39   Input ~ 0
-I6
+S2
 Text GLabel 5800 5800 1    39   Input ~ 0
-I7
+S3
 Text GLabel 6300 5800 1    39   Input ~ 0
-I8
+S4
 Text GLabel 6800 5800 1    39   Input ~ 0
 I9
 Text GLabel 7300 5800 1    39   Input ~ 0
@@ -2771,7 +2771,7 @@ Wire Wire Line
 Wire Wire Line
 	5600 3700 5150 3700
 Text Notes 6600 3750 0    60   ~ 0
-- Don't have gates permanently connected to PSoCs\n- Break out I2C\n- Give Masters ability to reset Slaves\n- Add more optional TIA resistors\n- Give PSoCs more natural number labels\n- Communication between Masters\n- Clock sync between Masters\n- Resistor dividers for input measurements (esp. from AFM)\n- Boost converter for larger gate drive on board\n- Add interface for external chip (tire sensors)\n- Add interface for non-packaged chip (pogo pins)\n- Add temperature, humidity, and pressure sensors\n- Solution Gate and Back Gate are switched on Socket!  Fix!\n- Need holes for magnets or something to preserve absolute positioning on AFM stage\n
+- Don’t have gates permanently connected to PSoCs\n- Break out I2C\n- Give Masters ability to reset Slaves\n- Add more optional TIA resistors\n- Give PSoCs more natural number labels\n- Communication between Masters\n- Clock sync between Masters\n- Resistor dividers for input measurements (esp. from AFM)\n- Boost converter for larger gate drive on board\n- Add interface for external chip (tire sensors)\n- Add interface for non-packaged chip (pogo pins)\n- Add temperature, humidity, and pressure sensors\n- DONE: Solution Gate and Back Gate are switched on Socket!  Fix!\n- DONE: Need holes for magnets or something to preserve absolute positioning on AFM stage\n
 Wire Wire Line
 	20900 2600 21350 2600
 Wire Wire Line
