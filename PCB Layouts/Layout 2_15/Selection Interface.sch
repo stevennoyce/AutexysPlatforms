@@ -987,13 +987,13 @@ D29
 Text GLabel 25100 11300 2    39   Input ~ 0
 D32
 Text GLabel 25100 11200 2    39   Input ~ 0
-S2
+SS1
 Text GLabel 25100 11100 2    39   Input ~ 0
-S1
+SS2
 Text GLabel 17300 800  1    39   Input ~ 0
-S1
+SS2
 Text GLabel 17100 800  1    39   Input ~ 0
-S2
+SS1
 Text GLabel 15250 3500 0    39   Input ~ 0
 I1
 Text GLabel 15250 3700 0    39   Input ~ 0
@@ -1003,13 +1003,7 @@ I3
 Text GLabel 16800 4200 3    39   Input ~ 0
 I4
 Text GLabel 17000 4200 3    39   Input ~ 0
-I5
-Text GLabel 17900 4200 3    39   Input ~ 0
-I6
-Text GLabel 18100 4200 3    39   Input ~ 0
-I7
-Text GLabel 18300 4200 3    39   Input ~ 0
-I8
+SS2
 Text GLabel 18500 4200 3    39   Input ~ 0
 I9
 $Comp
@@ -1260,9 +1254,9 @@ D29
 Text GLabel 18500 11100 2    39   Input ~ 0
 D32
 Text GLabel 18500 11000 2    39   Input ~ 0
-S4
+DD1
 Text GLabel 18500 10900 2    39   Input ~ 0
-S3
+DD2
 $Comp
 L Selection-Interface-rescue:CY8C42_(48_TQFP) MP2
 U 1 1 599EC71E
@@ -1511,9 +1505,9 @@ D61
 Text GLabel 25100 17000 2    39   Input ~ 0
 D64
 Text GLabel 25100 16900 2    39   Input ~ 0
-S2
+SS1
 Text GLabel 25100 16800 2    39   Input ~ 0
-S1
+SS2
 $Comp
 L Selection-Interface-rescue:CY8C42_(48_TQFP) MP3
 U 1 1 599F47BA
@@ -1758,9 +1752,9 @@ D61
 Text GLabel 18250 16950 2    39   Input ~ 0
 D64
 Text GLabel 18250 16850 2    39   Input ~ 0
-S4
+DD1
 Text GLabel 18250 16750 2    39   Input ~ 0
-S3
+DD2
 Text GLabel 24400 1750 0    39   Input ~ 0
 I2C0_SCL
 Text GLabel 24400 1850 0    39   Input ~ 0
@@ -2112,9 +2106,9 @@ Wire Wire Line
 Wire Wire Line
 	26350 5000 26350 5300
 Text GLabel 26450 950  1    39   Input ~ 0
-S1
+SS2
 Text GLabel 26250 950  1    39   Input ~ 0
-S2
+SS1
 Text GLabel 24400 3650 0    39   Input ~ 0
 I1
 Text GLabel 24400 3850 0    39   Input ~ 0
@@ -2124,13 +2118,7 @@ I3
 Text GLabel 25950 4350 3    39   Input ~ 0
 I4
 Text GLabel 26150 4350 3    39   Input ~ 0
-I5
-Text GLabel 27050 4350 3    39   Input ~ 0
-I6
-Text GLabel 27250 4350 3    39   Input ~ 0
-I7
-Text GLabel 27450 4350 3    39   Input ~ 0
-I8
+SS2
 Text GLabel 27650 4350 3    39   Input ~ 0
 I9
 $Comp
@@ -2260,21 +2248,21 @@ VSSD
 Wire Wire Line
 	8650 2000 9150 2000
 Text GLabel 16900 800  1    39   Input ~ 0
-S3
+DD2
 Text GLabel 16700 800  1    39   Input ~ 0
-S4
+DD1
 Text GLabel 26050 950  1    39   Input ~ 0
-S3
+DD2
 Text GLabel 25850 950  1    39   Input ~ 0
-S4
+DD1
 Text GLabel 3900 1800 0    39   Input ~ 0
-S1
+SS2
 Text GLabel 3900 1900 0    39   Input ~ 0
-S2
+SS1
 Text GLabel 4400 1800 2    39   Input ~ 0
-S3
+DD2
 Text GLabel 4400 1900 2    39   Input ~ 0
-S4
+DD1
 Text GLabel 3900 1600 0    39   Input ~ 0
 LocalGates
 Text GLabel 3900 1400 0    39   Input ~ 0
@@ -2297,12 +2285,10 @@ Text GLabel 3050 3600 0    39   Input ~ 0
 I6
 Text GLabel 3050 3700 0    39   Input ~ 0
 I7
-Text GLabel 3050 3800 0    39   Input ~ 0
-I8
 Text GLabel 3050 3900 0    39   Input ~ 0
 I9
 Text GLabel 3150 3500 2    39   Input ~ 0
-S1
+SS2
 Text GLabel 3150 3100 2    39   Input ~ 0
 GND
 Text GLabel 3150 3200 2    39   Input ~ 0
@@ -2312,11 +2298,9 @@ LocalGates
 Text GLabel 3150 3400 2    39   Input ~ 0
 BackGate
 Text GLabel 3150 3600 2    39   Input ~ 0
-S2
+SS1
 Text GLabel 3150 3700 2    39   Input ~ 0
-S3
-Text GLabel 3150 3800 2    39   Input ~ 0
-S4
+DD2
 Text GLabel 3050 4000 0    39   Input ~ 0
 I10
 Text GLabel 3050 4100 0    39   Input ~ 0
@@ -2421,14 +2405,6 @@ Wire Wire Line
 Wire Wire Line
 	3050 3400 3150 3400
 Wire Wire Line
-	3050 3500 3150 3500
-Wire Wire Line
-	3050 3600 3150 3600
-Wire Wire Line
-	3050 3700 3150 3700
-Wire Wire Line
-	3050 3800 3150 3800
-Wire Wire Line
 	4400 1400 4400 1500
 Connection ~ 4400 1600
 Connection ~ 4400 1500
@@ -2500,13 +2476,13 @@ LocalGates
 Text GLabel 4300 5800 1    39   Input ~ 0
 BackGate
 Text GLabel 4800 5800 1    39   Input ~ 0
-S1
+SS2
 Text GLabel 5300 5800 1    39   Input ~ 0
-S2
+SS1
 Text GLabel 5800 5800 1    39   Input ~ 0
-S3
+DD2
 Text GLabel 6300 5800 1    39   Input ~ 0
-S4
+DD1
 Text GLabel 6800 5800 1    39   Input ~ 0
 I9
 Text GLabel 7300 5800 1    39   Input ~ 0
@@ -3081,4 +3057,8 @@ F 3 "~" H 10100 4750 50  0001 C CNN
 	1    10100 4750
 	1    0    0    -1  
 $EndComp
+Text GLabel 3050 3800 0    39   Input ~ 0
+I8
+Text GLabel 3150 3800 2    39   Input ~ 0
+DD1
 $EndSCHEMATC
