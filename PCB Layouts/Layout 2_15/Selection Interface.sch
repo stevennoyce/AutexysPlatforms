@@ -1005,7 +1005,7 @@ I4
 Text GLabel 17000 4200 3    39   Input ~ 0
 SS2
 Text GLabel 18500 4200 3    39   Input ~ 0
-I9
+IO1
 $Comp
 L Selection-Interface-rescue:CY8C42_(48_TQFP) MP4
 U 1 1 599EBC26
@@ -2120,7 +2120,7 @@ I4
 Text GLabel 26150 4350 3    39   Input ~ 0
 SS2
 Text GLabel 27650 4350 3    39   Input ~ 0
-I9
+IO1
 $Comp
 L Device:R R7
 U 1 1 599FA581
@@ -2286,7 +2286,7 @@ I6
 Text GLabel 3050 3700 0    39   Input ~ 0
 I7
 Text GLabel 3050 3900 0    39   Input ~ 0
-I9
+IO1
 Text GLabel 3150 3500 2    39   Input ~ 0
 SS2
 Text GLabel 3150 3100 2    39   Input ~ 0
@@ -2302,23 +2302,23 @@ SS1
 Text GLabel 3150 3700 2    39   Input ~ 0
 DD2
 Text GLabel 3050 4000 0    39   Input ~ 0
-I10
+IO2
 Text GLabel 3050 4100 0    39   Input ~ 0
-I11
+IO3
 Text GLabel 3050 4200 0    39   Input ~ 0
-I12
+IO4
 Text GLabel 19800 3700 2    39   Input ~ 0
-I10
+IO2
 Text GLabel 19800 3200 2    39   Input ~ 0
-I11
+IO3
 Text GLabel 19800 1900 2    39   Input ~ 0
-I12
+IO4
 Text GLabel 28950 3850 2    39   Input ~ 0
-I10
+IO2
 Text GLabel 28950 3350 2    39   Input ~ 0
-I11
+IO3
 Text GLabel 28950 2050 2    39   Input ~ 0
-I12
+IO4
 Text GLabel 4350 2600 0    39   Input ~ 0
 BT1_RX
 Text GLabel 4650 3500 0    39   Input ~ 0
@@ -2389,13 +2389,13 @@ F 3 "" H 5950 1800 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Text GLabel 3900 2000 0    39   Input ~ 0
-I9
+IO1
 Text GLabel 3900 2100 0    39   Input ~ 0
-I10
+IO2
 Text GLabel 3900 2200 0    39   Input ~ 0
-I11
+IO3
 Text GLabel 3900 2300 0    39   Input ~ 0
-I12
+IO4
 Wire Wire Line
 	3050 3100 3150 3100
 Wire Wire Line
@@ -2484,13 +2484,13 @@ DD2
 Text GLabel 6300 5800 1    39   Input ~ 0
 DD1
 Text GLabel 6800 5800 1    39   Input ~ 0
-I9
+IO1
 Text GLabel 7300 5800 1    39   Input ~ 0
-I10
+IO2
 Text GLabel 7800 5800 1    39   Input ~ 0
-I11
+IO3
 Text GLabel 8300 5800 1    39   Input ~ 0
-I12
+IO4
 $Comp
 L Selection-Interface-rescue:CONN_02X10 P6
 U 1 1 59A25C60
