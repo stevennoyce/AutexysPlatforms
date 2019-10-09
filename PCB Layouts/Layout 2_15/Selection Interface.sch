@@ -997,14 +997,12 @@ SS1
 Text GLabel 15250 3500 0    39   Input ~ 0
 I1
 Text GLabel 15250 3700 0    39   Input ~ 0
-I2
+SolutionGate
 Text GLabel 16500 4200 3    39   Input ~ 0
-I3
+LocalGates
 Text GLabel 16800 4200 3    39   Input ~ 0
-I4
+BackGate
 Text GLabel 17000 4200 3    39   Input ~ 0
-SS2
-Text GLabel 18500 4200 3    39   Input ~ 0
 IO1
 $Comp
 L Selection-Interface-rescue:CY8C42_(48_TQFP) MP4
@@ -2112,14 +2110,12 @@ SS1
 Text GLabel 24400 3650 0    39   Input ~ 0
 I1
 Text GLabel 24400 3850 0    39   Input ~ 0
-I2
+SolutionGate
 Text GLabel 25650 4350 3    39   Input ~ 0
-I3
+LocalGates
 Text GLabel 25950 4350 3    39   Input ~ 0
-I4
+BackGate
 Text GLabel 26150 4350 3    39   Input ~ 0
-SS2
-Text GLabel 27650 4350 3    39   Input ~ 0
 IO1
 $Comp
 L Device:R R7
@@ -2307,15 +2303,13 @@ Text GLabel 3050 4100 0    39   Input ~ 0
 IO3
 Text GLabel 3050 4200 0    39   Input ~ 0
 IO4
-Text GLabel 19800 3700 2    39   Input ~ 0
-IO2
 Text GLabel 19800 3200 2    39   Input ~ 0
-IO3
+IO2
 Text GLabel 19800 1900 2    39   Input ~ 0
 IO4
-Text GLabel 28950 3850 2    39   Input ~ 0
-IO2
 Text GLabel 28950 3350 2    39   Input ~ 0
+IO2
+Text GLabel 28950 1950 2    39   Input ~ 0
 IO3
 Text GLabel 28950 2050 2    39   Input ~ 0
 IO4
@@ -2398,12 +2392,6 @@ Text GLabel 3900 2300 0    39   Input ~ 0
 IO4
 Wire Wire Line
 	3050 3100 3150 3100
-Wire Wire Line
-	3050 3200 3150 3200
-Wire Wire Line
-	3050 3300 3150 3300
-Wire Wire Line
-	3050 3400 3150 3400
 Wire Wire Line
 	4400 1400 4400 1500
 Connection ~ 4400 1600
@@ -2636,10 +2624,10 @@ VSSD
 Text GLabel 21850 4700 0    39   Input ~ 0
 VDDD
 $Comp
-L Selection-Interface-rescue:USB_2.0_B U8
+L Selection-Interface-rescue:USB_2.0_B USB1
 U 1 1 59A082C2
 P 17300 5650
-F 0 "U8" H 17300 5700 60  0000 C CNN
+F 0 "USB1" H 17300 5700 60  0000 C CNN
 F 1 "USB_2.0_B" H 17300 5600 60  0000 C CNN
 F 2 "Custom_Footprint_Library:Micro_USB_2.0_B_SMD(10118192-0001LF)" H 17300 5650 60  0001 C CNN
 F 3 "" H 17300 5650 60  0001 C CNN
@@ -2657,10 +2645,10 @@ Wire Wire Line
 Wire Wire Line
 	17250 5150 17300 5150
 $Comp
-L Selection-Interface-rescue:USB_2.0_B U9
+L Selection-Interface-rescue:USB_2.0_B USB2
 U 1 1 59A0C386
 P 26450 5850
-F 0 "U9" H 26450 5900 60  0000 C CNN
+F 0 "USB2" H 26450 5900 60  0000 C CNN
 F 1 "USB_2.0_B" H 26450 5800 60  0000 C CNN
 F 2 "Custom_Footprint_Library:Micro_USB_2.0_B_SMD(10118192-0001LF)" H 26450 5850 60  0001 C CNN
 F 3 "" H 26450 5850 60  0001 C CNN
@@ -2747,7 +2735,7 @@ Wire Wire Line
 Wire Wire Line
 	5600 3700 5150 3700
 Text Notes 6600 3750 0    60   ~ 0
-- Don’t have gates permanently connected to PSoCs\n- Break out I2C\n- Give Masters ability to reset Slaves\n- Add more optional TIA resistors\n- Give PSoCs more natural number labels\n- Communication between Masters\n- Clock sync between Masters\n- Resistor dividers for input measurements (esp. from AFM)\n- Boost converter for larger gate drive on board\n- Add interface for external chip (tire sensors)\n- Add interface for non-packaged chip (pogo pins)\n- Add temperature, humidity, and pressure sensors\n- DONE: Solution Gate and Back Gate are switched on Socket!  Fix!\n- DONE: Need holes for magnets or something to preserve absolute positioning on AFM stage\n
+- Don’t have gates permanently connected to PSoCs\n- Break out I2C\n- Give Masters ability to reset Slaves\n- Add more optional TIA resistors\n- DONE: Give PSoCs more natural number labels\n- Communication between Masters\n- Clock sync between Masters\n- Resistor dividers for input measurements (esp. from AFM)\n- Boost converter for larger gate drive on board\n- Add interface for external chip (tire sensors)\n- Add interface for non-packaged chip (pogo pins)\n- Add temperature, humidity, and pressure sensors\n- DONE: Solution Gate and Back Gate are switched on Socket!  Fix!\n- DONE: Need holes for magnets or something to preserve absolute positioning on AFM stage\n
 Wire Wire Line
 	20900 2600 21350 2600
 Wire Wire Line
@@ -3061,4 +3049,6 @@ Text GLabel 3050 3800 0    39   Input ~ 0
 I8
 Text GLabel 3150 3800 2    39   Input ~ 0
 DD1
+Text GLabel 19800 1800 2    39   Input ~ 0
+IO3
 $EndSCHEMATC
