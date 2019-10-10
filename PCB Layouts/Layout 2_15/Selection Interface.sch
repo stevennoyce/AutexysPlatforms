@@ -15,10 +15,10 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L Selection-Interface-rescue:68_PLCC_Socket_(8468-21B1-RK-TP) SKT1
+L Selection-Interface-rescue:68_PLCC_Socket_(8468-21B1-RK-TP) SOCKET1
 U 1 1 5913392C
 P 1900 4150
-F 0 "SKT1" H 1900 4050 50  0000 C CNN
+F 0 "SOCKET1" H 1900 4050 50  0000 C CNN
 F 1 "68_PLCC_Socket_(8468-21B1-RK-TP)" H 1900 4250 50  0000 C CNN
 F 2 "Custom_Footprint_Library:68_PLCC_Socket_(8468-21B1-RK-TP)" H 1900 4150 50  0001 C CNN
 F 3 "DOCUMENTATION" H 1900 4150 50  0001 C CNN
@@ -1219,9 +1219,9 @@ Text GLabel 15700 11500 0    39   Input ~ 0
 D15
 Text GLabel 15700 11600 0    39   Input ~ 0
 D16
-Text GLabel 16650 12800 3    39   Input ~ 0
+Text GLabel 16650 13050 3    39   Input ~ 0
 D17P
-Text GLabel 16850 12950 3    39   Input ~ 0
+Text GLabel 16850 13050 3    39   Input ~ 0
 D18P
 Text GLabel 16950 12400 3    39   Input ~ 0
 D19
@@ -1717,9 +1717,7 @@ Text GLabel 15450 17350 0    39   Input ~ 0
 D47
 Text GLabel 15450 17450 0    39   Input ~ 0
 D48
-Text GLabel 16400 18650 3    39   Input ~ 0
-D49P
-Text GLabel 16600 18800 3    39   Input ~ 0
+Text GLabel 16600 18900 3    39   Input ~ 0
 D50P
 Text GLabel 16700 18250 3    39   Input ~ 0
 D51
@@ -2501,11 +2499,11 @@ Wire Wire Line
 Wire Wire Line
 	22700 13150 23450 13150
 Text GLabel 20550 16750 2    39   Input ~ 0
-SWDCLK4
+SWDCLK3
 Text GLabel 20550 16650 2    39   Input ~ 0
-SWDIO4
+SWDIO3
 Text GLabel 20550 16850 2    39   Input ~ 0
-XRES4
+XRES3
 Text GLabel 18500 10800 2    39   Input ~ 0
 XRES2
 Text GLabel 15200 12800 0    39   Input ~ 0
@@ -2517,17 +2515,17 @@ Wire Wire Line
 Wire Wire Line
 	14950 18650 16400 18650
 Text GLabel 14950 18650 0    39   Input ~ 0
-SWDIO3
-Text GLabel 14850 18800 0    39   Input ~ 0
-SWDCLK3
-Text GLabel 18250 16650 2    39   Input ~ 0
-XRES3
-Text GLabel 25100 16700 2    39   Input ~ 0
-XRES4
-Text GLabel 21800 18700 0    39   Input ~ 0
 SWDIO4
-Text GLabel 21700 18850 0    39   Input ~ 0
+Text GLabel 14850 18800 0    39   Input ~ 0
 SWDCLK4
+Text GLabel 18250 16650 2    39   Input ~ 0
+XRES4
+Text GLabel 25100 16700 2    39   Input ~ 0
+XRES3
+Text GLabel 21800 18700 0    39   Input ~ 0
+SWDIO3
+Text GLabel 21700 18850 0    39   Input ~ 0
+SWDCLK3
 Text GLabel 23600 3350 0    39   Input ~ 0
 SWDIO6
 Text GLabel 23600 3450 0    39   Input ~ 0
@@ -2552,11 +2550,11 @@ F 3 "" H 20300 15650 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Text GLabel 20050 16650 0    39   Input ~ 0
-SWDIO3
+SWDIO4
 Text GLabel 20050 16750 0    39   Input ~ 0
-SWDCLK3
+SWDCLK4
 Text GLabel 20050 16850 0    39   Input ~ 0
-XRES3
+XRES4
 Text GLabel 20050 16950 0    39   Input ~ 0
 VSSD
 Text GLabel 20050 17050 0    39   Input ~ 0
@@ -3051,4 +3049,41 @@ Text GLabel 3150 3800 2    39   Input ~ 0
 DD1
 Text GLabel 19800 1800 2    39   Input ~ 0
 IO3
+$Comp
+L Connector_Generic:Conn_02x06_Odd_Even PROG2
+U 1 1 5DA1458B
+P 4050 4600
+F 0 "PROG2" H 4100 5017 50  0000 C CNN
+F 1 "Conn_02x06_Odd_Even" H 4100 4926 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x06_P2.54mm_Vertical_SMD" H 4050 4600 50  0001 C CNN
+F 3 "~" H 4050 4600 50  0001 C CNN
+	1    4050 4600
+	1    0    0    -1  
+$EndComp
+Text GLabel 3850 4400 0    50   Input ~ 0
+SWDCLK1
+Text GLabel 3850 4500 0    50   Input ~ 0
+SWDCLK2
+Text GLabel 3850 4600 0    50   Input ~ 0
+SWDCLK3
+Text GLabel 3850 4700 0    50   Input ~ 0
+SWDCLK4
+Text GLabel 3850 4800 0    50   Input ~ 0
+SWDCLK5
+Text GLabel 3850 4900 0    50   Input ~ 0
+SWDCLK6
+Text GLabel 4350 4400 2    50   Input ~ 0
+SWDIO1
+Text GLabel 4350 4500 2    50   Input ~ 0
+SWDIO2
+Text GLabel 4350 4600 2    50   Input ~ 0
+SWDIO3
+Text GLabel 4350 4700 2    50   Input ~ 0
+SWDIO4
+Text GLabel 4350 4800 2    50   Input ~ 0
+SWDIO5
+Text GLabel 4350 4900 2    50   Input ~ 0
+SWDIO6
+Text GLabel 16400 18900 3    39   Input ~ 0
+D49P
 $EndSCHEMATC
