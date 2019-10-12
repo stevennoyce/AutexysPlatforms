@@ -249,10 +249,6 @@ F 3 "DOCUMENTATION" H 23700 11300 50  0001 C CNN
 	1    23700 11550
 	1    0    0    -1  
 $EndComp
-Text GLabel 20550 16950 2    39   Input ~ 0
-VSSD
-Text GLabel 20550 17050 2    39   Input ~ 0
-VDDD
 Text GLabel 15250 1600 0    39   Input ~ 0
 I2C0_SCL
 Text GLabel 15250 1700 0    39   Input ~ 0
@@ -2489,7 +2485,7 @@ F 3 "" H 4150 650 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Text GLabel 25100 11000 2    39   Input ~ 0
-XRES1
+XRES
 Text GLabel 22900 13000 0    39   Input ~ 0
 SWDIO1
 Text GLabel 22700 13150 0    39   Input ~ 0
@@ -2498,14 +2494,8 @@ Wire Wire Line
 	22900 13000 23250 13000
 Wire Wire Line
 	22700 13150 23450 13150
-Text GLabel 20550 16750 2    39   Input ~ 0
-SWDCLK3
-Text GLabel 20550 16650 2    39   Input ~ 0
-SWDIO3
-Text GLabel 20550 16850 2    39   Input ~ 0
-XRES3
 Text GLabel 18500 10800 2    39   Input ~ 0
-XRES2
+XRES
 Text GLabel 15200 12800 0    39   Input ~ 0
 SWDIO2
 Text GLabel 15100 12950 0    39   Input ~ 0
@@ -2519,9 +2509,9 @@ SWDIO4
 Text GLabel 14850 18800 0    39   Input ~ 0
 SWDCLK4
 Text GLabel 18250 16650 2    39   Input ~ 0
-XRES4
+XRES
 Text GLabel 25100 16700 2    39   Input ~ 0
-XRES3
+XRES
 Text GLabel 21800 18700 0    39   Input ~ 0
 SWDIO3
 Text GLabel 21700 18850 0    39   Input ~ 0
@@ -2531,75 +2521,23 @@ SWDIO6
 Text GLabel 23600 3450 0    39   Input ~ 0
 SWDCLK6
 Text GLabel 23600 3550 0    39   Input ~ 0
-XRES6
+XRES
 Text GLabel 14450 3200 0    39   Input ~ 0
 SWDIO5
 Text GLabel 14450 3300 0    39   Input ~ 0
 SWDCLK5
 Text GLabel 14450 3400 0    39   Input ~ 0
-XRES5
-$Comp
-L Selection-Interface-rescue:CONN_02X05 P21
-U 1 1 59A42FA7
-P 20300 16850
-F 0 "P21" H 20300 17150 50  0000 C CNN
-F 1 "CONN_02X05" H 20300 16550 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical_SMD" H 20300 15650 50  0001 C CNN
-F 3 "" H 20300 15650 50  0000 C CNN
-	1    20300 16850
-	1    0    0    -1  
-$EndComp
-Text GLabel 20050 16650 0    39   Input ~ 0
-SWDIO4
-Text GLabel 20050 16750 0    39   Input ~ 0
-SWDCLK4
-Text GLabel 20050 16850 0    39   Input ~ 0
-XRES4
-Text GLabel 20050 16950 0    39   Input ~ 0
-VSSD
-Text GLabel 20050 17050 0    39   Input ~ 0
-VDDD
-Text GLabel 20700 11150 2    39   Input ~ 0
-VSSD
-Text GLabel 20700 11250 2    39   Input ~ 0
-VDDD
-Text GLabel 20700 10950 2    39   Input ~ 0
-SWDCLK1
-Text GLabel 20700 10850 2    39   Input ~ 0
-SWDIO1
-Text GLabel 20700 11050 2    39   Input ~ 0
-XRES1
-$Comp
-L Selection-Interface-rescue:CONN_02X05 P19
-U 1 1 59A43DA9
-P 20450 11050
-F 0 "P19" H 20450 11350 50  0000 C CNN
-F 1 "CONN_02X05" H 20450 10750 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical_SMD" H 20450 9850 50  0001 C CNN
-F 3 "" H 20450 9850 50  0000 C CNN
-	1    20450 11050
-	1    0    0    -1  
-$EndComp
-Text GLabel 20200 10850 0    39   Input ~ 0
-SWDIO2
-Text GLabel 20200 10950 0    39   Input ~ 0
-SWDCLK2
-Text GLabel 20200 11050 0    39   Input ~ 0
-XRES2
-Text GLabel 20200 11150 0    39   Input ~ 0
-VSSD
-Text GLabel 20200 11250 0    39   Input ~ 0
-VDDD
+XRES
 Text GLabel 22350 4600 2    39   Input ~ 0
 VSSD
 Text GLabel 22350 4700 2    39   Input ~ 0
 VDDD
 Text GLabel 22350 4400 2    39   Input ~ 0
-SWDCLK6
+SWDCLK
 Text GLabel 22350 4300 2    39   Input ~ 0
-SWDIO6
+SWDIO
 Text GLabel 22350 4500 2    39   Input ~ 0
-XRES6
+XRES
 $Comp
 L Selection-Interface-rescue:CONN_02X05 P18
 U 1 1 59A43F1B
@@ -2612,11 +2550,11 @@ F 3 "" H 22100 3300 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Text GLabel 21850 4300 0    39   Input ~ 0
-SWDIO5
+SWDIO
 Text GLabel 21850 4400 0    39   Input ~ 0
-SWDCLK5
+SWDCLK
 Text GLabel 21850 4500 0    39   Input ~ 0
-XRES5
+XRES
 Text GLabel 21850 4600 0    39   Input ~ 0
 VSSD
 Text GLabel 21850 4700 0    39   Input ~ 0
@@ -3086,4 +3024,15 @@ Text GLabel 4350 4900 2    50   Input ~ 0
 SWDIO6
 Text GLabel 16400 18900 3    39   Input ~ 0
 D49P
+$Comp
+L Mechanical:MountingHole MH4
+U 1 1 5DA3CFD1
+P 10100 5500
+F 0 "MH4" H 10200 5546 50  0000 L CNN
+F 1 "MountingHole" H 10200 5455 50  0000 L CNN
+F 2 "Custom_Footprint_Library:MountingHole_5.1mm" H 10100 5500 50  0001 C CNN
+F 3 "~" H 10100 5500 50  0001 C CNN
+	1    10100 5500
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
