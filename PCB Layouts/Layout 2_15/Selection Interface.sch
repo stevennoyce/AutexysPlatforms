@@ -238,17 +238,6 @@ F 3 "" H 5750 6000 50  0000 C CNN
 $EndComp
 Text GLabel 1150 1100 0    39   Input ~ 0
 GND
-$Comp
-L Selection-Interface-rescue:CY8C42_(48_TQFP) MP1
-U 1 1 599B549F
-P 23700 11550
-F 0 "MP1" H 23700 11450 50  0000 C CNN
-F 1 "CY8C42_(48_TQFP)" H 23700 11650 50  0000 C CNN
-F 2 "Package_QFP:TQFP-48_7x7mm_P0.5mm" H 23700 11800 50  0001 C CNN
-F 3 "DOCUMENTATION" H 23700 11300 50  0001 C CNN
-	1    23700 11550
-	1    0    0    -1  
-$EndComp
 Text GLabel 15250 1600 0    39   Input ~ 0
 I2C0_SCL
 Text GLabel 15250 1700 0    39   Input ~ 0
@@ -270,8 +259,8 @@ VDDIO
 Text GLabel 16300 4200 3    39   Input ~ 0
 VDDIO
 Text GLabel 23950 12600 3    39   Input ~ 0
-VDDD
-Text GLabel 23350 12600 3    39   Input ~ 0
+VDDIO
+Text GLabel 22300 11900 0    39   Input ~ 0
 VSSD
 Text GLabel 24150 10500 1    39   Input ~ 0
 VSSD
@@ -950,25 +939,25 @@ Text GLabel 22300 11700 0    39   Input ~ 0
 D15
 Text GLabel 22300 11800 0    39   Input ~ 0
 D16
-Text GLabel 23250 13000 3    39   Input ~ 0
-D17
-Text GLabel 23450 13150 3    39   Input ~ 0
-D18
 Text GLabel 23550 12600 3    39   Input ~ 0
-D19
+D17
 Text GLabel 23650 12600 3    39   Input ~ 0
-D20
+D18
 Text GLabel 23750 12600 3    39   Input ~ 0
-D21
+D19
 Text GLabel 23850 12600 3    39   Input ~ 0
-D22
+D20
 Text GLabel 24050 12600 3    39   Input ~ 0
-D23
+D21
 Text GLabel 24150 12600 3    39   Input ~ 0
-D24
+D22
 Text GLabel 24250 12600 3    39   Input ~ 0
-D25
+D23
 Text GLabel 25100 12100 2    39   Input ~ 0
+D24
+Text GLabel 25100 12000 2    39   Input ~ 0
+D25
+Text GLabel 25100 11900 2    39   Input ~ 0
 D26
 Text GLabel 25100 11400 2    39   Input ~ 0
 D31
@@ -1216,9 +1205,9 @@ D15
 Text GLabel 15700 11600 0    39   Input ~ 0
 D16
 Text GLabel 16650 13050 3    39   Input ~ 0
-D17P
+D17
 Text GLabel 16850 13050 3    39   Input ~ 0
-D18P
+D18
 Text GLabel 16950 12400 3    39   Input ~ 0
 D19
 Text GLabel 17050 12400 3    39   Input ~ 0
@@ -3033,6 +3022,17 @@ F 1 "MountingHole" H 10200 5455 50  0000 L CNN
 F 2 "Custom_Footprint_Library:MountingHole_5.1mm" H 10100 5500 50  0001 C CNN
 F 3 "~" H 10100 5500 50  0001 C CNN
 	1    10100 5500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Custom_Schematic_Library:CY8C4245AZI-M433(48_TQPF) MP1
+U 1 1 5DBAE2AD
+P 23700 11550
+F 0 "MP1" H 23700 11450 50  0000 C CNN
+F 1 "CY8C4245AZI-M433(48_TQPF)" H 23700 11650 50  0000 C CNN
+F 2 "Package_QFP:TQFP-48_7x7mm_P0.5mm" H 23700 11550 50  0001 C CNN
+F 3 "" H 23700 11550 50  0001 C CNN
+	1    23700 11550
 	1    0    0    -1  
 $EndComp
 $EndSCHEMATC
