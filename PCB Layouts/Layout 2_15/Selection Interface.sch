@@ -974,9 +974,9 @@ D32
 Text GLabel 25100 11200 2    39   Input ~ 0
 SS1
 Text GLabel 25100 11100 2    39   Input ~ 0
-SS2
+DD1
 Text GLabel 17300 800  1    39   Input ~ 0
-SS2
+DD1
 Text GLabel 17100 800  1    39   Input ~ 0
 SS1
 Text GLabel 15250 3500 0    39   Input ~ 0
@@ -989,24 +989,13 @@ Text GLabel 16800 4200 3    39   Input ~ 0
 BackGate
 Text GLabel 17000 4200 3    39   Input ~ 0
 IO1
-$Comp
-L Selection-Interface-rescue:CY8C42_(48_TQFP) MP2
-U 1 1 599EBC26
-P 17100 11350
-F 0 "MP2" H 17100 11250 50  0000 C CNN
-F 1 "CY8C42_(48_TQFP)" H 17100 11450 50  0000 C CNN
-F 2 "Package_QFP:TQFP-48_7x7mm_P0.5mm" H 17100 11600 50  0001 C CNN
-F 3 "DOCUMENTATION" H 17100 11100 50  0001 C CNN
-	1    17100 11350
-	1    0    0    -1  
-$EndComp
 Text GLabel 15700 11900 0    39   Input ~ 0
 I2C0_SCL
 Text GLabel 16550 12400 3    39   Input ~ 0
 I2C0_SDA
 Text GLabel 17350 12400 3    39   Input ~ 0
-VDDD
-Text GLabel 16750 12400 3    39   Input ~ 0
+VDDIO
+Text GLabel 15700 11700 0    39   Input ~ 0
 VSSD
 Text GLabel 17550 10300 1    39   Input ~ 0
 VSSD
@@ -1204,25 +1193,25 @@ Text GLabel 15700 11500 0    39   Input ~ 0
 D15
 Text GLabel 15700 11600 0    39   Input ~ 0
 D16
-Text GLabel 16650 13050 3    39   Input ~ 0
-D17
-Text GLabel 16850 13050 3    39   Input ~ 0
-D18
 Text GLabel 16950 12400 3    39   Input ~ 0
-D19
+D17
 Text GLabel 17050 12400 3    39   Input ~ 0
-D20
+D18
 Text GLabel 17150 12400 3    39   Input ~ 0
-D21
+D19
 Text GLabel 17250 12400 3    39   Input ~ 0
-D22
+D20
 Text GLabel 17450 12400 3    39   Input ~ 0
-D23
+D21
 Text GLabel 17550 12400 3    39   Input ~ 0
-D24
+D22
 Text GLabel 17650 12400 3    39   Input ~ 0
-D25
+D23
 Text GLabel 18500 11900 2    39   Input ~ 0
+D24
+Text GLabel 18500 11800 2    39   Input ~ 0
+D25
+Text GLabel 18500 11700 2    39   Input ~ 0
 D26
 Text GLabel 18500 11200 2    39   Input ~ 0
 D31
@@ -1237,27 +1226,16 @@ D29
 Text GLabel 18500 11100 2    39   Input ~ 0
 D32
 Text GLabel 18500 11000 2    39   Input ~ 0
-DD1
+SS2
 Text GLabel 18500 10900 2    39   Input ~ 0
 DD2
-$Comp
-L Selection-Interface-rescue:CY8C42_(48_TQFP) MP3
-U 1 1 599EC71E
-P 23700 17250
-F 0 "MP3" H 23700 17150 50  0000 C CNN
-F 1 "CY8C42_(48_TQFP)" H 23700 17350 50  0000 C CNN
-F 2 "Package_QFP:TQFP-48_7x7mm_P0.5mm" H 23700 17500 50  0001 C CNN
-F 3 "DOCUMENTATION" H 23700 17000 50  0001 C CNN
-	1    23700 17250
-	1    0    0    -1  
-$EndComp
 Text GLabel 22300 17800 0    39   Input ~ 0
 I2C0_SCL
 Text GLabel 23150 18300 3    39   Input ~ 0
 I2C0_SDA
 Text GLabel 23950 18300 3    39   Input ~ 0
-VDDD
-Text GLabel 23350 18300 3    39   Input ~ 0
+VDDIO
+Text GLabel 22300 17600 0    39   Input ~ 0
 VSSD
 Text GLabel 24150 16200 1    39   Input ~ 0
 VSSD
@@ -1455,25 +1433,25 @@ Text GLabel 22300 17400 0    39   Input ~ 0
 D47
 Text GLabel 22300 17500 0    39   Input ~ 0
 D48
-Text GLabel 23250 18700 3    39   Input ~ 0
-D49
-Text GLabel 23450 18850 3    39   Input ~ 0
-D50
 Text GLabel 23550 18300 3    39   Input ~ 0
-D51
+D49
 Text GLabel 23650 18300 3    39   Input ~ 0
-D52
+D50
 Text GLabel 23750 18300 3    39   Input ~ 0
-D53
+D51
 Text GLabel 23850 18300 3    39   Input ~ 0
-D54
+D52
 Text GLabel 24050 18300 3    39   Input ~ 0
-D55
+D53
 Text GLabel 24150 18300 3    39   Input ~ 0
-D56
+D54
 Text GLabel 24250 18300 3    39   Input ~ 0
-D57
+D55
 Text GLabel 25100 17800 2    39   Input ~ 0
+D56
+Text GLabel 25100 17700 2    39   Input ~ 0
+D57
+Text GLabel 25100 17600 2    39   Input ~ 0
 D58
 Text GLabel 25100 17100 2    39   Input ~ 0
 D63
@@ -1490,25 +1468,14 @@ D64
 Text GLabel 25100 16900 2    39   Input ~ 0
 SS1
 Text GLabel 25100 16800 2    39   Input ~ 0
-SS2
-$Comp
-L Selection-Interface-rescue:CY8C42_(48_TQFP) MP4
-U 1 1 599F47BA
-P 16850 17200
-F 0 "MP4" H 16850 17100 50  0000 C CNN
-F 1 "CY8C42_(48_TQFP)" H 16850 17300 50  0000 C CNN
-F 2 "Package_QFP:TQFP-48_7x7mm_P0.5mm" H 16850 17450 50  0001 C CNN
-F 3 "DOCUMENTATION" H 16850 16950 50  0001 C CNN
-	1    16850 17200
-	1    0    0    -1  
-$EndComp
+DD1
 Text GLabel 15450 17750 0    39   Input ~ 0
 I2C0_SCL
 Text GLabel 16300 18250 3    39   Input ~ 0
 I2C0_SDA
 Text GLabel 17100 18250 3    39   Input ~ 0
-VDDD
-Text GLabel 16500 18250 3    39   Input ~ 0
+VDDIO
+Text GLabel 15450 17550 0    39   Input ~ 0
 VSSD
 Text GLabel 17300 16150 1    39   Input ~ 0
 VSSD
@@ -1702,23 +1669,23 @@ Text GLabel 15450 17350 0    39   Input ~ 0
 D47
 Text GLabel 15450 17450 0    39   Input ~ 0
 D48
-Text GLabel 16600 18900 3    39   Input ~ 0
-D50P
-Text GLabel 16700 18250 3    39   Input ~ 0
-D51
 Text GLabel 16800 18250 3    39   Input ~ 0
-D52
+D50
 Text GLabel 16900 18250 3    39   Input ~ 0
-D53
+D51
 Text GLabel 17000 18250 3    39   Input ~ 0
-D54
+D52
 Text GLabel 17200 18250 3    39   Input ~ 0
-D55
+D53
 Text GLabel 17300 18250 3    39   Input ~ 0
-D56
+D54
 Text GLabel 17400 18250 3    39   Input ~ 0
-D57
+D55
 Text GLabel 18250 17750 2    39   Input ~ 0
+D56
+Text GLabel 18250 17650 2    39   Input ~ 0
+D57
+Text GLabel 18250 17550 2    39   Input ~ 0
 D58
 Text GLabel 18250 17050 2    39   Input ~ 0
 D63
@@ -1733,7 +1700,7 @@ D61
 Text GLabel 18250 16950 2    39   Input ~ 0
 D64
 Text GLabel 18250 16850 2    39   Input ~ 0
-DD1
+SS2
 Text GLabel 18250 16750 2    39   Input ~ 0
 DD2
 Text GLabel 24400 1750 0    39   Input ~ 0
@@ -2087,7 +2054,7 @@ Wire Wire Line
 Wire Wire Line
 	26350 5000 26350 5300
 Text GLabel 26450 950  1    39   Input ~ 0
-SS2
+DD1
 Text GLabel 26250 950  1    39   Input ~ 0
 SS1
 Text GLabel 24400 3650 0    39   Input ~ 0
@@ -2229,19 +2196,19 @@ Wire Wire Line
 Text GLabel 16900 800  1    39   Input ~ 0
 DD2
 Text GLabel 16700 800  1    39   Input ~ 0
-DD1
+SS2
 Text GLabel 26050 950  1    39   Input ~ 0
 DD2
 Text GLabel 25850 950  1    39   Input ~ 0
-DD1
-Text GLabel 3900 1800 0    39   Input ~ 0
 SS2
+Text GLabel 3900 1800 0    39   Input ~ 0
+DD1
 Text GLabel 3900 1900 0    39   Input ~ 0
 SS1
 Text GLabel 4400 1800 2    39   Input ~ 0
 DD2
 Text GLabel 4400 1900 2    39   Input ~ 0
-DD1
+SS2
 Text GLabel 3900 1600 0    39   Input ~ 0
 LocalGates
 Text GLabel 3900 1400 0    39   Input ~ 0
@@ -2447,13 +2414,13 @@ LocalGates
 Text GLabel 4300 5800 1    39   Input ~ 0
 BackGate
 Text GLabel 4800 5800 1    39   Input ~ 0
-SS2
+DD1
 Text GLabel 5300 5800 1    39   Input ~ 0
 SS1
 Text GLabel 5800 5800 1    39   Input ~ 0
 DD2
 Text GLabel 6300 5800 1    39   Input ~ 0
-DD1
+SS2
 Text GLabel 6800 5800 1    39   Input ~ 0
 IO1
 Text GLabel 7300 5800 1    39   Input ~ 0
@@ -3011,8 +2978,8 @@ Text GLabel 4350 4800 2    50   Input ~ 0
 SWDIO5
 Text GLabel 4350 4900 2    50   Input ~ 0
 SWDIO6
-Text GLabel 16400 18900 3    39   Input ~ 0
-D49P
+Text GLabel 16700 18250 3    39   Input ~ 0
+D49
 $Comp
 L Mechanical:MountingHole MH4
 U 1 1 5DA3CFD1
@@ -3033,6 +3000,39 @@ F 1 "CY8C4245AZI-M433(48_TQPF)" H 23700 11650 50  0000 C CNN
 F 2 "Package_QFP:TQFP-48_7x7mm_P0.5mm" H 23700 11550 50  0001 C CNN
 F 3 "" H 23700 11550 50  0001 C CNN
 	1    23700 11550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Custom_Schematic_Library:CY8C4245AZI-M433(48_TQPF) MP2
+U 1 1 5DAF5D07
+P 17100 11350
+F 0 "MP2" H 17100 11250 50  0000 C CNN
+F 1 "CY8C4245AZI-M433(48_TQPF)" H 17100 11500 50  0000 C CNN
+F 2 "Package_QFP:TQFP-48_7x7mm_P0.5mm" H 17100 11350 50  0001 C CNN
+F 3 "" H 17100 11350 50  0001 C CNN
+	1    17100 11350
+	1    0    0    -1  
+$EndComp
+$Comp
+L Custom_Schematic_Library:CY8C4245AZI-M433(48_TQPF) MP3
+U 1 1 5DB30235
+P 23700 17250
+F 0 "MP3" H 23700 17150 50  0000 C CNN
+F 1 "CY8C4245AZI-M433(48_TQPF)" H 23700 17350 50  0000 C CNN
+F 2 "Package_QFP:TQFP-48_7x7mm_P0.5mm" H 23700 17250 50  0001 C CNN
+F 3 "" H 23700 17250 50  0001 C CNN
+	1    23700 17250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Custom_Schematic_Library:CY8C4245AZI-M433(48_TQPF) MP4
+U 1 1 5DB85BD2
+P 16850 17200
+F 0 "MP4" H 16850 17100 50  0000 C CNN
+F 1 "CY8C4245AZI-M433(48_TQPF)" H 16850 17300 50  0000 C CNN
+F 2 "Package_QFP:TQFP-48_7x7mm_P0.5mm" H 16850 17200 50  0001 C CNN
+F 3 "" H 16850 17200 50  0001 C CNN
+	1    16850 17200
 	1    0    0    -1  
 $EndComp
 $EndSCHEMATC
