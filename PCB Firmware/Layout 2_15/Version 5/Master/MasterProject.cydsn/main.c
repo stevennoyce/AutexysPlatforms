@@ -1,3 +1,4 @@
+// === Imports ===
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -6,6 +7,22 @@
 
 
 
+// === Constants ===
+#define SELECTOR_COUNT (4u)
+#define CONTACT_COUNT (64u)
+#define CHANNEL_COUNT (34u)
+#define CONTACT_CONNECT_CODE (0xC0u)
+#define CONTACT_DISCONNECT_CODE (0xD1u)
+#define COMPLIANCE_CURRENT_LIMIT (10e-6)
+
+#define SELECTOR1_I2C_BUS_ADDRESS (0x66)
+#define SELECTOR2_I2C_BUS_ADDRESS (0x11)
+#define SELECTOR3_I2C_BUS_ADDRESS (0x44)
+#define SELECTOR4_I2C_BUS_ADDRESS (0x22)
+
+
+
+// === Struct definitions ===
 struct Selector_I2C_Struct {
 	struct {
 		uint8 subAddress;
@@ -19,15 +36,8 @@ struct Selector_I2C_Struct {
 };
 
 
-// Globals ----------------------------------------------
-#define SELECTOR_COUNT (4u)
-#define INTERMEDIATE_COUNT (4u)
-#define CONTACT_COUNT (64u)
-#define CHANNEL_COUNT (34u)
-#define CONTACT_CONNECT_CODE (0xC0u)
-#define CONTACT_DISCONNECT_CODE (0xD1u)
-#define COMPLIANCE_CURRENT_LIMIT (10e-6)
 
+// === Variables === 
 struct Selector_I2C_Struct selectors[SELECTOR_COUNT];
 char TransmitBuffer[USBUART_BUFFER_SIZE];
 
@@ -42,27 +52,37 @@ volatile uint8 UART_Rx_Position;
 volatile char USBUART_Receive_Buffer[USBUART_BUFFER_SIZE];
 volatile uint8 USBUART_Rx_Position;
 
+// TIA1 Properties
 enum TIA_resistor {R20K, R30K, R40K, R80K, R120K, R250K, R500K, R1000K};
 uint8 TIA1_Selected_Resistor = R20K;
-
 uint8 TIA1_Resistor_Codes[8] = {TIA_1_RES_FEEDBACK_20K, TIA_1_RES_FEEDBACK_30K, TIA_1_RES_FEEDBACK_40K, TIA_1_RES_FEEDBACK_80K, TIA_1_RES_FEEDBACK_120K, TIA_1_RES_FEEDBACK_250K, TIA_1_RES_FEEDBACK_500K, TIA_1_RES_FEEDBACK_1000K};
 float TIA1_Resistor_Values[8] = {20e3, 30e3, 40e3, 80e3, 120e3, 250e3, 500e3, 1e6};
 int32 TIA1_Offsets_uV[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 
-uint8 Compliance_Reached;
+// Setpoints for VGS and VDS (in the 16-bit format that the DACs use)
 int16 Vgs_Index_Goal_Relative;
 int16 Vds_Index_Goal_Relative;
+
+// Alert that maximum current limit has been exceeded
+uint8 Compliance_Reached;
 
 uint32 Current_Measurement_Sample_Count;
 
 bool uartSendingEnabled = true;
 bool usbuSendingEnabled = true;
 
+
+
+
+// === Section: Device Selectors & Communication ===
+
+// Print output message to USB and Bluetooth (if both are enabled)
 void sendTransmitBuffer() {
 	if (usbuSendingEnabled) USBUARTH_Send(TransmitBuffer, strlen(TransmitBuffer));
 	if (uartSendingEnabled) UART_1_PutString(TransmitBuffer);
 }
 
+// Set up the internal data structures that are used for communication with a device selector using I2C communication
 void Setup_Selector_I2C_Struct(struct Selector_I2C_Struct *selector) {
 	selector->write.subAddress = 1;
 	selector->read.subAddress = sizeof(selector->write) + 1;
@@ -75,6 +95,17 @@ void Setup_Selector_I2C_Struct(struct Selector_I2C_Struct *selector) {
 	}
 }
 
+// Set up communication data structures for all device selectors
+void Setup_Selectors() {
+	for (uint8 i = 0; i < SELECTOR_COUNT; i++) Setup_Selector_I2C_Struct(&selectors[i]);
+	
+	selectors[0].busAddress = SELECTOR1_I2C_BUS_ADDRESS;
+	selectors[1].busAddress = SELECTOR2_I2C_BUS_ADDRESS;
+	selectors[2].busAddress = SELECTOR3_I2C_BUS_ADDRESS;
+	selectors[3].busAddress = SELECTOR4_I2C_BUS_ADDRESS;
+}
+
+// Use I2C communication to tell a selector to update its connections
 void Update_Selector(uint8 selectori) {
 	sprintf(TransmitBuffer, "Updating Selector %u\r\n", selectori + 1);
 	sendTransmitBuffer();
@@ -83,6 +114,8 @@ void Update_Selector(uint8 selectori) {
 	
 	I2C_1_MasterClearStatus();
 	I2C_1_MasterWriteBuf(selector->busAddress, (uint8 *) &selector->write, sizeof(selector->write), I2C_1_MODE_COMPLETE_XFER);
+	
+	// Large for-loop that serves as a time-out in case communication fails
 	for (uint32 i = 0; i < 4e5; i++) {
 		if ((I2C_1_MasterStatus() & I2C_1_MSTAT_WR_CMPLT)) break;
 		if (i >= 4e5 - 1) {
@@ -105,161 +138,137 @@ void Update_Selector(uint8 selectori) {
 	// }
 	
 	if (I2C_1_MasterStatus() & I2C_1_MSTAT_ERR_XFER) {
-		sprintf(TransmitBuffer, "I2C Transfer Error! ");
-		sendTransmitBuffer();
-		
-		if (I2C_1_MasterStatus() & I2C_1_MSTAT_ERR_ADDR_NAK) {
-			sprintf(TransmitBuffer, "Type: NAK");
+		if(I2C_1_MSTAT_ERR_ADDR_NAK) {
+			sprintf(TransmitBuffer, "I2C Transfer Error! Type: NAK\r\n");
+			sendTransmitBuffer();
+		} else {
+			sprintf(TransmitBuffer, "I2C Transfer Error! \r\n");
 			sendTransmitBuffer();
 		}
-		
-		sprintf(TransmitBuffer, "\r\n");
-		sendTransmitBuffer();
 	}
 	
 	sprintf(TransmitBuffer, "Updated Selector %u\r\n", selectori + 1);
 	sendTransmitBuffer();
 }
 
-void Setup_Selectors() {
-	for (uint8 i = 0; i < SELECTOR_COUNT; i++) Setup_Selector_I2C_Struct(&selectors[i]);
-	
-	selectors[0].busAddress = 0x66;
-	selectors[1].busAddress = 0x11;
-	selectors[2].busAddress = 0x44;
-	selectors[3].busAddress = 0x22;
-}
-
-void Connect_Channel_On_Intermediate(uint8 channel, uint8 intermediate) {
+// CONNECT: Make a connection on one of the 34 channels in a device selector's analog mux
+void Connect_Channel_On_Selector(uint8 channel, uint8 selector_index) {
 	channel--;
-	intermediate--;
+	selector_index--;
 	
-	if (channel >= CHANNEL_COUNT) return;
-	if (intermediate >= INTERMEDIATE_COUNT) return;
+	if ((channel >= CHANNEL_COUNT) || (selector_index >= SELECTOR_COUNT)) return;
 	
-	selectors[intermediate].write.data[channel] = CONTACT_CONNECT_CODE;
-	Update_Selector(intermediate);
+	selectors[selector_index].write.data[channel] = CONTACT_CONNECT_CODE;
+	Update_Selector(selector_index);
 }
 
-void Disconnect_Channel_On_Intermediate(uint8 channel, uint8 intermediate) {
+// DISCONNECT: Break a connection on one of the 34 channels in a device selector's analog mux
+void Disconnect_Channel_On_Selector(uint8 channel, uint8 selector_index) {
 	channel--;
-	intermediate--;
+	selector_index--;
 	
-	if (channel >= CHANNEL_COUNT) return;
-	if (intermediate >= INTERMEDIATE_COUNT) return;
+	if ((channel >= CHANNEL_COUNT) || (selector_index >= SELECTOR_COUNT)) return;
 	
-	selectors[intermediate].write.data[channel] = CONTACT_DISCONNECT_CODE;
-	Update_Selector(intermediate);
+	selectors[selector_index].write.data[channel] = CONTACT_DISCONNECT_CODE;
+	Update_Selector(selector_index);
 }
 
-void Connect_Contact_To_Intermediate(uint8 contact, uint8 intermediate) {
+// CONNECT: Make a connection on one of the 32 device contact signals available to a device selector
+void Connect_Contact_To_Selector(uint8 contact, uint8 selector_index) {
 	contact--;
-	intermediate--;
+	selector_index--;
 	
-	if (contact >= CONTACT_COUNT) return;
-	if (intermediate >= INTERMEDIATE_COUNT) return;
+	if ((contact >= CONTACT_COUNT) || (selector_index >= SELECTOR_COUNT)) return;
 	
 	uint8 offset = 0;
-	if (intermediate >= INTERMEDIATE_COUNT/2) {
+	if (selector_index >= SELECTOR_COUNT/2) {
 		offset = CONTACT_COUNT/2;
-		if (contact < CONTACT_COUNT/2) return;
-	} else {
-		if (contact >= CONTACT_COUNT/2) return;
 	}
 	
-	Connect_Channel_On_Intermediate(contact - offset + 1, intermediate + 1);
+	if ((contact < offset) || (contact - offset >= CONTACT_COUNT/2)) return;
+	
+	Connect_Channel_On_Selector(contact - offset + 1, selector_index + 1);
 }
 
-void Disconnect_Contact_From_Intermediate(uint8 contact, uint8 intermediate) {
+// DISCONNECT: Break a connection on one of the 32 device contact signals available to a device selector
+void Disconnect_Contact_From_Selector(uint8 contact, uint8 selector_index) {
 	contact--;
-	intermediate--;
+	selector_index--;
 	
-	if (contact >= CONTACT_COUNT) return;
-	if (intermediate >= INTERMEDIATE_COUNT) return;
+	if ((contact >= CONTACT_COUNT) || (selector_index >= SELECTOR_COUNT)) return;
 	
 	uint8 offset = 0;
-	if (intermediate >= INTERMEDIATE_COUNT/2) {
+	if (selector_index >= SELECTOR_COUNT/2) {
 		offset = CONTACT_COUNT/2;
-		if (contact < CONTACT_COUNT/2) return;
-	} else {
-		if (contact >= CONTACT_COUNT/2) return;
 	}
 	
-	selectors[intermediate].write.data[contact - offset] = CONTACT_DISCONNECT_CODE;
-	
-	Update_Selector(intermediate);
+	Disconnect_Channel_On_Selector(contact - offset + 1, selector_index + 1);
 }
 
-void Disconnect_Contact_From_All_Intermediates(uint8 contact) {
-	contact--;
-	
-	for (uint8 intermediate = 0; intermediate < INTERMEDIATE_COUNT; intermediate++) {
-		
-		uint8 offset = 0;
-		if (intermediate >= INTERMEDIATE_COUNT/2) {
-			offset = CONTACT_COUNT/2;
-			if (contact < CONTACT_COUNT/2) continue;
-		} else {
-			if (contact >= CONTACT_COUNT/2) continue;
-		}
-		
-		selectors[intermediate].write.data[contact - offset] = CONTACT_DISCONNECT_CODE;
-		
-		Update_Selector(intermediate);
+// DISCONNECT: Break a specific contact connection on all device selectors
+void Disconnect_Contact_From_All_Selectors(uint8 contact) {
+	for (uint8 selector_index = 1; selector_index <= SELECTOR_COUNT; selector_index++) {
+		Disconnect_Contact_From_Selector(contact, selector_index);
 	}
 }
 
-void Disconnect_All_Contacts_From_All_Intermediates() {
-	for (uint8 intermediate = 0; intermediate < INTERMEDIATE_COUNT; intermediate++) {
-		for (uint8 contact = 0; contact < CONTACT_COUNT/2; contact++) {
-			selectors[intermediate].write.data[contact] = CONTACT_DISCONNECT_CODE;
-		}
-		
-		Update_Selector(intermediate);
-	}
-}
-
-void Disconnect_All_Contacts_From_Intermediate(uint8 intermediate) {
-	intermediate--;
+// DISCONNECT: Break all contact connections on a specific device selector (note: does not affect channel 33 or 34)
+void Disconnect_All_Contacts_From_Selector(uint8 selector_index) {
+	selector_index--;
 	
 	for (uint8 contact = 0; contact < CONTACT_COUNT/2; contact++) {
-		selectors[intermediate].write.data[contact] = CONTACT_DISCONNECT_CODE;
+		selectors[selector_index].write.data[contact] = CONTACT_DISCONNECT_CODE;
 	}
 	
-	Update_Selector(intermediate);
+	Update_Selector(selector_index);
 }
 
-void Connect_Intermediate(uint8 intermediate) {
-	switch (intermediate) {
-		case 1: Connect_Channel_On_Intermediate(33, 1); break;
-		case 2: Connect_Channel_On_Intermediate(33, 2); break;
-		case 3: Connect_Channel_On_Intermediate(33, 3); break;
-		case 4: Connect_Channel_On_Intermediate(33, 4); break;
+// DISCONNECT: Break all contact connections on all device selectors (note: does not affect channel 33 or 34)
+void Disconnect_All_Contacts_From_All_Selectors() {
+	for (uint8 selector_index = 1; selector_index <= SELECTOR_COUNT; selector_index++) {
+		Disconnect_All_Contacts_From_Selector(selector_index);
+	}
+}
+
+// CONNECT: Makes the connection on the source/drain-signal channel for a specific device selector
+void Connect_Selector(uint8 selector_index) {
+	switch (selector_index) {
+		case 1: Connect_Channel_On_Selector(33, 1); break;
+		case 2: Connect_Channel_On_Selector(33, 2); break;
+		case 3: Connect_Channel_On_Selector(33, 3); break;
+		case 4: Connect_Channel_On_Selector(33, 4); break;
 		default: return;
 	}
 }
 
-void Disconnect_Intermediate(uint8 intermediate) {
-	switch (intermediate) {
-		case 1: Disconnect_Channel_On_Intermediate(33, 1); break;
-		case 2: Disconnect_Channel_On_Intermediate(33, 2); break;
-		case 3: Disconnect_Channel_On_Intermediate(33, 3); break;
-		case 4: Disconnect_Channel_On_Intermediate(33, 4); break;
+// DISCONNECT: Breaks the connection on the drain/source-signal channel for a specific device selector
+void Disconnect_Selector(uint8 selector_index) {
+	switch (selector_index) {
+		case 1: Disconnect_Channel_On_Selector(33, 1); break;
+		case 2: Disconnect_Channel_On_Selector(33, 2); break;
+		case 3: Disconnect_Channel_On_Selector(33, 3); break;
+		case 4: Disconnect_Channel_On_Selector(33, 4); break;
 		default: return;
 	}
 }
 
-void Connect_Intermediates() {
-	for (uint8 i = 1; i <= INTERMEDIATE_COUNT; i++) {
-		Connect_Intermediate(i);
+// CONNECT: Connects the source/drain-signal channels to all device selectors
+void Connect_Selectors() {
+	for (uint8 i = 1; i <= SELECTOR_COUNT; i++) {
+		Connect_Selector(i);
 	}
 }
 
-void Disconnect_Intermediates() {
-	for (uint8 i = 1; i <= INTERMEDIATE_COUNT; i++) {
-		Disconnect_Intermediate(i);
+// CONNECT: Disconnects the source/drain-signal channels from all device selectors
+void Disconnect_Selectors() {
+	for (uint8 i = 1; i <= SELECTOR_COUNT; i++) {
+		Disconnect_Selector(i);
 	}
 }
+
+// === End Section: Device Selectors & Communication ===
+
+
 
 void TIA1_Set_Resistor(uint8 resistor) {
 	TIA1_Selected_Resistor = resistor;
@@ -920,11 +929,11 @@ void Scan(uint8 wide, uint8 loop) {
 		uint8 intermediate1 = 1;
 		uint8 intermediate2 = 2;
 		
-		Disconnect_All_Contacts_From_All_Intermediates();
+		Disconnect_All_Contacts_From_All_Selectors();
 		Zero_All_DACs();
-		Connect_Intermediates();
-		Connect_Contact_To_Intermediate(contact1, intermediate1);
-		Connect_Contact_To_Intermediate(contact2, intermediate2);
+		Connect_Selectors();
+		Connect_Contact_To_Selector(contact1, intermediate1);
+		Connect_Contact_To_Selector(contact2, intermediate2);
 		
 		sprintf(TransmitBuffer, "\r\n%u\r\n", device);
 		sendTransmitBuffer();
@@ -950,11 +959,11 @@ void Scan_Range(uint8 startDevice, uint8 stopDevice, uint8 wide, uint8 loop) {
 		uint8 intermediate1 = 1;
 		uint8 intermediate2 = 2;
 		
-		Disconnect_All_Contacts_From_All_Intermediates();
+		Disconnect_All_Contacts_From_All_Selectors();
 		Zero_All_DACs();
-		Connect_Intermediates();
-		Connect_Contact_To_Intermediate(contact1, intermediate1);
-		Connect_Contact_To_Intermediate(contact2, intermediate2);
+		Connect_Selectors();
+		Connect_Contact_To_Selector(contact1, intermediate1);
+		Connect_Contact_To_Selector(contact2, intermediate2);
 		
 		sprintf(TransmitBuffer, "\r\n%u\r\n", device);
 		sendTransmitBuffer();
@@ -1076,7 +1085,7 @@ int main(void) {
 	UART_1_PutString("\r\n# Starting\r\n");
 	
 	// Connect S1, S2, S3, S4 signals to the MUXes
-	Connect_Intermediates();
+	Connect_Selectors();
 	
 	// Prepare to receive commands from the host
 	newData = 0;
@@ -1229,49 +1238,49 @@ int main(void) {
 			if (strstr(ReceiveBuffer, "connect ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 contact = strtol(location, &location, 10);
-				uint8 intermediate = strtol(location, &location, 10);
-				Connect_Contact_To_Intermediate(contact, intermediate);
+				uint8 selector_index = strtol(location, &location, 10);
+				Connect_Contact_To_Selector(contact, selector_index);
 				
-				sprintf(TransmitBuffer, "# Connected %u to %u\r\n", contact, intermediate);
+				sprintf(TransmitBuffer, "# Connected %u to %u\r\n", contact, selector_index);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "connect-c ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 channel = strtol(location, &location, 10);
-				uint8 intermediate = strtol(location, &location, 10);
-				Connect_Channel_On_Intermediate(channel, intermediate);
+				uint8 selector_index = strtol(location, &location, 10);
+				Connect_Channel_On_Selector(channel, selector_index);
 				
-				sprintf(TransmitBuffer, "# Connected channel %u to %u\r\n", channel, intermediate);
+				sprintf(TransmitBuffer, "# Connected channel %u to %u\r\n", channel, selector_index);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "disconnect-c ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 channel = strtol(location, &location, 10);
-				uint8 intermediate = strtol(location, &location, 10);
-				Disconnect_Channel_On_Intermediate(channel, intermediate);
+				uint8 selector_index = strtol(location, &location, 10);
+				Disconnect_Channel_On_Selector(channel, selector_index);
 				
-				sprintf(TransmitBuffer, "# Disconnected channel %u from %u\r\n", channel, intermediate);
+				sprintf(TransmitBuffer, "# Disconnected channel %u from %u\r\n", channel, selector_index);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "disconnect ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 contact = strtol(location, &location, 10);
-				uint8 intermediate = strtol(location, &location, 10);
-				Disconnect_Contact_From_Intermediate(contact, intermediate);
+				uint8 selector_index = strtol(location, &location, 10);
+				Disconnect_Contact_From_Selector(contact, selector_index);
 				
-				sprintf(TransmitBuffer, "# Disonnected %u from %u\r\n", contact, intermediate);
+				sprintf(TransmitBuffer, "# Disonnected %u from %u\r\n", contact, selector_index);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "disconnect-all-from ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
-				uint8 intermediate = strtol(location, &location, 10);
-				Disconnect_All_Contacts_From_Intermediate(intermediate);
+				uint8 selector_index = strtol(location, &location, 10);
+				Disconnect_All_Contacts_From_Selector(selector_index);
 				
-				sprintf(TransmitBuffer, "# Disconnected all from  %u\r\n", intermediate);
+				sprintf(TransmitBuffer, "# Disconnected all from  %u\r\n", selector_index);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "disconnect-all-from-all ") == &ReceiveBuffer[0]) {
-				Disconnect_All_Contacts_From_All_Intermediates();
+				Disconnect_All_Contacts_From_All_Selectors();
 				
 				sprintf(TransmitBuffer, "# Disconnected all from all\r\n");
 				sendTransmitBuffer();
@@ -1279,37 +1288,37 @@ int main(void) {
 			if (strstr(ReceiveBuffer, "disconnect-from-all ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 contact = strtol(location, &location, 10);
-				Disconnect_Contact_From_All_Intermediates(contact);
+				Disconnect_Contact_From_All_Selectors(contact);
 				
 				sprintf(TransmitBuffer, "# Disconnected %u from all\r\n", contact);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "connect-intermediate ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
-				uint8 intermediate = strtol(location, &location, 10);
-				Connect_Intermediate(intermediate);
+				uint8 selector_index = strtol(location, &location, 10);
+				Connect_Selector(selector_index);
 				
-				sprintf(TransmitBuffer, "# Connected intermediate %u\r\n", intermediate);
+				sprintf(TransmitBuffer, "# Connected selector %u\r\n", selector_index);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "disconnect-intermediate ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
-				uint8 intermediate = strtol(location, &location, 10);
-				Disconnect_Intermediate(intermediate);
+				uint8 selector_index = strtol(location, &location, 10);
+				Disconnect_Selector(selector_index);
 				
-				sprintf(TransmitBuffer, "# Disconnected intermediate %u\r\n", intermediate);
+				sprintf(TransmitBuffer, "# Disconnected selector %u\r\n", selector_index);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "connect-intermediates ") == &ReceiveBuffer[0]) {
-				Connect_Intermediates();
+				Connect_Selectors();
 				
-				sprintf(TransmitBuffer, "# Connected intermediates\r\n");
+				sprintf(TransmitBuffer, "# Connected all selectors\r\n");
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "disconnect-intermediates ") == &ReceiveBuffer[0]) {
-				Disconnect_Intermediates();
+				Disconnect_Selectors();
 				
-				sprintf(TransmitBuffer, "# Disconnected intermediates\r\n");
+				sprintf(TransmitBuffer, "# Disconnected all selectors\r\n");
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "Set_Current_Measurement_Sample_Count ") == &ReceiveBuffer[0]) {
