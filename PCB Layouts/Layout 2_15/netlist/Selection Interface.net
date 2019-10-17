@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source "/Users/jaydoherty/Documents/myWorkspaces/Research/Autexys/AutexysPlatforms/PCB Layouts/Layout 2_15/Selection Interface.sch")
-    (date "Wednesday, October 16, 2019 at 01:30:58 AM")
+    (date "Thursday, October 17, 2019 at 05:19:42 PM")
     (tool "Eeschema (5.0.0-3-g5ebb6b6)")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -2208,7 +2208,7 @@
       (node (ref CPU2) (pin 92))
       (node (ref P7) (pin 1))
       (node (ref P6) (pin 11)))
-    (net (code 268) (name DD1)
+    (net (code 268) (name SS2)
       (node (ref MP1) (pin 35))
       (node (ref MP3) (pin 35))
       (node (ref CPU2) (pin 90))
@@ -2228,7 +2228,7 @@
       (node (ref MP2) (pin 11)))
     (net (code 271) (name "Net-(MP2-Pad15)")
       (node (ref MP2) (pin 15)))
-    (net (code 272) (name SS2)
+    (net (code 272) (name DD1)
       (node (ref MP4) (pin 34))
       (node (ref P11) (pin 1))
       (node (ref CPU2) (pin 96))

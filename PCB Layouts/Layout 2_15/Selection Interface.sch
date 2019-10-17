@@ -974,9 +974,9 @@ D32
 Text GLabel 25100 11200 2    39   Input ~ 0
 SS1
 Text GLabel 25100 11100 2    39   Input ~ 0
-DD1
+SS2
 Text GLabel 17300 800  1    39   Input ~ 0
-DD1
+SS2
 Text GLabel 17100 800  1    39   Input ~ 0
 SS1
 Text GLabel 15250 3500 0    39   Input ~ 0
@@ -1226,7 +1226,7 @@ D29
 Text GLabel 18500 11100 2    39   Input ~ 0
 D32
 Text GLabel 18500 11000 2    39   Input ~ 0
-SS2
+DD1
 Text GLabel 18500 10900 2    39   Input ~ 0
 DD2
 Text GLabel 22300 17800 0    39   Input ~ 0
@@ -1468,7 +1468,7 @@ D64
 Text GLabel 25100 16900 2    39   Input ~ 0
 SS1
 Text GLabel 25100 16800 2    39   Input ~ 0
-DD1
+SS2
 Text GLabel 15450 17750 0    39   Input ~ 0
 I2C0_SCL
 Text GLabel 16300 18250 3    39   Input ~ 0
@@ -1700,7 +1700,7 @@ D61
 Text GLabel 18250 16950 2    39   Input ~ 0
 D64
 Text GLabel 18250 16850 2    39   Input ~ 0
-SS2
+DD1
 Text GLabel 18250 16750 2    39   Input ~ 0
 DD2
 Text GLabel 24400 1750 0    39   Input ~ 0
@@ -2054,7 +2054,7 @@ Wire Wire Line
 Wire Wire Line
 	26350 5000 26350 5300
 Text GLabel 26450 950  1    39   Input ~ 0
-DD1
+SS2
 Text GLabel 26250 950  1    39   Input ~ 0
 SS1
 Text GLabel 24400 3650 0    39   Input ~ 0
@@ -2196,19 +2196,19 @@ Wire Wire Line
 Text GLabel 16900 800  1    39   Input ~ 0
 DD2
 Text GLabel 16700 800  1    39   Input ~ 0
-SS2
+DD1
 Text GLabel 26050 950  1    39   Input ~ 0
 DD2
 Text GLabel 25850 950  1    39   Input ~ 0
-SS2
-Text GLabel 3900 1800 0    39   Input ~ 0
 DD1
+Text GLabel 3900 1800 0    39   Input ~ 0
+SS2
 Text GLabel 3900 1900 0    39   Input ~ 0
 SS1
 Text GLabel 4400 1800 2    39   Input ~ 0
 DD2
 Text GLabel 4400 1900 2    39   Input ~ 0
-SS2
+DD1
 Text GLabel 3900 1600 0    39   Input ~ 0
 LocalGates
 Text GLabel 3900 1400 0    39   Input ~ 0
@@ -2414,13 +2414,13 @@ LocalGates
 Text GLabel 4300 5800 1    39   Input ~ 0
 BackGate
 Text GLabel 4800 5800 1    39   Input ~ 0
-DD1
+SS2
 Text GLabel 5300 5800 1    39   Input ~ 0
 SS1
 Text GLabel 5800 5800 1    39   Input ~ 0
 DD2
 Text GLabel 6300 5800 1    39   Input ~ 0
-SS2
+DD1
 Text GLabel 6800 5800 1    39   Input ~ 0
 IO1
 Text GLabel 7300 5800 1    39   Input ~ 0
