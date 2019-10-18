@@ -11,14 +11,24 @@
 #define SELECTOR_COUNT (4u)
 #define CONTACT_COUNT (64u)
 #define CHANNEL_COUNT (34u)
+
 #define CONTACT_CONNECT_CODE (0xC0u)
 #define CONTACT_DISCONNECT_CODE (0xD1u)
-#define COMPLIANCE_CURRENT_LIMIT (10e-6)
-
 #define SELECTOR1_I2C_BUS_ADDRESS (0x66)
 #define SELECTOR2_I2C_BUS_ADDRESS (0x11)
 #define SELECTOR3_I2C_BUS_ADDRESS (0x44)
 #define SELECTOR4_I2C_BUS_ADDRESS (0x22)
+#define SELECTOR_SIGNAL_CHANNEL (33)
+
+#define COMPLIANCE_CURRENT_LIMIT (10e-6)
+
+#define ADC_MEASUREMENT_CHUNKSIZE (19)
+#define SAR_MEASUREMENT_CHUNKSIZE (19)
+#define AUTO_RANGE_SAMPLECOUNT (3)
+#define AUTO_RANGE_DISCARDCOUNT (5)
+#define CURRENT_MEASUREMENT_SAMPLECOUNT (100)
+#define CURRENT_MEASUREMENT_DISCARDCOUNT (3)
+
 
 
 
@@ -82,7 +92,7 @@ void sendTransmitBuffer() {
 	if (uartSendingEnabled) UART_1_PutString(TransmitBuffer);
 }
 
-// Set up the internal data structures that are used for communication with a device selector using I2C communication
+// SETUP: initialize the internal data structures that are used for communication with a device selector using I2C communication
 void Setup_Selector_I2C_Struct(struct Selector_I2C_Struct *selector) {
 	selector->write.subAddress = 1;
 	selector->read.subAddress = sizeof(selector->write) + 1;
@@ -95,7 +105,7 @@ void Setup_Selector_I2C_Struct(struct Selector_I2C_Struct *selector) {
 	}
 }
 
-// Set up communication data structures for all device selectors
+// SETUP: set up all communication data structures for device selectors
 void Setup_Selectors() {
 	for (uint8 i = 0; i < SELECTOR_COUNT; i++) Setup_Selector_I2C_Struct(&selectors[i]);
 	
@@ -106,12 +116,14 @@ void Setup_Selectors() {
 }
 
 // Use I2C communication to tell a selector to update its connections
-void Update_Selector(uint8 selectori) {
-	sprintf(TransmitBuffer, "Updating Selector %u\r\n", selectori + 1);
+void Update_Selector(uint8 selector_index) {
+	sprintf(TransmitBuffer, "Updating Selector %u\r\n", selector_index + 1);
 	sendTransmitBuffer();
 	
-	struct Selector_I2C_Struct* selector = &selectors[selectori];
+	// Get reference to selector communication data structure for this selector index
+	struct Selector_I2C_Struct* selector = &selectors[selector_index];
 	
+	// Clear any previous alerts and send new communication onto the I2C bus
 	I2C_1_MasterClearStatus();
 	I2C_1_MasterWriteBuf(selector->busAddress, (uint8 *) &selector->write, sizeof(selector->write), I2C_1_MODE_COMPLETE_XFER);
 	
@@ -147,7 +159,7 @@ void Update_Selector(uint8 selectori) {
 		}
 	}
 	
-	sprintf(TransmitBuffer, "Updated Selector %u\r\n", selectori + 1);
+	sprintf(TransmitBuffer, "Updated Selector %u\r\n", selector_index + 1);
 	sendTransmitBuffer();
 }
 
@@ -233,10 +245,10 @@ void Disconnect_All_Contacts_From_All_Selectors() {
 // CONNECT: Makes the connection on the source/drain-signal channel for a specific device selector
 void Connect_Selector(uint8 selector_index) {
 	switch (selector_index) {
-		case 1: Connect_Channel_On_Selector(33, 1); break;
-		case 2: Connect_Channel_On_Selector(33, 2); break;
-		case 3: Connect_Channel_On_Selector(33, 3); break;
-		case 4: Connect_Channel_On_Selector(33, 4); break;
+		case 1: Connect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL, 1); break;
+		case 2: Connect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL, 2); break;
+		case 3: Connect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL, 3); break;
+		case 4: Connect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL, 4); break;
 		default: return;
 	}
 }
@@ -244,10 +256,10 @@ void Connect_Selector(uint8 selector_index) {
 // DISCONNECT: Breaks the connection on the drain/source-signal channel for a specific device selector
 void Disconnect_Selector(uint8 selector_index) {
 	switch (selector_index) {
-		case 1: Disconnect_Channel_On_Selector(33, 1); break;
-		case 2: Disconnect_Channel_On_Selector(33, 2); break;
-		case 3: Disconnect_Channel_On_Selector(33, 3); break;
-		case 4: Disconnect_Channel_On_Selector(33, 4); break;
+		case 1: Disconnect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL, 1); break;
+		case 2: Disconnect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL, 2); break;
+		case 3: Disconnect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL, 3); break;
+		case 4: Disconnect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL, 4); break;
 		default: return;
 	}
 }
@@ -270,11 +282,15 @@ void Disconnect_Selectors() {
 
 
 
+// === Section: ADC Range Selection ===
+
+// Change the feedback resistor used in current measurement circuit
 void TIA1_Set_Resistor(uint8 resistor) {
 	TIA1_Selected_Resistor = resistor;
 	TIA_1_SetResFB(TIA1_Resistor_Codes[resistor]);
 }
 
+// Shift feedback resistance to allow ADC to measure larger currents
 void ADC_Increase_Range() {
 	switch(TIA1_Selected_Resistor) {
 		case R20K: 	 break;
@@ -289,6 +305,7 @@ void ADC_Increase_Range() {
 	}
 }
 
+// Shift feedback resistance to allow ADC to measure smaller currents
 void ADC_Decrease_Range() {
 	switch(TIA1_Selected_Resistor) {
 		case R20K: 	 TIA1_Set_Resistor(R1000K); break;
@@ -303,6 +320,13 @@ void ADC_Decrease_Range() {
 	}
 }
 
+// === End Section: ADC Range Selection ===
+
+
+
+// === Section: ADC Measurement ===
+
+// HELPER: sort array so that we can take the median
 void sortArray(int32 array[], uint32 size) {
 	int32 temp;
 	// the following two loops sort the array x in ascending order
@@ -318,6 +342,7 @@ void sortArray(int32 array[], uint32 size) {
 	}
 }
 
+// HELPER: sort and get the median value of an array
 int32 medianOfArray(int32 array[], uint32 size) {
 	sortArray(array, size);
 	
@@ -330,12 +355,13 @@ int32 medianOfArray(int32 array[], uint32 size) {
 	}
 }
 
-// Measure Delta-Sigma ADC
+// MEASURE: Measure Delta-Sigma ADC
 void ADC_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCount) {
 	int32 ADC_Result = 0;
 	int32 ADC_SD = 0;
 	
-	uint32 medianArraySize = 19;
+	// Split measurements into chunks, taking the median of each chunk and averaging those medians for the final result
+	uint32 medianArraySize = ADC_MEASUREMENT_CHUNKSIZE;
 	if (sampleCount < medianArraySize) medianArraySize = sampleCount;
 	
 	uint32 medianCount = sampleCount/medianArraySize;
@@ -373,19 +399,29 @@ void ADC_Adjust_Range(uint32 sampleCount) {
 	}
 	
 	// If the range switches, discard a few measurements
-	ADC_Measure_uV(&ADC_Voltage, &ADC_Voltage_SD, 5);
+	ADC_Measure_uV(&ADC_Voltage, &ADC_Voltage_SD, AUTO_RANGE_DISCARDCOUNT);
 }
 
-// Measure SAR1 ADC
+// MEASURE: Measure SAR1 ADC
 void SAR1_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCount) {
 	int32 SAR_Result = 0;
 	int32 SAR_SD = 0;
 	
-	for (uint32 i = 1; i <= sampleCount; i++) {
-		ADC_SAR_1_StartConvert();
-		while (!ADC_SAR_1_IsEndConversion(ADC_SAR_1_RETURN_STATUS));
+	// Split measurements into chunks, taking the median of each chunk and averaging those medians for the final result
+	uint32 medianArraySize = SAR_MEASUREMENT_CHUNKSIZE;
+	if (sampleCount < medianArraySize) medianArraySize = sampleCount;
+	
+	uint32 medianCount = sampleCount/medianArraySize;
+	int32 medianArray[medianArraySize];
+	
+	for (uint32 i = 1; i <= medianCount; i++) {
+		for (uint32 j = 0; j < medianArraySize; j++) {
+			ADC_SAR_1_StartConvert();
+			while (!ADC_SAR_1_IsEndConversion(ADC_SAR_1_RETURN_STATUS));
+			medianArray[j] = ADC_SAR_1_CountsTo_uVolts(ADC_SAR_1_GetResult16());
+		}
 		
-		int32 SAR1_Result_Current = ADC_SAR_1_CountsTo_uVolts(ADC_SAR_1_GetResult16());
+		int32 SAR1_Result_Current = medianOfArray(medianArray, medianArraySize);
 		
 		SAR_SD += (float)(i-1)/(float)(i)*(SAR1_Result_Current - SAR_Result)*(SAR1_Result_Current - SAR_Result);
 		SAR_Result += ((float)SAR1_Result_Current - (float)SAR_Result)/(float)i;
@@ -395,16 +431,26 @@ void SAR1_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCoun
 	*standardDeviation = SAR_SD;
 }
 
-// Measure SAR2 ADC
+// MEASURE: Measure SAR2 ADC
 void SAR2_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCount) {
 	int32 SAR_Result = 0;
 	int32 SAR_SD = 0;
 	
-	for (uint32 i = 1; i <= sampleCount; i++) {
-		ADC_SAR_2_StartConvert();
-		while (!ADC_SAR_2_IsEndConversion(ADC_SAR_2_RETURN_STATUS));
+	// Split measurements into chunks, taking the median of each chunk and averaging those medians for the final result
+	uint32 medianArraySize = SAR_MEASUREMENT_CHUNKSIZE;
+	if (sampleCount < medianArraySize) medianArraySize = sampleCount;
+	
+	uint32 medianCount = sampleCount/medianArraySize;
+	int32 medianArray[medianArraySize];
+	
+	for (uint32 i = 1; i <= medianCount; i++) {
+		for (uint32 j = 0; j < medianArraySize; j++) {
+			ADC_SAR_2_StartConvert();
+			while (!ADC_SAR_2_IsEndConversion(ADC_SAR_2_RETURN_STATUS));
+			medianArray[j] = ADC_SAR_2_CountsTo_uVolts(ADC_SAR_2_GetResult16());
+		}
 		
-		int32 SAR2_Result_Current = ADC_SAR_2_CountsTo_uVolts(ADC_SAR_2_GetResult16());
+		int32 SAR2_Result_Current = medianOfArray(medianArray, medianArraySize);
 		
 		SAR_SD += (float)(i-1)/(float)(i)*(SAR2_Result_Current - SAR_Result)*(SAR2_Result_Current - SAR_Result);
 		SAR_Result += ((float)SAR2_Result_Current - (float)SAR_Result)/(float)i;
@@ -419,7 +465,7 @@ void Measure_Current_Vss(float* currentAverageIn, float* currentStdDevIn, uint32
 	Compliance_Reached = 0;
 		
 	// Auto-adjust the current range
-	ADC_Adjust_Range(3);
+	ADC_Adjust_Range(AUTO_RANGE_SAMPLECOUNT);
 	
 	// Voltage and its standard deviation (in uV)
 	int32 ADC_Voltage = 0;
@@ -433,10 +479,10 @@ void Measure_Current_Vss(float* currentAverageIn, float* currentStdDevIn, uint32
 	float TIA1_Feedback_R = TIA1_Resistor_Values[TIA1_Selected_Resistor];
 	int32 TIA1_Offset_uV = TIA1_Offsets_uV[TIA1_Selected_Resistor];
 	float unitConversion = -1.0e-6/TIA1_Feedback_R;
-	//unitConversion = -1.0e-6/100e6; //override internal TIA resistor value
+	//unitConversion = -1.0e-6/100e6; //override internal TIA resistor value here
 	
 	// Allow for the first measurement (normally not correct) to take place
-	ADC_Measure_uV(&ADC_Voltage, &ADC_Voltage_SD, 3);
+	ADC_Measure_uV(&ADC_Voltage, &ADC_Voltage_SD, CURRENT_MEASUREMENT_DISCARDCOUNT);
 	
 	// Now take the real measurement
 	if (checkCompliance) {
@@ -465,6 +511,12 @@ void Measure_Current_Vss(float* currentAverageIn, float* currentStdDevIn, uint32
 	*currentAverageIn = currentAverage;
 	*currentStdDevIn = currentStdDev;
 }
+
+// === End Section: ADC Measurement ===
+
+
+
+//
 
 uint8 At_Compliance() {
 	Compliance_Reached = 0;
