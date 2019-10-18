@@ -22,13 +22,18 @@
 
 #define COMPLIANCE_CURRENT_LIMIT (10e-6)
 
+// De-noising Parameters
 #define ADC_MEASUREMENT_CHUNKSIZE (19)
 #define SAR_MEASUREMENT_CHUNKSIZE (19)
 #define AUTO_RANGE_SAMPLECOUNT (3)
 #define AUTO_RANGE_DISCARDCOUNT (5)
-#define CURRENT_MEASUREMENT_SAMPLECOUNT (100)
 #define CURRENT_MEASUREMENT_DISCARDCOUNT (3)
+#define ADC_CALIBRATION_SAMPLECOUNT (300)
 
+// Primary Measurement Parameters
+#define DEFAULT_CURRENT_MEASUREMENT_SAMPLECOUNT (100)
+#define ADC_INCREASE_RANGE_THRESHOLD (870400)
+#define ADC_DECREASE_RANGE_THRESHOLD (10240)
 
 
 
@@ -388,11 +393,13 @@ void ADC_Adjust_Range(uint32 sampleCount) {
 	int32 ADC_Voltage = 0;
 	int32 ADC_Voltage_SD = 0;
 	
+	// Take ADC measurement to see what range we should be in
 	ADC_Measure_uV(&ADC_Voltage, &ADC_Voltage_SD, sampleCount);
 	
-	if(abs(ADC_Voltage) > 870400) {
+	// Determine if we need to change the range
+	if(abs(ADC_Voltage) > ADC_INCREASE_RANGE_THRESHOLD) {
 		ADC_Increase_Range();
-	} else if (abs(ADC_Voltage) < 10240) {
+	} else if (abs(ADC_Voltage) < ADC_DECREASE_RANGE_THRESHOLD) {
 		ADC_Decrease_Range();
 	} else {
 		return;
@@ -460,53 +467,59 @@ void SAR2_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCoun
 	*standardDeviation = SAR_SD;
 }
 
-// Measure current and compare it to some compliance value
-void Measure_Current_Vss(float* currentAverageIn, float* currentStdDevIn, uint32 sampleCount, uint8 checkCompliance) {
-	Compliance_Reached = 0;
-		
+// MEASURE: Measure drain current
+void Measure_Drain_Current(float* currentAverageIn, float* currentStdDevIn, uint32 sampleCount) {		
 	// Auto-adjust the current range
 	ADC_Adjust_Range(AUTO_RANGE_SAMPLECOUNT);
+	
+	// After auto-ranging completes, determine voltage-current conversion from the chosen feedback resistance 
+	float TIA1_Feedback_R = TIA1_Resistor_Values[TIA1_Selected_Resistor];
+	int32 TIA1_Offset_uV = TIA1_Offsets_uV[TIA1_Selected_Resistor];
+	float unitConversion = -1.0e-6/TIA1_Feedback_R;
+	//unitConversion = -1.0e-6/100e6; //override internal TIA resistor value here
 	
 	// Voltage and its standard deviation (in uV)
 	int32 ADC_Voltage = 0;
 	int32 ADC_Voltage_SD = 0;
 	
 	// Current and its standard deviation (in A)
-	float currentNow = 0;
 	float currentAverage = 0;
 	float currentStdDev = 0;
-	
-	float TIA1_Feedback_R = TIA1_Resistor_Values[TIA1_Selected_Resistor];
-	int32 TIA1_Offset_uV = TIA1_Offsets_uV[TIA1_Selected_Resistor];
-	float unitConversion = -1.0e-6/TIA1_Feedback_R;
-	//unitConversion = -1.0e-6/100e6; //override internal TIA resistor value here
 	
 	// Allow for the first measurement (normally not correct) to take place
 	ADC_Measure_uV(&ADC_Voltage, &ADC_Voltage_SD, CURRENT_MEASUREMENT_DISCARDCOUNT);
 	
-	// Now take the real measurement
-	if (checkCompliance) {
-		for (uint32 i = 1; i <= sampleCount; i++) {
-			ADC_Measure_uV(&ADC_Voltage, &ADC_Voltage_SD, 1);
-			
-			currentNow = unitConversion * (ADC_Voltage + TIA1_Offset_uV);
-			
-			currentStdDev += ((float)i-1.0)/(float)(i)*(currentNow - currentAverage)*(currentNow - currentAverage);
-			currentAverage += (currentNow - currentAverage)/(float)i;
-			
-			if (abs(currentNow) > COMPLIANCE_CURRENT_LIMIT) {
-				Compliance_Reached += 1;
-				break;
-			} else {
-				Compliance_Reached = 0;
-			}
-		}
-	} else {
-		ADC_Measure_uV(&ADC_Voltage, &ADC_Voltage_SD, sampleCount);
-			
-		currentAverage = unitConversion * (ADC_Voltage + TIA1_Offset_uV);
-		currentStdDev = unitConversion * (ADC_Voltage_SD + TIA1_Offset_uV);
-	}
+	// Now take the real ADC measurement
+	ADC_Measure_uV(&ADC_Voltage, &ADC_Voltage_SD, sampleCount);
+	
+	// Convert from ADC microvolts to a measurement of current in amperes (using the value of feedback resistance plus a calibration factor)
+	currentAverage = unitConversion * (ADC_Voltage + TIA1_Offset_uV);
+	currentStdDev = unitConversion * (ADC_Voltage_SD + TIA1_Offset_uV);
+	
+	*currentAverageIn = currentAverage;
+	*currentStdDevIn = currentStdDev;
+}
+
+// MEASURE: Measure gate current
+void Measure_Gate_Current(float* currentAverageIn, float* currentStdDevIn, uint32 sampleCount) {
+	// Determine voltage-current conversion from resistance being used in the measurement
+	float Vgs_DAC_Series_R = 1e6; //Vgs DAC has a permanent 1 megaohm current-limiting resistor
+	float unitConversion = 1.0e-6/Vgs_DAC_Series_R;
+	
+	// Voltage and its standard deviation (in uV)
+	int32 ADC_Voltage = 0;
+	int32 ADC_Voltage_SD = 0;
+	
+	// Current and its standard deviation (in A)
+	float currentAverage = 0;
+	float currentStdDev = 0;
+	
+	// Take the measurement
+	SAR1_Measure_uV(&ADC_Voltage, &ADC_Voltage_SD, sampleCount);
+	
+	// Convert from ADC microvolts to a measurement of current in amperes (using the value of series resistance)
+	currentAverage = unitConversion * (ADC_Voltage);
+	currentStdDev = unitConversion * (ADC_Voltage_SD);
 	
 	*currentAverageIn = currentAverage;
 	*currentStdDevIn = currentStdDev;
@@ -516,7 +529,7 @@ void Measure_Current_Vss(float* currentAverageIn, float* currentStdDevIn, uint32
 
 
 
-//
+// === Section: Handling Compliance ===
 
 uint8 At_Compliance() {
 	Compliance_Reached = 0;
@@ -524,7 +537,7 @@ uint8 At_Compliance() {
 	float current = 0;
 	float currentSD = 0;
 	
-	Measure_Current_Vss(&current, &currentSD, 3, 1);
+	Measure_Drain_Current(&current, &currentSD, 3);
 	
 	if (abs(current) > COMPLIANCE_CURRENT_LIMIT) {
 		Compliance_Reached = 1;
@@ -560,7 +573,13 @@ void Handle_Compliance_Breach() {
 	// To do: Should disconnect something or take some other action at this point since still at compliance
 }
 
-// Get the reference voltage in volts
+// === End Section: Handling Compliance ===
+
+
+
+// === Section: DAC Getting and Setting (with unit conversions) ===
+
+// GET: Get the reference voltage in volts
 float Get_Ref() {
 	float result = 4.080/255.0*VDAC_Ref_Data;
 	if (VDAC_Ref_CR0 & (VDAC_Ref_RANGE_1V & VDAC_Ref_RANGE_MASK)) {
@@ -569,7 +588,7 @@ float Get_Ref() {
 	return result;
 }
 
-// Get Vgs in volts
+// GET: Get Vgs in volts
 float Get_Vgs() {
 	float result = 4.080/255.0*VDAC_Vgs_Data - Get_Ref();
 	if (VDAC_Vgs_CR0 & (VDAC_Vgs_RANGE_1V & VDAC_Vgs_RANGE_MASK)) {
@@ -578,7 +597,7 @@ float Get_Vgs() {
 	return result;
 }
 
-// Get Vds in volts
+// GET: Get Vds in volts
 float Get_Vds() {
 	float result = 4.080/255.0*VDAC_Vds_Data - Get_Ref();
 	if (VDAC_Vds_CR0 & (VDAC_Vds_RANGE_1V & VDAC_Vds_RANGE_MASK)) {
@@ -587,9 +606,7 @@ float Get_Vds() {
 	return result;
 }
 
-
-// ****************************
-// Set the raw value of Vds
+// RAW: Set the raw value of Vds
 void Set_Vds_Raw(uint8 value) {
 	Vds_Index_Goal_Relative = (int16)value - (int16)VDAC_Ref_Data;
 	
@@ -618,7 +635,7 @@ void Set_Vds_Raw(uint8 value) {
 	VDAC_Vds_SetValue(value);
 }
 
-// Set the raw value of Vgs
+// RAW: Set the raw value of Vgs
 void Set_Vgs_Raw(uint8 value) {
 	Vgs_Index_Goal_Relative = (int16)value - (int16)VDAC_Ref_Data;
 	
@@ -647,7 +664,7 @@ void Set_Vgs_Raw(uint8 value) {
 	VDAC_Vgs_SetValue(value);
 }
 
-// Set the raw value of the reference voltage
+// RAW: Set the raw value of the reference voltage
 void Set_Ref_Raw(uint8 value) {
 	if (value < 6) value = 6;
 	
@@ -687,9 +704,8 @@ void Set_Ref_Raw(uint8 value) {
 	VDAC_Vgs_SetValue(new_Vgs);
 	VDAC_Vds_SetValue(new_Vds);
 }
-// ****************************
 
-// Set Vds and move the reference voltage if necessary
+// RELATIVE: Set Vds and move the reference voltage if necessary
 void Set_Vds_Rel(int16 value) {
 	if (value > 255) value = 255;
 	if (value < -255) value = -255;
@@ -725,7 +741,7 @@ void Set_Vds_Rel(int16 value) {
 	Set_Ref_Raw(newRefRaw);
 }
 
-// Set Vgs and move the reference voltage if necessary
+// RELATIVE: Set Vgs and move the reference voltage if necessary
 void Set_Vgs_Rel(int16 value) {
 	if (value > 255) value = 255;
 	if (value < -255) value = -255;
@@ -760,38 +776,38 @@ void Set_Vgs_Rel(int16 value) {
 	
 	Set_Ref_Raw(newRefRaw);
 }
-// ****************************
 
-// Set Vgs by volts (good for readability, but requires passing floats)
+// VOLTS: Set Vgs by volts (good for readability, but requires passing floats)
 void Set_Vgs(float voltage) {
 	Set_Vgs_Rel((voltage/4.080)*255.0);
 }
 
-// Set Vds by volts (good for readability, but requires passing floats)
+// VOLTS: Set Vds by volts (good for readability, but requires passing floats)
 void Set_Vds(float voltage) {
 	Set_Vds_Rel((voltage/4.080)*255.0);
 }
-// ****************************
 
-// Set Vgs by mV (good for passing in integers instead of floats)
+// MILLIVOLTS: Set Vgs by mV (good for passing in integers instead of floats)
 void Set_Vgs_mV(float mV) {
 	Set_Vgs(mV/1000.0);
 }
 
-// Set Vds by mV (good for passing in integers instead of floats)
+// MILLIVOLTS: Set Vds by mV (good for passing in integers instead of floats)
 void Set_Vds_mV(float mV) {
 	Set_Vds(mV/1000.0);
 }
-// ****************************
 
-// Set Vgs and Vds to 0
+// ZERO: Set Vgs and Vds to 0
 void Zero_All_DACs() {
-	Set_Vds_Raw(0);
-	Set_Vgs_Raw(0);
-	
-	VDAC_Vds_SetValue(0);
-	VDAC_Vgs_SetValue(0);
+	Set_Vds_Rel(0);
+	Set_Vgs_Rel(0);
 }
+
+// === End Section: DAC Getting and Setting (with unit conversions) ===
+
+
+
+// === Section: Calibration ===
 
 void Calibrate_ADC_Offset(uint32 sampleCount) {
 	uint8 current_range_resistor = TIA1_Selected_Resistor;
@@ -822,25 +838,40 @@ void Calibrate_ADC_Offset(uint32 sampleCount) {
 	sendTransmitBuffer();
 }
 
+// === End Section: Calibration ===
+
+
+
+// === Section: Device Measurement ===
+
 // Take a measurement of the system (Id - from delta-sigma ADC, Vgs, Vds, SAR1 ADC, SAR2 ADC)
 void Measure(uint32 deltaSigmaSampleCount, uint32 SAR1_SampleCount, uint32 SAR2_SampleCount) {
-	float IdsAverageAmps = 0;
-	float IdsSDAmps = 0;
+	float DrainCurrentAverageAmps = 0;
+	float DrainCurrentStdDevAmps = 0;
 	
-	Measure_Current_Vss(&IdsAverageAmps, &IdsSDAmps, deltaSigmaSampleCount, 0);
+	float GateCurrentAverageAmps = 0;
+	float GateCurrentStdDevAmps = 0;
 	
-	int32 SAR1_Average = 0;
-	int32 SAR1_SD = 0;
 	int32 SAR2_Average = 0;
 	int32 SAR2_SD = 0;
 	
-	SAR1_Measure_uV(&SAR1_Average, &SAR1_SD, SAR1_SampleCount);
-	SAR2_Measure_uV(&SAR2_Average, &SAR2_SD, SAR2_SampleCount);
+	// Measure drain current
+	if(deltaSigmaSampleCount > 0) {
+		Measure_Drain_Current(&DrainCurrentAverageAmps, &DrainCurrentStdDevAmps, deltaSigmaSampleCount);
+	}
 	
-	float SAR1 = (1e-6/1e6) * SAR1_Average;
+	// Measure gate current
+	if(SAR1_SampleCount > 0) {
+		Measure_Gate_Current(&GateCurrentAverageAmps, &GateCurrentStdDevAmps, SAR1_SampleCount)
+	}
+	
+	// Extra SAR (not currently being used)
+	if(SAR2_SampleCount > 0) {
+		SAR2_Measure_uV(&SAR2_Average, &SAR2_SD, SAR2_SampleCount);
+	}
 	float SAR2 = (1e-6) * SAR2_Average;
 	
-	sprintf(TransmitBuffer, "[%e,%f,%f,%e]\r\n", IdsAverageAmps, Get_Vgs(), Get_Vds(), SAR1);
+	sprintf(TransmitBuffer, "[%e,%f,%f,%e]\r\n", DrainCurrentAverageAmps, Get_Vgs(), Get_Vds(), GateCurrentAverageAmps);
 	sendTransmitBuffer();
 	//sprintf(TransmitBuffer, "[%d,%d,%d]\r\n", VDAC_Ref_Data, VDAC_Vds_Data, VDAC_Vgs_Data);
 	//sendTransmitBuffer();
@@ -849,7 +880,7 @@ void Measure(uint32 deltaSigmaSampleCount, uint32 SAR1_SampleCount, uint32 SAR2_
 // Repeatedly take measurements of the system
 void Measure_Multiple(uint32 n) {
 	for (uint32 i = 0; i < n; i++) {
-		Measure(100, 1, 10);
+		Measure(DEFAULT_CURRENT_MEASUREMENT_SAMPLECOUNT, DEFAULT_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
 	}
 }
 
@@ -860,7 +891,7 @@ void Measure_Sweep() {
 	
 	for (uint16 Vgsi = 0; Vgsi < 256; Vgsi++) {
 		VDAC_Vgs_SetValue(Vgsi);
-		Measure(100, 1, 1);
+		Measure(DEFAULT_CURRENT_MEASUREMENT_SAMPLECOUNT, DEFAULT_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
 	}
 }
 
@@ -1031,6 +1062,12 @@ void Scan_Range(uint8 startDevice, uint8 stopDevice, uint8 wide, uint8 loop) {
 	}
 }
 
+// === End Section: Device Measurement ===
+
+
+
+// === Section: USB/Bluetooth Communication Handler Definition ===
+
 CY_ISR (CommunicationHandlerISR) {
 	if (USBUARTH_DataIsReady()) {
 		// USBUARTH_Receive_Until(UART_Receive_Buffer, USBUART_BUFFER_SIZE, "\r");
@@ -1101,42 +1138,53 @@ CY_ISR (CommunicationHandlerISR) {
 	CommunicationTimer_ReadStatusRegister();
 }
 
+// === End Section: USB/Bluetooth Communication Handler Definition ===
+
+
+
+// === === Program Start Point === ===
+
 int main(void) {
 	CyGlobalIntEnable;
 	
-	//Setup communication to the MUXes
+	// Setup data structures for communication to the device selectors
 	Setup_Selectors();
 	
-	//Start USB Interface
+	// Start USB Interface
 	USBUART_Start(0u, USBUART_5V_OPERATION);
 	UART_1_Start();
 	
-	//Start All DACs, ADCs, and TIAs
+	// Start communication with device selectors
+	I2C_1_Start();
+	
+	// Start All DACs, ADCs, and TIAs
 	VDAC_Vds_Start();
 	VDAC_Vgs_Start();
 	VDAC_Ref_Start();
 	ADC_DelSig_1_Start();
-	TIA_1_Start();
-	I2C_1_Start();
 	ADC_SAR_1_Start();
 	ADC_SAR_2_Start();
+	TIA_1_Start();
 	
-	//Start the op-amp buffers
+	// Start the op-amp buffers
 	Opamp_1_Start();
 	Opamp_2_Start();
 	Opamp_3_Start();
 	Opamp_4_Start();
 	
-	//Tell the ADC to begin sampling continuously
+	// Tell the ADC to begin sampling continuously
 	ADC_DelSig_1_StartConvert();
 	
+	// Delay to give all components time to activate
 	CyDelay(1000);
 	
 	// === All components now active ===
 	
+	
+	
 	UART_1_PutString("\r\n# Starting\r\n");
 	
-	// Connect S1, S2, S3, S4 signals to the MUXes
+	// Connect SS1 and DD1 to the analog MUXes of any device selector they are routed to
 	Connect_Selectors();
 	
 	// Prepare to receive commands from the host
@@ -1145,15 +1193,20 @@ int main(void) {
 	USBUART_Rx_Position = 0;
 	
 	CommunicationTimer_Start();
+	
+	// Activate USB/Bluetooth communication interrupt handler
 	CommunicationInterrupt_StartEx(CommunicationHandlerISR);
 	
 	// === Ready to receive commands ===
 	
-	//Calibrate Delta-Sigma ADC and set initial current range
-	Calibrate_ADC_Offset(300);
+	
+	
+	// Calibrate Delta-Sigma ADC and set initial current range
+	Calibrate_ADC_Offset(ADC_CALIBRATION_SAMPLECOUNT);
 	TIA1_Set_Resistor(TIA1_Selected_Resistor);
 	
-	Current_Measurement_Sample_Count = 100;
+	// Start with default measurement sample count (can be changed while running)
+	Current_Measurement_Sample_Count = DEFAULT_CURRENT_MEASUREMENT_SAMPLECOUNT;
 	
 	while (1) {
 		G_Stop = 0;
@@ -1166,7 +1219,7 @@ int main(void) {
 			newData = 0;
 			
 			if (strstr(ReceiveBuffer, "measure ") == &ReceiveBuffer[0]) {
-				Measure(100, 100, 10);
+				Measure(DEFAULT_CURRENT_MEASUREMENT_SAMPLECOUNT, DEFAULT_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
 			} else 
 			if (strstr(ReceiveBuffer, "measure-multiple ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
@@ -1184,7 +1237,7 @@ int main(void) {
 				Measure_Gate_Sweep(1);
 			} else 
 			if (strstr(ReceiveBuffer, "calibrate-offset ") == &ReceiveBuffer[0]) {
-				Calibrate_ADC_Offset(300);
+				Calibrate_ADC_Offset(ADC_CALIBRATION_SAMPLECOUNT);
 			} else
 			if (strstr(ReceiveBuffer, "set-vgs-raw ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
@@ -1411,6 +1464,8 @@ int main(void) {
 			}
 		}
 		
-		//for (uint8 i = 0; i < SELECTOR_COUNT; i++) Update_Selector(i);
+		// Loop continuously
 	}
+	
+	// End of main method
 }
