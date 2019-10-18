@@ -856,7 +856,7 @@ void Measure_Multiple(uint32 n) {
 }
 
 // SWEEP: simplest version of a gate sweep, with options for speed and forward/reverse directions
-void Simple_Gate_Sweep(int16 Vgs_imin, int16 Vgs_imax, int16 speed, uint8 direction) {
+void Indexed_Gate_Sweep(int16 Vgs_imin, int16 Vgs_imax, int16 speed, uint8 direction) {	
 	if(!direction) {
 		for (int16 Vgsi = Vgs_imin; Vgsi <= Vgs_imax; Vgsi += speed) {
 			Set_Vgs_Rel(Vgsi);
@@ -870,22 +870,43 @@ void Simple_Gate_Sweep(int16 Vgs_imin, int16 Vgs_imax, int16 speed, uint8 direct
 	}
 }
 
+// SWEEP: gate sweep which does unit coversions for voltage and 
+void Voltage_Gate_Sweep(float Vgs_min, float Vgs_max, int16 steps, uint8 direction) {	
+	float increment = (Vgs_max - Vgs_min)/((float)steps);
+	float gateVoltage = 0;
+	
+	if(!direction) {
+		gateVoltage = Vgs_min;
+		for (int16 i = 1; i <= steps; i++) {
+			Set_Vgs(gateVoltage);
+			Measure(DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT, GATE_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
+			gateVoltage += increment;
+		}
+	} else {
+		gateVoltage = Vgs_max;
+		for (int16 i = 1; i <= steps; i++) {
+			Set_Vgs(gateVoltage);
+			Measure(DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT, GATE_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
+			gateVoltage -= increment;
+		}
+	}
+}
+
 // SWEEP: Take a basic gate sweep (using default Vds and Vgs range)
 void Measure_Gate_Sweep(uint8 loop) {
-	int16 imin = -200;
-	int16 imax = 200;
-	int16 speed = 1;
+	int16 vgs_min = -3;
+	int16 vgs_max = 3;
 	
 	// Ramp to initial Vds and Vgs
 	Set_Vds(0.5);
-	Set_Vgs_Rel(imin);
+	Set_Vgs(vgs_min);
 	
 	// Forward sweep
-	Simple_Gate_Sweep(imin, imax, speed, 0);
+	Voltage_Gate_Sweep(vgs_min, vgs_max, 100, 0);
 	
 	// Reverse sweep (optional)
 	if(loop) {
-		Simple_Gate_Sweep(imin, imax, speed, 1);
+		Indexed_Gate_Sweep(vgs_min, vgs_max, 100, 1);
 	}
 	
 	// Ground gate and drain when done
@@ -901,9 +922,9 @@ void Measure_Full_Gate_Sweep(int16 speed, uint8 wide, uint8 loop) {
 	// If not a wide sweep, restrict Vgs to the acceptable range that will not override Vds
 	if(!wide) {
 		if(Vds_Index_Goal_Relative > 0) {
-			imax = imax - Vds_Index_Goal_Relative;
+			imin = imin + Vds_Index_Goal_Relative;
 		} else {
-			imin = imin - Vds_Index_Goal_Relative;
+			imax = imax + Vds_Index_Goal_Relative;
 		}
 	} 
 	
@@ -912,7 +933,7 @@ void Measure_Full_Gate_Sweep(int16 speed, uint8 wide, uint8 loop) {
 	
 	// Begin sweep
 	for (uint8 l = 0; l <= loop; l++) {
-		Simple_Gate_Sweep(imin, imax, speed, l%2);
+		Indexed_Gate_Sweep(imin, imax, speed, l%2);
 	}
 	
 	// Ground gate when done
