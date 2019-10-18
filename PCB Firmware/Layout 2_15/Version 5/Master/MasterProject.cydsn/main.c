@@ -23,16 +23,16 @@
 #define COMPLIANCE_CURRENT_LIMIT (10e-6)
 
 // De-noising Parameters
-#define ADC_MEASUREMENT_CHUNKSIZE (19)
-#define SAR_MEASUREMENT_CHUNKSIZE (19)
+#define ADC_MEASUREMENT_CHUNKSIZE (5)
+#define SAR_MEASUREMENT_CHUNKSIZE (5)
+#define CURRENT_MEASUREMENT_DISCARDCOUNT (3)
 #define AUTO_RANGE_SAMPLECOUNT (3)
 #define AUTO_RANGE_DISCARDCOUNT (5)
-#define CURRENT_MEASUREMENT_DISCARDCOUNT (3)
 #define ADC_CALIBRATION_SAMPLECOUNT (300)
 
 // Primary Measurement Parameters
 #define DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT (100)
-#define GATE_CURRENT_MEASUREMENT_SAMPLECOUNT (100)
+#define GATE_CURRENT_MEASUREMENT_SAMPLECOUNT (50)
 #define ADC_INCREASE_RANGE_THRESHOLD (870400)
 #define ADC_DECREASE_RANGE_THRESHOLD (10240)
 
@@ -861,7 +861,7 @@ void Measure(uint32 deltaSigmaSampleCount, uint32 SAR1_SampleCount, uint32 SAR2_
 	
 	// Measure gate current
 	if(SAR1_SampleCount > 0) {
-		Measure_Gate_Current(&GateCurrentAverageAmps, &GateCurrentStdDevAmps, SAR1_SampleCount)
+		Measure_Gate_Current(&GateCurrentAverageAmps, &GateCurrentStdDevAmps, SAR1_SampleCount);
 	}
 	
 	// Extra SAR (not currently being used)
@@ -907,9 +907,9 @@ void Measure_Full_Gate_Sweep(int8 speed, uint8 wide, uint8 loop) {
 	// If not a wide sweep, restrict Vgs to the acceptable range that will not override Vds
 	if(!wide) {
 		if(Vds_Index_Goal_Relative > 0) {
-			imax = imax - Vds_Index_Goal_Relative
+			imax = imax - Vds_Index_Goal_Relative;
 		} else {
-			imin = imin - Vds_Index_Goal_Relative
+			imin = imin - Vds_Index_Goal_Relative;
 		}
 	} 
 	
@@ -924,7 +924,7 @@ void Measure_Full_Gate_Sweep(int8 speed, uint8 wide, uint8 loop) {
 	// Begin sweep
 	for (uint8 l = 0; l <= loop; l++) {
 		if (l%2 == 0) {	
-			direction = speed
+			direction = speed;
 			istart = imin;
 			istop = imax;
 			
