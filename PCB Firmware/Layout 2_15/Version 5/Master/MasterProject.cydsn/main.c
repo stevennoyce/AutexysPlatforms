@@ -388,6 +388,7 @@ void ADC_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCount
 	*standardDeviation = ADC_SD;
 }
 
+// RANGE: take a test measurement of the delta-sigma ADC and adjust its range if necessary
 void ADC_Adjust_Range(uint32 sampleCount) {
 	int32 ADC_Voltage = 0;
 	int32 ADC_Voltage_SD = 0;
@@ -615,18 +616,6 @@ void Set_Vds_Raw(uint8 value) {
 	
 	// Ramp up to the Vds value
 	for (uint8 i = istart; i != value; i += increment) {
-		if (At_Compliance()) {
-			for (uint8 j = i; j != istart; j -= increment) {
-				VDAC_Vds_SetValue(j);
-				
-				if (!At_Compliance()) return;
-			}
-			if (At_Compliance()) {
-				Handle_Compliance_Breach();
-				return;
-			}
-		}
-		
 		VDAC_Vds_SetValue(i);
 	}
 	
@@ -644,18 +633,6 @@ void Set_Vgs_Raw(uint8 value) {
 	
 	// Ramp up to the Vgs value
 	for (uint8 i = istart; i != value; i += increment) {
-		if (At_Compliance()) {
-			for (uint8 j = i; j != istart; j -= increment) {
-				VDAC_Vgs_SetValue(j);
-				
-				if (!At_Compliance()) return;
-			}
-			if (At_Compliance()) {
-				Handle_Compliance_Breach();
-				return;
-			}
-		}
-		
 		VDAC_Vgs_SetValue(i);
 	}
 	
@@ -671,10 +648,7 @@ void Set_Ref_Raw(uint8 value) {
 	if (value < VDAC_Ref_Data) increment = -1;
 	
 	// Ramp up to the Reference value
-	for (uint8 i = VDAC_Ref_Data; i != value; i += increment) {
-		
-		if (At_Compliance()) return;
-		
+	for (uint8 i = VDAC_Ref_Data; i != value; i += increment) {		
 		int16 new_Vgs = (int16)i + Vgs_Index_Goal_Relative;
 		int16 new_Vds = (int16)i + Vds_Index_Goal_Relative;
 		
@@ -872,8 +846,6 @@ void Measure(uint32 deltaSigmaSampleCount, uint32 SAR1_SampleCount, uint32 SAR2_
 	
 	sprintf(TransmitBuffer, "[%e,%f,%f,%e]\r\n", DrainCurrentAverageAmps, Get_Vgs(), Get_Vds(), GateCurrentAverageAmps);
 	sendTransmitBuffer();
-	//sprintf(TransmitBuffer, "[%d,%d,%d]\r\n", VDAC_Ref_Data, VDAC_Vds_Data, VDAC_Vgs_Data);
-	//sendTransmitBuffer();
 }
 
 // MULTIPLE: Repeatedly take measurements of the system
@@ -883,15 +855,37 @@ void Measure_Multiple(uint32 n) {
 	}
 }
 
+// SWEEP: simplest version of a gate sweep, with options for speed and forward/reverse directions
+void Simple_Gate_Sweep(int16 Vgs_imin, int16 Vgs_imax, int16 speed, uint8 direction) {
+	if(!direction) {
+		for (int16 Vgsi = Vgs_imin; Vgsi <= Vgs_imax; Vgsi += speed) {
+			Set_Vgs_Rel(Vgsi);
+			Measure(DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT, GATE_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
+		}
+	} else {
+		for (int16 Vgsi = Vgs_imax; Vgsi >= Vgs_imin; Vgsi -= speed) {
+			Set_Vgs_Rel(Vgsi);
+			Measure(DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT, GATE_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
+		}
+	}
+}
+
 // SWEEP: Take a basic gate sweep (using default Vds and Vgs range)
-void Measure_Sweep() {
-	Set_Vds(0.5);
-	Set_Vgs_Rel(-200);
+void Measure_Gate_Sweep(uint8 loop) {
+	int16 imin = -200;
+	int16 imax = 200;
+	int16 speed = 1;
 	
-	// Fixed loop
-	for (int16 Vgsi = -200; Vgsi <= 200; Vgsi++) {
-		Set_Vgs_Rel(Vgsi);
-		Measure(DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT, GATE_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
+	// Ramp to initial Vds and Vgs
+	Set_Vds(0.5);
+	Set_Vgs_Rel(imin);
+	
+	// Forward sweep
+	Simple_Gate_Sweep(imin, imax, speed, 0);
+	
+	// Reverse sweep (optional)
+	if(loop) {
+		Simple_Gate_Sweep(imin, imax, speed, 1);
 	}
 	
 	// Ground gate and drain when done
@@ -900,7 +894,7 @@ void Measure_Sweep() {
 }
 
 // SWEEP: Measure the full range of Vgs
-void Measure_Full_Gate_Sweep(int8 speed, uint8 wide, uint8 loop) {	
+void Measure_Full_Gate_Sweep(int16 speed, uint8 wide, uint8 loop) {	
 	int16 imax = 255;
 	int16 imin = -255;
 	
@@ -916,36 +910,9 @@ void Measure_Full_Gate_Sweep(int8 speed, uint8 wide, uint8 loop) {
 	// Put the reference as positive as possible (so we can start at very negative Vgs)
 	Set_Ref_Raw(imax);
 	
-	// Define direction, istart, istop
-	int8 direction = speed;
-	uint8 istart = imin;
-	uint8 istop = imax;
-	
 	// Begin sweep
 	for (uint8 l = 0; l <= loop; l++) {
-		if (l%2 == 0) {	
-			direction = speed;
-			istart = imin;
-			istop = imax;
-			
-			// Forward Sweep
-			for (uint8 i = istart; i < istop; i += direction) {
-				Set_Vgs_Rel(i);
-				Measure(DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT, GATE_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
-			}
-		} else { 		
-			direction = -1*speed;
-			istart = imax;
-			istop = imin;
-			
-			// Reverse Sweep
-			for (uint8 i = istart; i > istop; i += direction) {
-				Set_Vgs_Rel(i);	
-				Measure(DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT, GATE_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
-			}
-		}
-		if (G_Stop) break;
-		while (G_Pause);
+		Simple_Gate_Sweep(imin, imax, speed, l%2);
 	}
 	
 	// Ground gate when done
@@ -1159,12 +1126,12 @@ int main(void) {
 				Measure_Multiple(n);
 			} else 
 			if (strstr(ReceiveBuffer, "measure-sweep ") == &ReceiveBuffer[0]) {
-				Measure_Sweep();
+				Measure_Gate_Sweep(0);
 			} else 
-			if (strstr(ReceiveBuffer, "measure-gate-sweep ") == &ReceiveBuffer[0]) {
+			if (strstr(ReceiveBuffer, "measure-full-gate-sweep ") == &ReceiveBuffer[0]) {
 				Measure_Full_Gate_Sweep(16, 0, 0);
 			} else 
-			if (strstr(ReceiveBuffer, "measure-gate-sweep-loop ") == &ReceiveBuffer[0]) {
+			if (strstr(ReceiveBuffer, "measure-full-gate-sweep-loop ") == &ReceiveBuffer[0]) {
 				Measure_Full_Gate_Sweep(16, 0, 1);
 			} else 
 			if (strstr(ReceiveBuffer, "calibrate-offset ") == &ReceiveBuffer[0]) {
