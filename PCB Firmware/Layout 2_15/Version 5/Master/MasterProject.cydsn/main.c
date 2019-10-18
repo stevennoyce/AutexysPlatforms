@@ -31,7 +31,8 @@
 #define ADC_CALIBRATION_SAMPLECOUNT (300)
 
 // Primary Measurement Parameters
-#define DEFAULT_CURRENT_MEASUREMENT_SAMPLECOUNT (100)
+#define DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT (100)
+#define GATE_CURRENT_MEASUREMENT_SAMPLECOUNT (100)
 #define ADC_INCREASE_RANGE_THRESHOLD (870400)
 #define ADC_DECREASE_RANGE_THRESHOLD (10240)
 
@@ -80,8 +81,6 @@ int16 Vds_Index_Goal_Relative;
 
 // Alert that maximum current limit has been exceeded
 uint8 Compliance_Reached;
-
-uint32 Current_Measurement_Sample_Count;
 
 bool uartSendingEnabled = true;
 bool usbuSendingEnabled = true;
@@ -844,7 +843,7 @@ void Calibrate_ADC_Offset(uint32 sampleCount) {
 
 // === Section: Device Measurement ===
 
-// Take a measurement of the system (Id - from delta-sigma ADC, Vgs, Vds, SAR1 ADC, SAR2 ADC)
+// SINGLE: Take a measurement of the system (Id - from delta-sigma ADC, Vgs, Vds, SAR1 ADC, SAR2 ADC)
 void Measure(uint32 deltaSigmaSampleCount, uint32 SAR1_SampleCount, uint32 SAR2_SampleCount) {
 	float DrainCurrentAverageAmps = 0;
 	float DrainCurrentStdDevAmps = 0;
@@ -877,161 +876,83 @@ void Measure(uint32 deltaSigmaSampleCount, uint32 SAR1_SampleCount, uint32 SAR2_
 	//sendTransmitBuffer();
 }
 
-// Repeatedly take measurements of the system
+// MULTIPLE: Repeatedly take measurements of the system
 void Measure_Multiple(uint32 n) {
 	for (uint32 i = 0; i < n; i++) {
-		Measure(DEFAULT_CURRENT_MEASUREMENT_SAMPLECOUNT, DEFAULT_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
+		Measure(DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT, GATE_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
 	}
 }
 
-// Take a basic gate sweep (hardcoded voltages, hardcoded number of data points)
+// SWEEP: Take a basic gate sweep (using default Vds and Vgs range)
 void Measure_Sweep() {
-	VDAC_Vds_SetValue(90);
-	VDAC_Vgs_SetValue(254);
+	Set_Vds(0.5);
+	Set_Vgs_Rel(-200);
 	
-	for (uint16 Vgsi = 0; Vgsi < 256; Vgsi++) {
-		VDAC_Vgs_SetValue(Vgsi);
-		Measure(DEFAULT_CURRENT_MEASUREMENT_SAMPLECOUNT, DEFAULT_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
+	// Fixed loop
+	for (int16 Vgsi = -200; Vgsi <= 200; Vgsi++) {
+		Set_Vgs_Rel(Vgsi);
+		Measure(DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT, GATE_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
 	}
+	
+	// Ground gate and drain when done
+	Set_Vds(0);
+	Set_Vgs(0);
 }
 
-void Measure_Gate_Sweep(uint8 loop) {
+// SWEEP: Measure the full range of Vgs
+void Measure_Full_Gate_Sweep(int8 speed, uint8 wide, uint8 loop) {	
+	int16 imax = 255;
+	int16 imin = -255;
 	
-	if (Vds_Index_Goal_Relative > 0) {
-		Set_Ref_Raw(254 - Vds_Index_Goal_Relative);
-	} else {
-		Set_Ref_Raw(254);
-	}
-	
-	int8 speed = 16;
-	
-	for (uint8 l = 0; l <= loop; l++) {
-		int8 direction = 1*speed;
-		uint8 istart = 0;
-		if (Vds_Index_Goal_Relative < 0) {
-			istart = -Vds_Index_Goal_Relative;
-		}
-		
-		uint8 istop = 256-speed;
-		
-		if (l%2 == 1) {
-			direction = -1*speed;
-			istart = 256-speed;
-			istop = 0;
-		}
-		
-		for (uint8 i = istart; i != istop; i += direction) {
-			for (uint8 j = 0; j <= 1; j++) {
-				if (j == 1) Set_Ref_Raw(254 - i + 1);
-				Set_Vgs_Raw(i);
-				
-				Measure(33, 1, 1);
-				
-				if (G_Stop) break;
-				while (G_Pause);
-			}
-		}
-	}
-}
-
-void Measure_Wide_Gate_Sweep(uint8 loop) {
-	Set_Ref_Raw(254);
-	
-	int8 speed = 16;
-	
-	for (uint8 l = 0; l <= loop; l++) {
-		int8 direction = 1*speed;
-		uint8 istart = 0;
-		uint8 istop = 256-speed;
-		
-		if (l%2 == 1) {
-			direction = -1*speed;
-			istart = 256-speed;
-			istop = 0;
-		}
-		
-		for (uint8 i = istart; i != istop; i += direction) {
-			for (uint8 j = 0; j <= 1; j++) {
-				
-				if (j == 1) Set_Ref_Raw(254 - i + 1);
-				Set_Vgs_Raw(i);
-				
-				Measure(33, 1, 1);
-				
-				if (G_Stop) break;
-				while (G_Pause);
-			}
-		}
-	}
-}
-
-void Measure_Gate_Sweep_New() {
-	uint8 refTurn = 1;
-	int8 refIncrement = 1;
-	uint8 startRefIndex = 0;
-	uint8 endRefIndex = 0;
-	uint8 refIndex = startRefIndex;
-	uint8 refArrived = 0;
-	
-	int8 gateIncrement = 1;
-	uint8 startGateIndex = 0;
-	uint8 endGateIndex = 0;
-	uint8 gateIndex = startGateIndex;
-	uint8 gateArrived = 0;
-	
-	
-	while (!gateArrived || !refArrived) {
-		gateArrived = abs(gateIndex-endGateIndex) < abs(gateIncrement);
-		refArrived = abs(refIndex-endRefIndex) < abs(refIncrement);
-		
-		refTurn = !refTurn;
-		
-		if (refTurn && refArrived) continue;
-		if (!refTurn && gateArrived) continue;
-		
-		Set_Ref_Raw(refIndex);
-		Set_Vgs_Raw(gateIndex);
-		
-		Measure(100, 1, 1);
-		
-		if (refTurn) {
-			refIndex += refIncrement;
+	// If not a wide sweep, restrict Vgs to the acceptable range that will not override Vds
+	if(!wide) {
+		if(Vds_Index_Goal_Relative > 0) {
+			imax = imax - Vds_Index_Goal_Relative
 		} else {
-			gateIndex += gateIncrement;
+			imin = imin - Vds_Index_Goal_Relative
 		}
-		
+	} 
+	
+	// Put the reference as positive as possible (so we can start at very negative Vgs)
+	Set_Ref_Raw(imax);
+	
+	// Define direction, istart, istop
+	int8 direction = speed;
+	uint8 istart = imin;
+	uint8 istop = imax;
+	
+	// Begin sweep
+	for (uint8 l = 0; l <= loop; l++) {
+		if (l%2 == 0) {	
+			direction = speed
+			istart = imin;
+			istop = imax;
+			
+			// Forward Sweep
+			for (uint8 i = istart; i < istop; i += direction) {
+				Set_Vgs_Rel(i);
+				Measure(DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT, GATE_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
+			}
+		} else { 		
+			direction = -1*speed;
+			istart = imax;
+			istop = imin;
+			
+			// Reverse Sweep
+			for (uint8 i = istart; i > istop; i += direction) {
+				Set_Vgs_Rel(i);	
+				Measure(DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT, GATE_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
+			}
+		}
 		if (G_Stop) break;
 		while (G_Pause);
 	}
+	
+	// Ground gate when done
+	Set_Vgs(0);
 }
 
-void Scan(uint8 wide, uint8 loop) {
-	for (uint8 device = 1; device <= CONTACT_COUNT/**//2; device++) {
-		uint8 contact1 = device;
-		uint8 contact2 = device + 1;
-		uint8 intermediate1 = 1;
-		uint8 intermediate2 = 2;
-		
-		Disconnect_All_Contacts_From_All_Selectors();
-		Zero_All_DACs();
-		Connect_Selectors();
-		Connect_Contact_To_Selector(contact1, intermediate1);
-		Connect_Contact_To_Selector(contact2, intermediate2);
-		
-		sprintf(TransmitBuffer, "\r\n%u\r\n", device);
-		sendTransmitBuffer();
-		
-		if (wide) {
-			Measure_Wide_Gate_Sweep(loop);
-		} else {
-			Measure_Gate_Sweep(loop);
-		}
-		
-		if (G_Break || G_Stop) break;
-		while (G_Pause);
-	}
-}
-
+// SCAN: Do a gate sweep of the specified range of devices
 void Scan_Range(uint8 startDevice, uint8 stopDevice, uint8 wide, uint8 loop) {
 	if (startDevice >= CONTACT_COUNT) return;
 	if (stopDevice >= CONTACT_COUNT) return;
@@ -1039,23 +960,35 @@ void Scan_Range(uint8 startDevice, uint8 stopDevice, uint8 wide, uint8 loop) {
 	for (uint8 device = startDevice; device <= stopDevice; device++) {
 		uint8 contact1 = device;
 		uint8 contact2 = device + 1;
-		uint8 intermediate1 = 1;
-		uint8 intermediate2 = 2;
 		
 		Disconnect_All_Contacts_From_All_Selectors();
-		Zero_All_DACs();
-		Connect_Selectors();
-		Connect_Contact_To_Selector(contact1, intermediate1);
-		Connect_Contact_To_Selector(contact2, intermediate2);
+		Connect_Contact_To_Selector(contact1, 1);
+		Connect_Contact_To_Selector(contact2, 2);
 		
-		sprintf(TransmitBuffer, "\r\n%u\r\n", device);
+		sprintf(TransmitBuffer, "\r\n Device %u - %u \r\n", contact1, contact2);
 		sendTransmitBuffer();
 		
-		if (wide) {
-			Measure_Wide_Gate_Sweep(loop);
-		} else {
-			Measure_Gate_Sweep(loop);
-		}
+		Measure_Full_Gate_Sweep(16, wide, loop);
+		
+		if (G_Break || G_Stop) break;
+		while (G_Pause);
+	}
+}
+
+// SCAN: Do a gate sweep of every device 
+void Scan_All_Devices(uint8 wide, uint8 loop) {
+	for (uint8 device = 1; device <= CONTACT_COUNT/2; device++) {
+		uint8 contact1 = device;
+		uint8 contact2 = device + 1;
+		
+		Disconnect_All_Contacts_From_All_Selectors();
+		Connect_Contact_To_Selector(contact1, 1);
+		Connect_Contact_To_Selector(contact2, 2);
+		
+		sprintf(TransmitBuffer, "\r\n Device %u - %u \r\n", contact1, contact2);
+		sendTransmitBuffer();
+		
+		Measure_Full_Gate_Sweep(16, wide, loop);
 		
 		if (G_Break || G_Stop) break;
 		while (G_Pause);
@@ -1182,6 +1115,7 @@ int main(void) {
 	
 	
 	
+	// Print starting message
 	UART_1_PutString("\r\n# Starting\r\n");
 	
 	// Connect SS1 and DD1 to the analog MUXes of any device selector they are routed to
@@ -1205,9 +1139,6 @@ int main(void) {
 	Calibrate_ADC_Offset(ADC_CALIBRATION_SAMPLECOUNT);
 	TIA1_Set_Resistor(TIA1_Selected_Resistor);
 	
-	// Start with default measurement sample count (can be changed while running)
-	Current_Measurement_Sample_Count = DEFAULT_CURRENT_MEASUREMENT_SAMPLECOUNT;
-	
 	while (1) {
 		G_Stop = 0;
 		G_Break = 0;
@@ -1219,7 +1150,7 @@ int main(void) {
 			newData = 0;
 			
 			if (strstr(ReceiveBuffer, "measure ") == &ReceiveBuffer[0]) {
-				Measure(DEFAULT_CURRENT_MEASUREMENT_SAMPLECOUNT, DEFAULT_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
+				Measure(DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT, GATE_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
 			} else 
 			if (strstr(ReceiveBuffer, "measure-multiple ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
@@ -1231,10 +1162,10 @@ int main(void) {
 				Measure_Sweep();
 			} else 
 			if (strstr(ReceiveBuffer, "measure-gate-sweep ") == &ReceiveBuffer[0]) {
-				Measure_Gate_Sweep(0);
+				Measure_Full_Gate_Sweep(16, 0, 0);
 			} else 
 			if (strstr(ReceiveBuffer, "measure-gate-sweep-loop ") == &ReceiveBuffer[0]) {
-				Measure_Gate_Sweep(1);
+				Measure_Full_Gate_Sweep(16, 0, 1);
 			} else 
 			if (strstr(ReceiveBuffer, "calibrate-offset ") == &ReceiveBuffer[0]) {
 				Calibrate_ADC_Offset(ADC_CALIBRATION_SAMPLECOUNT);
@@ -1299,7 +1230,7 @@ int main(void) {
 				sprintf(TransmitBuffer, "\r\n# Scan Starting\r\n");
 				sendTransmitBuffer();
 				
-				Scan(0, 0);
+				Scan_All_Devices(0, 0);
 				
 				sprintf(TransmitBuffer, "\r\n# Scan Complete\r\n");
 				sendTransmitBuffer();
@@ -1424,15 +1355,6 @@ int main(void) {
 				Disconnect_Selectors();
 				
 				sprintf(TransmitBuffer, "# Disconnected all selectors\r\n");
-				sendTransmitBuffer();
-			} else 
-			if (strstr(ReceiveBuffer, "Set_Current_Measurement_Sample_Count ") == &ReceiveBuffer[0]) {
-				char* location = strstr(ReceiveBuffer, " ");
-				uint32 sampleCount = strtol(location, &location, 10);
-				
-				Current_Measurement_Sample_Count = sampleCount;
-				
-				sprintf(TransmitBuffer, "# Set Current Measurement Sample Count\r\n");
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "enable-uart-sending ") == &ReceiveBuffer[0]) {
