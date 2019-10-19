@@ -1230,7 +1230,7 @@ int main(void) {
 				uint8 vdsi = strtol(location, &location, 10);
 				Set_Vds_Raw(vdsi);
 				
-				sprintf(TransmitBuffer, "# Vds raw set to %u \r\n", vgsi);
+				sprintf(TransmitBuffer, "# Vds raw set to %u \r\n", vdsi);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "set-vgs-rel ") == &ReceiveBuffer[0]) {
@@ -1251,7 +1251,7 @@ int main(void) {
 			} else 
 			if (strstr(ReceiveBuffer, "set-vgs ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
-				float Vgs = (float)(strtod(location, &location, 10));
+				float Vgs = (float)(strtod(location, &location));
 				Set_Vgs(Vgs);
 				
 				sprintf(TransmitBuffer, "# Vgs set to %f V\r\n", Vgs);
@@ -1259,7 +1259,7 @@ int main(void) {
 			} else 
 			if (strstr(ReceiveBuffer, "set-vds ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
-				float Vds = (float)(strtod(location, &location, 10));
+				float Vds = (float)(strtod(location, &location));
 				Set_Vds(Vds);
 				
 				sprintf(TransmitBuffer, "# Vds set to %f V\r\n", Vds);
