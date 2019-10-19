@@ -856,7 +856,7 @@ void Measure_Multiple(uint32 n) {
 }
 
 // SWEEP: simplest version of a gate sweep, with options for speed and forward/reverse directions
-void Indexed_Gate_Sweep(int16 Vgs_imin, int16 Vgs_imax, int16 speed, uint8 direction) {	
+void Indexed_Gate_Sweep(int16 Vgs_imin, int16 Vgs_imax, uint8 speed, uint8 direction) {	
 	if(!direction) {
 		for (int16 Vgsi = Vgs_imin; Vgsi <= Vgs_imax; Vgsi += speed) {
 			Set_Vgs_Rel(Vgsi);
@@ -871,51 +871,35 @@ void Indexed_Gate_Sweep(int16 Vgs_imin, int16 Vgs_imax, int16 speed, uint8 direc
 }
 
 // SWEEP: gate sweep which does unit coversions for voltage and 
-void Voltage_Gate_Sweep(float Vgs_min, float Vgs_max, int16 steps, uint8 direction) {	
-	float increment = (Vgs_max - Vgs_min)/((float)steps);
-	float gateVoltage = 0;
-	
-	if(!direction) {
-		gateVoltage = Vgs_min;
-		for (int16 i = 1; i <= steps; i++) {
-			Set_Vgs(gateVoltage);
-			Measure(DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT, GATE_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
-			gateVoltage += increment;
-		}
-	} else {
-		gateVoltage = Vgs_max;
-		for (int16 i = 1; i <= steps; i++) {
-			Set_Vgs(gateVoltage);
-			Measure(DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT, GATE_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
-			gateVoltage -= increment;
-		}
+void Voltage_Gate_Sweep(float Vgs_start, float Vgs_end, int16 steps) {	
+	if(steps < 2) steps = 2;
+	float increment = (Vgs_end - Vgs_start)/((float)(steps - 1));
+	float gateVoltage = Vgs_start;
+
+	for (int16 i = 1; i <= steps; i++) {
+		Set_Vgs(gateVoltage);
+		Measure(DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT, GATE_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
+		gateVoltage += increment;
 	}
 }
 
-// SWEEP: Take a basic gate sweep (using default Vds and Vgs range)
-void Measure_Gate_Sweep(uint8 loop) {
-	int16 vgs_min = -3;
-	int16 vgs_max = 3;
+// SWEEP: Measure a gate sweep (with options for the voltage window and # of steps)
+void Measure_Gate_Sweep(float Vgs_start, float Vgs_end, int16 steps, uint8 loop) {
+	// Ramp to initial Vgs
+	Set_Vgs(Vgs_start);
 	
-	// Ramp to initial Vds and Vgs
-	Set_Vds(0.5);
-	Set_Vgs(vgs_min);
-	
-	// Forward sweep
-	Voltage_Gate_Sweep(vgs_min, vgs_max, 100, 0);
-	
-	// Reverse sweep (optional)
+	// Forward and (optional) reverse sweep
+	Voltage_Gate_Sweep(Vgs_start, Vgs_end, steps);
 	if(loop) {
-		Indexed_Gate_Sweep(vgs_min, vgs_max, 100, 1);
+		Voltage_Gate_Sweep(Vgs_end, Vgs_start, steps);
 	}
 	
-	// Ground gate and drain when done
-	Set_Vds(0);
+	// Ground gate when done
 	Set_Vgs(0);
 }
 
-// SWEEP: Measure the full range of Vgs
-void Measure_Full_Gate_Sweep(int16 speed, uint8 wide, uint8 loop) {	
+// SWEEP: Measure gate sweep (with the full possible range of Vgs)
+void Measure_Full_Gate_Sweep(uint8 speed, uint8 wide, uint8 loop) {	
 	int16 imax = 255;
 	int16 imin = -255;
 	
@@ -956,7 +940,7 @@ void Scan_Range(uint8 startDevice, uint8 stopDevice, uint8 wide, uint8 loop) {
 		sprintf(TransmitBuffer, "\r\n Device %u - %u \r\n", contact1, contact2);
 		sendTransmitBuffer();
 		
-		Measure_Full_Gate_Sweep(16, wide, loop);
+		Measure_Full_Gate_Sweep(8, wide, loop);
 		
 		if (G_Break || G_Stop) break;
 		while (G_Pause);
@@ -976,7 +960,7 @@ void Scan_All_Devices(uint8 wide, uint8 loop) {
 		sprintf(TransmitBuffer, "\r\n Device %u - %u \r\n", contact1, contact2);
 		sendTransmitBuffer();
 		
-		Measure_Full_Gate_Sweep(16, wide, loop);
+		Measure_Full_Gate_Sweep(8, wide, loop);
 		
 		if (G_Break || G_Stop) break;
 		while (G_Pause);
@@ -990,20 +974,19 @@ void Scan_All_Devices(uint8 wide, uint8 loop) {
 // === Section: USB/Bluetooth Communication Handler Definition ===
 
 CY_ISR (CommunicationHandlerISR) {
+	// --- USB Communication Handling ---
 	if (USBUARTH_DataIsReady()) {
-		// USBUARTH_Receive_Until(UART_Receive_Buffer, USBUART_BUFFER_SIZE, "\r");
 		
+		// Put recieved characters into a temporary buffer
 		char temp_buffer[USBUART_BUFFER_SIZE];
 		uint8 temp_count = USBUART_GetAll((uint8*) temp_buffer);
 		
+		// For each recieved character, place it into the global USBUART_Receive_Buffer if it is not an end-of-line character.
 		for (uint8 i = 0; i < temp_count; i++) {
 			char c = temp_buffer[i];
-			
 			USBUART_Receive_Buffer[USBUART_Rx_Position] = c;
 			
-			// sprintf(TransmitBuffer, "USB: %c\r\n", USBUART_Receive_Buffer[USBUART_Rx_Position]);
-			// UART_1_PutString(TransmitBuffer);
-			
+			// Replace EOL characters with '\0' and set "newData = 1" when we are ready for the message in USBUART_Receive_Buffer to be interpretted by the rest of our code.
 			if (c == '\r' || c == '\n' || c == '!') {
 				USBUART_Receive_Buffer[USBUART_Rx_Position] = 0;
 				if (USBUART_Rx_Position) newData = 1;
@@ -1012,12 +995,16 @@ CY_ISR (CommunicationHandlerISR) {
 				USBUART_Rx_Position++;
 			}
 			
+			// OVERFLOW: this means the command was too long for our buffer to handle. There is no good solution, so we have to just start overwriting characters at the front of the buffer.
 			if (USBUART_Rx_Position >= USBUART_BUFFER_SIZE) USBUART_Rx_Position = 0;
 		}
 	} else
+	
+	// --- Bluetooth Communication Handling ---
 	if (UART_1_GetRxBufferSize()) {
 		UART_Receive_Buffer[UART_Rx_Position] = UART_1_GetChar();
 		
+		// Replace EOL characters with '\0' and set "newData = 2" when we are ready for the message in UART_Receive_Buffer to be interpretted by the rest of our code.
 		if (UART_Receive_Buffer[UART_Rx_Position] == '\r' || UART_Receive_Buffer[UART_Rx_Position] == '\n' || UART_Receive_Buffer[UART_Rx_Position] == '!') {
 			UART_Receive_Buffer[UART_Rx_Position] = 0;
 			if (UART_Rx_Position) newData = 2;
@@ -1026,9 +1013,11 @@ CY_ISR (CommunicationHandlerISR) {
 			UART_Rx_Position++;
 		}
 		
+		// OVERFLOW: this means the command was too long for our buffer to handle. There is no good solution, so we have to just start overwriting characters at the front of the buffer.
 		if (UART_Rx_Position >= USBUART_BUFFER_SIZE) UART_Rx_Position = 0;
 	}
 	
+	// Quickly handle some high priority commands, and set globals as necessary.
 	if (newData) {
 		char* ReceiveBuffer = &USBUART_Receive_Buffer[0];
 		if (newData == 2) ReceiveBuffer = &UART_Receive_Buffer[0];
@@ -1103,11 +1092,19 @@ int main(void) {
 	
 	
 	
-	// Print starting message
-	UART_1_PutString("\r\n# Starting\r\n");
-	
 	// Connect SS1 and DD1 to the analog MUXes of any device selector they are routed to
 	Connect_Selectors();
+	
+	// Calibrate Delta-Sigma ADC and set initial current range
+	Calibrate_ADC_Offset(ADC_CALIBRATION_SAMPLECOUNT);
+	TIA1_Set_Resistor(TIA1_Selected_Resistor);
+	
+	// === All components now ready ===
+	
+	
+	
+	// Print starting message
+	UART_1_PutString("\r\n# Starting\r\n");
 	
 	// Prepare to receive commands from the host
 	newData = 0;
@@ -1123,83 +1120,154 @@ int main(void) {
 	
 	
 	
-	// Calibrate Delta-Sigma ADC and set initial current range
-	Calibrate_ADC_Offset(ADC_CALIBRATION_SAMPLECOUNT);
-	TIA1_Set_Resistor(TIA1_Selected_Resistor);
-	
 	while (1) {
 		G_Stop = 0;
 		G_Break = 0;
 		
-		if (newData) {
+		if (newData) { // newData == 1 if using USB communication, newData == 2 if using bluetooth
 			char* ReceiveBuffer = &USBUART_Receive_Buffer[0];
 			if (newData == 2) ReceiveBuffer = &UART_Receive_Buffer[0];
 			
 			newData = 0;
 			
-			if (strstr(ReceiveBuffer, "measure ") == &ReceiveBuffer[0]) {
-				Measure(DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT, GATE_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
-			} else 
-			if (strstr(ReceiveBuffer, "measure-multiple ") == &ReceiveBuffer[0]) {
+			// === Section: Receiving and Executing Commands ===
+			if (strstr(ReceiveBuffer, "connect ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
-				uint32 n = strtol(location, &location, 10);
+				uint8 contact = strtol(location, &location, 10);
+				uint8 selector_index = strtol(location, &location, 10);
+				Connect_Contact_To_Selector(contact, selector_index);
 				
-				Measure_Multiple(n);
+				sprintf(TransmitBuffer, "# Connected %u to %u\r\n", contact, selector_index);
+				sendTransmitBuffer();
 			} else 
-			if (strstr(ReceiveBuffer, "measure-sweep ") == &ReceiveBuffer[0]) {
-				Measure_Gate_Sweep(0);
+			if (strstr(ReceiveBuffer, "connect-c ") == &ReceiveBuffer[0]) {
+				char* location = strstr(ReceiveBuffer, " ");
+				uint8 channel = strtol(location, &location, 10);
+				uint8 selector_index = strtol(location, &location, 10);
+				Connect_Channel_On_Selector(channel, selector_index);
+				
+				sprintf(TransmitBuffer, "# Connected channel %u to %u\r\n", channel, selector_index);
+				sendTransmitBuffer();
 			} else 
-			if (strstr(ReceiveBuffer, "measure-full-gate-sweep ") == &ReceiveBuffer[0]) {
-				Measure_Full_Gate_Sweep(16, 0, 0);
+			if (strstr(ReceiveBuffer, "disconnect ") == &ReceiveBuffer[0]) {
+				char* location = strstr(ReceiveBuffer, " ");
+				uint8 contact = strtol(location, &location, 10);
+				uint8 selector_index = strtol(location, &location, 10);
+				Disconnect_Contact_From_Selector(contact, selector_index);
+				
+				sprintf(TransmitBuffer, "# Disonnected %u from %u\r\n", contact, selector_index);
+				sendTransmitBuffer();
 			} else 
-			if (strstr(ReceiveBuffer, "measure-full-gate-sweep-loop ") == &ReceiveBuffer[0]) {
-				Measure_Full_Gate_Sweep(16, 0, 1);
+			if (strstr(ReceiveBuffer, "disconnect-c ") == &ReceiveBuffer[0]) {
+				char* location = strstr(ReceiveBuffer, " ");
+				uint8 channel = strtol(location, &location, 10);
+				uint8 selector_index = strtol(location, &location, 10);
+				Disconnect_Channel_On_Selector(channel, selector_index);
+				
+				sprintf(TransmitBuffer, "# Disconnected channel %u from %u\r\n", channel, selector_index);
+				sendTransmitBuffer();
 			} else 
-			if (strstr(ReceiveBuffer, "calibrate-offset ") == &ReceiveBuffer[0]) {
-				Calibrate_ADC_Offset(ADC_CALIBRATION_SAMPLECOUNT);
-			} else
+			if (strstr(ReceiveBuffer, "disconnect-from-all ") == &ReceiveBuffer[0]) {
+				char* location = strstr(ReceiveBuffer, " ");
+				uint8 contact = strtol(location, &location, 10);
+				Disconnect_Contact_From_All_Selectors(contact);
+				
+				sprintf(TransmitBuffer, "# Disconnected %u from all\r\n", contact);
+				sendTransmitBuffer();
+			} else 
+			if (strstr(ReceiveBuffer, "disconnect-all-from ") == &ReceiveBuffer[0]) {
+				char* location = strstr(ReceiveBuffer, " ");
+				uint8 selector_index = strtol(location, &location, 10);
+				Disconnect_All_Contacts_From_Selector(selector_index);
+				
+				sprintf(TransmitBuffer, "# Disconnected all from  %u\r\n", selector_index);
+				sendTransmitBuffer();
+			} else 
+			if (strstr(ReceiveBuffer, "disconnect-all-from-all ") == &ReceiveBuffer[0]) {
+				Disconnect_All_Contacts_From_All_Selectors();
+				
+				sprintf(TransmitBuffer, "# Disconnected all from all\r\n");
+				sendTransmitBuffer();
+			} else 
+			if (strstr(ReceiveBuffer, "connect-selector ") == &ReceiveBuffer[0]) {
+				char* location = strstr(ReceiveBuffer, " ");
+				uint8 selector_index = strtol(location, &location, 10);
+				Connect_Selector(selector_index);
+				
+				sprintf(TransmitBuffer, "# Connected selector %u\r\n", selector_index);
+				sendTransmitBuffer();
+			} else 
+			if (strstr(ReceiveBuffer, "disconnect-selector ") == &ReceiveBuffer[0]) {
+				char* location = strstr(ReceiveBuffer, " ");
+				uint8 selector_index = strtol(location, &location, 10);
+				Disconnect_Selector(selector_index);
+				
+				sprintf(TransmitBuffer, "# Disconnected selector %u\r\n", selector_index);
+				sendTransmitBuffer();
+			} else 
+			if (strstr(ReceiveBuffer, "connect-intermediates ") == &ReceiveBuffer[0]) {
+				Connect_Selectors();
+				
+				sprintf(TransmitBuffer, "# Connected all selectors\r\n");
+				sendTransmitBuffer();
+			} else 
+			if (strstr(ReceiveBuffer, "disconnect-all-selectors ") == &ReceiveBuffer[0]) {
+				Disconnect_Selectors();
+				
+				sprintf(TransmitBuffer, "# Disconnected all selectors\r\n");
+				sendTransmitBuffer();
+			} else 
 			if (strstr(ReceiveBuffer, "set-vgs-raw ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 vgsi = strtol(location, &location, 10);
-				
 				Set_Vgs_Raw(vgsi);
+				
+				sprintf(TransmitBuffer, "# Vgs raw set to %u \r\n", vgsi);
+				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "set-vds-raw ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 vdsi = strtol(location, &location, 10);
-				
 				Set_Vds_Raw(vdsi);
+				
+				sprintf(TransmitBuffer, "# Vds raw set to %u \r\n", vgsi);
+				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "set-vgs-rel ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
-				int8 vgsi = strtol(location, &location, 10);
-				
+				int16 vgsi = strtol(location, &location, 10);
 				Set_Vgs_Rel(vgsi);
+				
+				sprintf(TransmitBuffer, "# Vgs relative set to %d \r\n", vgsi);
+				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "set-vds-rel ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
-				int8 vdsi = strtol(location, &location, 10);
-				
+				int16 vdsi = strtol(location, &location, 10);
 				Set_Vds_Rel(vdsi);
+				
+				sprintf(TransmitBuffer, "# Vds relative set to %d \r\n", vdsi);
+				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "set-vgs ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
-				float vgs = 0;
-				int8 success = sscanf(location, "%f", &vgs);
+				float Vgs = (float)(strtod(location, &location, 10));
+				Set_Vgs(Vgs);
 				
-				Set_Vgs(vgs);
+				sprintf(TransmitBuffer, "# Vgs set to %f V\r\n", Vgs);
+				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "set-vds ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
-				float vds = 0;
-				int8 success = sscanf(location, "%f", &vds);
+				float Vds = (float)(strtod(location, &location, 10));
+				Set_Vds(Vds);
 				
-				Set_Vds(vds);
+				sprintf(TransmitBuffer, "# Vds set to %f V\r\n", Vds);
+				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "set-vgs-mv ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				float Vgs_mV = (float)(strtol(location, &location, 10));
-				
 				Set_Vgs_mV(Vgs_mV);
 				
 				sprintf(TransmitBuffer, "# Vgs set to %f mV\r\n", Vgs_mV);
@@ -1208,11 +1276,33 @@ int main(void) {
 			if (strstr(ReceiveBuffer, "set-vds-mv ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				float Vds_mV = (float)(strtol(location, &location, 10));
-				
 				Set_Vds_mV(Vds_mV);
 				
 				sprintf(TransmitBuffer, "# Vds set to %f mV\r\n", Vds_mV);
 				sendTransmitBuffer();
+			} else 
+			if (strstr(ReceiveBuffer, "calibrate-offset ") == &ReceiveBuffer[0]) {
+				Calibrate_ADC_Offset(ADC_CALIBRATION_SAMPLECOUNT);
+			} else
+			if (strstr(ReceiveBuffer, "measure ") == &ReceiveBuffer[0]) {
+				Measure(DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT, GATE_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
+			} else 
+			if (strstr(ReceiveBuffer, "measure-multiple ") == &ReceiveBuffer[0]) {
+				char* location = strstr(ReceiveBuffer, " ");
+				uint32 n = strtol(location, &location, 10);
+				Measure_Multiple(n);
+			} else 
+			if (strstr(ReceiveBuffer, "measure-gate-sweep ") == &ReceiveBuffer[0]) {
+				Measure_Gate_Sweep(-3, 3, 100, 0);
+			} else 
+			if (strstr(ReceiveBuffer, "measure-gate-sweep-loop ") == &ReceiveBuffer[0]) {
+				Measure_Gate_Sweep(-3, 3, 100, 1);
+			} else 
+			if (strstr(ReceiveBuffer, "measure-full-gate-sweep ") == &ReceiveBuffer[0]) {
+				Measure_Full_Gate_Sweep(8, 0, 0);
+			} else 
+			if (strstr(ReceiveBuffer, "measure-full-gate-sweep-loop ") == &ReceiveBuffer[0]) {
+				Measure_Full_Gate_Sweep(8, 0, 1);
 			} else 
 			if (strstr(ReceiveBuffer, "scan ") == &ReceiveBuffer[0]) {
 				sprintf(TransmitBuffer, "\r\n# Scan Starting\r\n");
@@ -1259,119 +1349,34 @@ int main(void) {
 				sprintf(TransmitBuffer, "\r\n# Scan Range Wide Loop Complete\r\n");
 				sendTransmitBuffer();
 			} else 
-			if (strstr(ReceiveBuffer, "connect ") == &ReceiveBuffer[0]) {
-				char* location = strstr(ReceiveBuffer, " ");
-				uint8 contact = strtol(location, &location, 10);
-				uint8 selector_index = strtol(location, &location, 10);
-				Connect_Contact_To_Selector(contact, selector_index);
-				
-				sprintf(TransmitBuffer, "# Connected %u to %u\r\n", contact, selector_index);
-				sendTransmitBuffer();
-			} else 
-			if (strstr(ReceiveBuffer, "connect-c ") == &ReceiveBuffer[0]) {
-				char* location = strstr(ReceiveBuffer, " ");
-				uint8 channel = strtol(location, &location, 10);
-				uint8 selector_index = strtol(location, &location, 10);
-				Connect_Channel_On_Selector(channel, selector_index);
-				
-				sprintf(TransmitBuffer, "# Connected channel %u to %u\r\n", channel, selector_index);
-				sendTransmitBuffer();
-			} else 
-			if (strstr(ReceiveBuffer, "disconnect-c ") == &ReceiveBuffer[0]) {
-				char* location = strstr(ReceiveBuffer, " ");
-				uint8 channel = strtol(location, &location, 10);
-				uint8 selector_index = strtol(location, &location, 10);
-				Disconnect_Channel_On_Selector(channel, selector_index);
-				
-				sprintf(TransmitBuffer, "# Disconnected channel %u from %u\r\n", channel, selector_index);
-				sendTransmitBuffer();
-			} else 
-			if (strstr(ReceiveBuffer, "disconnect ") == &ReceiveBuffer[0]) {
-				char* location = strstr(ReceiveBuffer, " ");
-				uint8 contact = strtol(location, &location, 10);
-				uint8 selector_index = strtol(location, &location, 10);
-				Disconnect_Contact_From_Selector(contact, selector_index);
-				
-				sprintf(TransmitBuffer, "# Disonnected %u from %u\r\n", contact, selector_index);
-				sendTransmitBuffer();
-			} else 
-			if (strstr(ReceiveBuffer, "disconnect-all-from ") == &ReceiveBuffer[0]) {
-				char* location = strstr(ReceiveBuffer, " ");
-				uint8 selector_index = strtol(location, &location, 10);
-				Disconnect_All_Contacts_From_Selector(selector_index);
-				
-				sprintf(TransmitBuffer, "# Disconnected all from  %u\r\n", selector_index);
-				sendTransmitBuffer();
-			} else 
-			if (strstr(ReceiveBuffer, "disconnect-all-from-all ") == &ReceiveBuffer[0]) {
-				Disconnect_All_Contacts_From_All_Selectors();
-				
-				sprintf(TransmitBuffer, "# Disconnected all from all\r\n");
-				sendTransmitBuffer();
-			} else 
-			if (strstr(ReceiveBuffer, "disconnect-from-all ") == &ReceiveBuffer[0]) {
-				char* location = strstr(ReceiveBuffer, " ");
-				uint8 contact = strtol(location, &location, 10);
-				Disconnect_Contact_From_All_Selectors(contact);
-				
-				sprintf(TransmitBuffer, "# Disconnected %u from all\r\n", contact);
-				sendTransmitBuffer();
-			} else 
-			if (strstr(ReceiveBuffer, "connect-intermediate ") == &ReceiveBuffer[0]) {
-				char* location = strstr(ReceiveBuffer, " ");
-				uint8 selector_index = strtol(location, &location, 10);
-				Connect_Selector(selector_index);
-				
-				sprintf(TransmitBuffer, "# Connected selector %u\r\n", selector_index);
-				sendTransmitBuffer();
-			} else 
-			if (strstr(ReceiveBuffer, "disconnect-intermediate ") == &ReceiveBuffer[0]) {
-				char* location = strstr(ReceiveBuffer, " ");
-				uint8 selector_index = strtol(location, &location, 10);
-				Disconnect_Selector(selector_index);
-				
-				sprintf(TransmitBuffer, "# Disconnected selector %u\r\n", selector_index);
-				sendTransmitBuffer();
-			} else 
-			if (strstr(ReceiveBuffer, "connect-intermediates ") == &ReceiveBuffer[0]) {
-				Connect_Selectors();
-				
-				sprintf(TransmitBuffer, "# Connected all selectors\r\n");
-				sendTransmitBuffer();
-			} else 
-			if (strstr(ReceiveBuffer, "disconnect-intermediates ") == &ReceiveBuffer[0]) {
-				Disconnect_Selectors();
-				
-				sprintf(TransmitBuffer, "# Disconnected all selectors\r\n");
-				sendTransmitBuffer();
-			} else 
 			if (strstr(ReceiveBuffer, "enable-uart-sending ") == &ReceiveBuffer[0]) {
+				uartSendingEnabled = true;
+				
 				sprintf(TransmitBuffer, "# Enabled UART Sending\r\n");
 				sendTransmitBuffer();
-				
-				uartSendingEnabled = true;
 			} else 
 			if (strstr(ReceiveBuffer, "enable-usbu-sending ") == &ReceiveBuffer[0]) {
+				usbuSendingEnabled = true;
+				
 				sprintf(TransmitBuffer, "# Enabled USBU Sending\r\n");
 				sendTransmitBuffer();
-				
-				usbuSendingEnabled = true;
 			} else 
 			if (strstr(ReceiveBuffer, "disable-uart-sending ") == &ReceiveBuffer[0]) {
+				uartSendingEnabled = false;
+				
 				sprintf(TransmitBuffer, "# Disabled UART Sending\r\n");
 				sendTransmitBuffer();
-				
-				uartSendingEnabled = false;
 			} else 
 			if (strstr(ReceiveBuffer, "disable-usbu-sending ") == &ReceiveBuffer[0]) {
+				usbuSendingEnabled = false;
+				
 				sprintf(TransmitBuffer, "# Disabled USBU Sending\r\n");
 				sendTransmitBuffer();
-				
-				usbuSendingEnabled = false;
 			} else {
 				sprintf(TransmitBuffer, "! Unidentified command: |%s|\r\n", ReceiveBuffer);
 				sendTransmitBuffer();
 			}
+			// === End Section: Receiving and Executing Commands ===
 		}
 		
 		// Loop continuously
