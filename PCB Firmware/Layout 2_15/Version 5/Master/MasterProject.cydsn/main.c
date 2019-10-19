@@ -1205,7 +1205,7 @@ int main(void) {
 				sprintf(TransmitBuffer, "# Disconnected selector %u\r\n", selector_index);
 				sendTransmitBuffer();
 			} else 
-			if (strstr(ReceiveBuffer, "connect-intermediates ") == &ReceiveBuffer[0]) {
+			if (strstr(ReceiveBuffer, "connect-all-selectors ") == &ReceiveBuffer[0]) {
 				Connect_Selectors();
 				
 				sprintf(TransmitBuffer, "# Connected all selectors\r\n");
@@ -1281,7 +1281,7 @@ int main(void) {
 				sprintf(TransmitBuffer, "# Vds set to %f mV\r\n", Vds_mV);
 				sendTransmitBuffer();
 			} else 
-			if (strstr(ReceiveBuffer, "calibrate-offset ") == &ReceiveBuffer[0]) {
+			if (strstr(ReceiveBuffer, "calibrate-adc-offset ") == &ReceiveBuffer[0]) {
 				Calibrate_ADC_Offset(ADC_CALIBRATION_SAMPLECOUNT);
 			} else
 			if (strstr(ReceiveBuffer, "measure ") == &ReceiveBuffer[0]) {
