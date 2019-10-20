@@ -918,9 +918,6 @@ void Measure_Gate_Sweep(float Vgs_start, float Vgs_end, uint16 steps, uint8 loop
 	if(loop) {
 		Voltage_Gate_Sweep(Vgs_end, Vgs_start, steps);
 	}
-	
-	// Ground gate when done
-	Set_Vgs(0);
 }
 
 // SWEEP: Measure a drain sweep (with options for the voltage window and # of steps)
@@ -933,9 +930,6 @@ void Measure_Drain_Sweep(float Vds_start, float Vds_end, uint16 steps, uint8 loo
 	if(loop) {
 		Voltage_Drain_Sweep(Vds_end, Vds_start, steps);
 	}
-	
-	// Ground drain when done
-	Set_Vds(0);
 }
 
 // SWEEP: Measure gate sweep (with the full possible range of Vgs)
@@ -1363,70 +1357,70 @@ int main(void) {
 				uint32 n = strtol(location, &location, 10);
 				Measure_Multiple(n);
 			} else 
-			if (strstr(ReceiveBuffer, "measure-gate-sweep ") == &ReceiveBuffer[0]) {
+			if (strstr(ReceiveBuffer, "gate-sweep ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				float Vgs_start = (float)(strtod(location, &location));
 				float Vgs_end = (float)(strtod(location, &location));
 				uint16 steps = (strtol(location, &location, 10));
 				Measure_Gate_Sweep(Vgs_start, Vgs_end, steps, 0);
 			} else 
-			if (strstr(ReceiveBuffer, "measure-gate-sweep-loop ") == &ReceiveBuffer[0]) {
+			if (strstr(ReceiveBuffer, "gate-sweep-loop ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				float Vgs_start = (float)(strtod(location, &location));
 				float Vgs_end = (float)(strtod(location, &location));
 				uint16 steps = (strtol(location, &location, 10));
 				Measure_Gate_Sweep(Vgs_start, Vgs_end, steps, 1);
 			} else 
-			if (strstr(ReceiveBuffer, "measure-full-gate-sweep ") == &ReceiveBuffer[0]) {
+			if (strstr(ReceiveBuffer, "full-gate-sweep ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 Vgs_increment = (strtol(location, &location, 10));
 				Measure_Full_Gate_Sweep(Vgs_increment, 0, 0);
 			} else 
-			if (strstr(ReceiveBuffer, "measure-full-gate-sweep-loop ") == &ReceiveBuffer[0]) {
+			if (strstr(ReceiveBuffer, "full-gate-sweep-loop ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 Vgs_increment = (strtol(location, &location, 10));
 				Measure_Full_Gate_Sweep(Vgs_increment, 0, 1);
 			} else 
-			if (strstr(ReceiveBuffer, "measure-full-wide-gate-sweep ") == &ReceiveBuffer[0]) {
+			if (strstr(ReceiveBuffer, "full-wide-gate-sweep ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 Vgs_increment = (strtol(location, &location, 10));
 				Measure_Full_Gate_Sweep(Vgs_increment, 1, 0);
 			} else 
-			if (strstr(ReceiveBuffer, "measure-full-wide-gate-sweep-loop ") == &ReceiveBuffer[0]) {
+			if (strstr(ReceiveBuffer, "full-wide-gate-sweep-loop ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 Vgs_increment = (strtol(location, &location, 10));
 				Measure_Full_Gate_Sweep(Vgs_increment, 1, 1);
 			} else 
-			if (strstr(ReceiveBuffer, "measure-drain-sweep ") == &ReceiveBuffer[0]) {
+			if (strstr(ReceiveBuffer, "drain-sweep ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				float Vds_start = (float)(strtod(location, &location));
 				float Vds_end = (float)(strtod(location, &location));
 				uint16 steps = (strtol(location, &location, 10));
 				Measure_Drain_Sweep(Vds_start, Vds_end, steps, 0);
 			} else 
-			if (strstr(ReceiveBuffer, "measure-drain-sweep-loop ") == &ReceiveBuffer[0]) {
+			if (strstr(ReceiveBuffer, "drain-sweep-loop ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				float Vds_start = (float)(strtod(location, &location));
 				float Vds_end = (float)(strtod(location, &location));
 				uint16 steps = (strtol(location, &location, 10));
 				Measure_Drain_Sweep(Vds_start, Vds_end, steps, 1);
 			} else 
-			if (strstr(ReceiveBuffer, "measure-full-drain-sweep ") == &ReceiveBuffer[0]) {
+			if (strstr(ReceiveBuffer, "full-drain-sweep ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 Vds_increment = (strtol(location, &location, 10));
 				Measure_Full_Drain_Sweep(Vds_increment, 0, 0);
 			} else 
-			if (strstr(ReceiveBuffer, "measure-full-drain-sweep-loop ") == &ReceiveBuffer[0]) {
+			if (strstr(ReceiveBuffer, "full-drain-sweep-loop ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 Vds_increment = (strtol(location, &location, 10));
 				Measure_Full_Drain_Sweep(Vds_increment, 0, 1);
 			} else 
-			if (strstr(ReceiveBuffer, "measure-full-drain-gate-sweep ") == &ReceiveBuffer[0]) {
+			if (strstr(ReceiveBuffer, "full-drain-gate-sweep ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 Vds_increment = (strtol(location, &location, 10));
 				Measure_Full_Drain_Sweep(Vds_increment, 1, 0);
 			} else 
-			if (strstr(ReceiveBuffer, "measure-full-wide-drain-sweep-loop ") == &ReceiveBuffer[0]) {
+			if (strstr(ReceiveBuffer, "full-wide-drain-sweep-loop ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 Vds_increment = (strtol(location, &location, 10));
 				Measure_Full_Drain_Sweep(Vds_increment, 1, 1);
