@@ -121,7 +121,7 @@ void Setup_Selectors() {
 
 // Use I2C communication to tell a selector to update its connections
 void Update_Selector(uint8 selector_index) {
-	sprintf(TransmitBuffer, "Updating Selector %u\r\n", selector_index + 1);
+	sprintf(TransmitBuffer, "Updating Selector %u...\r\n", selector_index + 1);
 	sendTransmitBuffer();
 	
 	// Get reference to selector communication data structure for this selector index
@@ -163,7 +163,7 @@ void Update_Selector(uint8 selector_index) {
 		}
 	}
 	
-	sprintf(TransmitBuffer, "Updated Selector %u\r\n", selector_index + 1);
+	sprintf(TransmitBuffer, "Updated Selector %u.\r\n", selector_index + 1);
 	sendTransmitBuffer();
 }
 
@@ -800,7 +800,7 @@ void Calibrate_ADC_Offset(uint32 sampleCount) {
 		ADC_Measure_uV(&voltage, &voltageSD, 3);
 		ADC_Measure_uV(&voltage, &voltageSD, sampleCount);
 		TIA1_Offsets_uV[i] = -voltage;
-		sprintf(TransmitBuffer, "# Offset %e Ohm: %li uV\r\n", TIA1_Resistor_Values[i], -voltage);
+		sprintf(TransmitBuffer, "Offset %e Ohm: %li uV.\r\n", TIA1_Resistor_Values[i], -voltage);
 		sendTransmitBuffer();
 	}
 	
@@ -1189,7 +1189,7 @@ int main(void) {
 				uint8 selector_index = strtol(location, &location, 10);
 				Connect_Contact_To_Selector(contact, selector_index);
 				
-				sprintf(TransmitBuffer, "# Connected %u to %u\r\n", contact, selector_index);
+				sprintf(TransmitBuffer, "# Connected contact %u to selector %u.\r\n", contact, selector_index);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "connect-c ") == &ReceiveBuffer[0]) {
@@ -1198,7 +1198,7 @@ int main(void) {
 				uint8 selector_index = strtol(location, &location, 10);
 				Connect_Channel_On_Selector(channel, selector_index);
 				
-				sprintf(TransmitBuffer, "# Connected channel %u to %u\r\n", channel, selector_index);
+				sprintf(TransmitBuffer, "# Connected channel %u to selector %u.\r\n", channel, selector_index);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "disconnect ") == &ReceiveBuffer[0]) {
@@ -1207,7 +1207,7 @@ int main(void) {
 				uint8 selector_index = strtol(location, &location, 10);
 				Disconnect_Contact_From_Selector(contact, selector_index);
 				
-				sprintf(TransmitBuffer, "# Disonnected %u from %u\r\n", contact, selector_index);
+				sprintf(TransmitBuffer, "# Disonnected contact %u from selector %u.\r\n", contact, selector_index);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "disconnect-c ") == &ReceiveBuffer[0]) {
@@ -1216,7 +1216,7 @@ int main(void) {
 				uint8 selector_index = strtol(location, &location, 10);
 				Disconnect_Channel_On_Selector(channel, selector_index);
 				
-				sprintf(TransmitBuffer, "# Disconnected channel %u from %u\r\n", channel, selector_index);
+				sprintf(TransmitBuffer, "# Disconnected channel %u from selector %u.\r\n", channel, selector_index);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "disconnect-from-all ") == &ReceiveBuffer[0]) {
@@ -1224,7 +1224,7 @@ int main(void) {
 				uint8 contact = strtol(location, &location, 10);
 				Disconnect_Contact_From_All_Selectors(contact);
 				
-				sprintf(TransmitBuffer, "# Disconnected %u from all\r\n", contact);
+				sprintf(TransmitBuffer, "# Disconnected contact %u from all selectors.\r\n", contact);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "disconnect-all-from ") == &ReceiveBuffer[0]) {
@@ -1232,13 +1232,13 @@ int main(void) {
 				uint8 selector_index = strtol(location, &location, 10);
 				Disconnect_All_Contacts_From_Selector(selector_index);
 				
-				sprintf(TransmitBuffer, "# Disconnected all from  %u\r\n", selector_index);
+				sprintf(TransmitBuffer, "# Disconnected all contacts from selector %u.\r\n", selector_index);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "disconnect-all-from-all ") == &ReceiveBuffer[0]) {
 				Disconnect_All_Contacts_From_All_Selectors();
 				
-				sprintf(TransmitBuffer, "# Disconnected all from all\r\n");
+				sprintf(TransmitBuffer, "# Disconnected all contacts from all selectors.\r\n");
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "connect-selector ") == &ReceiveBuffer[0]) {
@@ -1246,7 +1246,7 @@ int main(void) {
 				uint8 selector_index = strtol(location, &location, 10);
 				Connect_Selector(selector_index);
 				
-				sprintf(TransmitBuffer, "# Connected selector %u\r\n", selector_index);
+				sprintf(TransmitBuffer, "# Connected selector %u.\r\n", selector_index);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "disconnect-selector ") == &ReceiveBuffer[0]) {
@@ -1254,19 +1254,19 @@ int main(void) {
 				uint8 selector_index = strtol(location, &location, 10);
 				Disconnect_Selector(selector_index);
 				
-				sprintf(TransmitBuffer, "# Disconnected selector %u\r\n", selector_index);
+				sprintf(TransmitBuffer, "# Disconnected selector %u.\r\n", selector_index);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "connect-all-selectors ") == &ReceiveBuffer[0]) {
 				Connect_Selectors();
 				
-				sprintf(TransmitBuffer, "# Connected all selectors\r\n");
+				sprintf(TransmitBuffer, "# Connected all selectors.\r\n");
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "disconnect-all-selectors ") == &ReceiveBuffer[0]) {
 				Disconnect_Selectors();
 				
-				sprintf(TransmitBuffer, "# Disconnected all selectors\r\n");
+				sprintf(TransmitBuffer, "# Disconnected all selectors.\r\n");
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "set-vgs-raw ") == &ReceiveBuffer[0]) {
