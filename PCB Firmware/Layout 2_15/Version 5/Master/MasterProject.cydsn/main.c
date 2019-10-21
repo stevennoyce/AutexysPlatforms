@@ -1149,7 +1149,7 @@ int main(void) {
 	// Start communication with device selectors
 	I2C_1_Start();
 	
-	// Start All DACs, ADCs, TIAs, and AMUXes
+	// Start All DACs, ADCs, and TIAs
 	VDAC_Vds_Start();
 	VDAC_Vgs_Start();
 	VDAC_Ref_Start();
@@ -1157,7 +1157,6 @@ int main(void) {
 	ADC_SAR_1_Start();
 	ADC_SAR_2_Start();
 	TIA_1_Start();
-	AMux_1_Start();
 	
 	// Start the op-amp buffers
 	Opamp_1_Start();
