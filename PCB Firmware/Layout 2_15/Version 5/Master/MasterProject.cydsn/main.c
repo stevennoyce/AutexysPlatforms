@@ -20,6 +20,12 @@
 #define SELECTOR4_I2C_BUS_ADDRESS (0x22)
 #define SELECTOR_SIGNAL_CHANNEL (33)
 
+#define TIA_INTERNAL_RESISTOR_COUNT (8)
+#define AMUX_EXTERNAL_RESISTOR_COUNT (3)
+#define AMUX_ADDRESS_FEEDBACK_R10K (0)
+#define AMUX_ADDRESS_FEEDBACK_R1M (1)
+#define AMUX_ADDRESS_FEEDBACK_R100M (2)
+
 #define COMPLIANCE_CURRENT_LIMIT (10e-6)
 
 // De-noising Parameters
@@ -68,12 +74,12 @@ volatile uint8 UART_Rx_Position;
 volatile char USBUART_Receive_Buffer[USBUART_BUFFER_SIZE];
 volatile uint8 USBUART_Rx_Position;
 
-// TIA1 Properties
-enum TIA_resistor {R20K, R30K, R40K, R80K, R120K, R250K, R500K, R1000K};
-uint8 TIA1_Selected_Resistor = R20K;
-uint8 TIA1_Resistor_Codes[8] = {TIA_1_RES_FEEDBACK_20K, TIA_1_RES_FEEDBACK_30K, TIA_1_RES_FEEDBACK_40K, TIA_1_RES_FEEDBACK_80K, TIA_1_RES_FEEDBACK_120K, TIA_1_RES_FEEDBACK_250K, TIA_1_RES_FEEDBACK_500K, TIA_1_RES_FEEDBACK_1000K};
-float TIA1_Resistor_Values[8] = {20e3, 30e3, 40e3, 80e3, 120e3, 250e3, 500e3, 1e6};
-int32 TIA1_Offsets_uV[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+// TIA Properties
+enum TIA_resistor {Internal_R20K, Internal_R30K, Internal_R40K, Internal_R80K, Internal_R120K, Internal_R250K, Internal_R500K, Internal_R1000K, External_R10K, External_R1M, External_R100M};
+uint8 TIA_Selected_Resistor = Internal_R20K;
+uint8 TIA_Resistor_Codes[TIA_INTERNAL_RESISTOR_COUNT + AMUX_EXTERNAL_RESISTOR_COUNT] = {TIA_1_RES_FEEDBACK_20K, TIA_1_RES_FEEDBACK_30K, TIA_1_RES_FEEDBACK_40K, TIA_1_RES_FEEDBACK_80K, TIA_1_RES_FEEDBACK_120K, TIA_1_RES_FEEDBACK_250K, TIA_1_RES_FEEDBACK_500K, TIA_1_RES_FEEDBACK_1000K, AMUX_ADDRESS_FEEDBACK_R10K, AMUX_ADDRESS_FEEDBACK_R1M, AMUX_ADDRESS_FEEDBACK_R100M};
+float TIA_Resistor_Values[TIA_INTERNAL_RESISTOR_COUNT + AMUX_EXTERNAL_RESISTOR_COUNT] = {20e3, 30e3, 40e3, 80e3, 120e3, 250e3, 500e3, 1e6, 10e3, 1e6, 100e6};
+int32 TIA_Offsets_uV[TIA_INTERNAL_RESISTOR_COUNT + AMUX_EXTERNAL_RESISTOR_COUNT] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 // Setpoints for VGS and VDS (in the 16-bit format that the DACs use)
 int16 Vgs_Index_Goal_Relative;
@@ -303,37 +309,47 @@ uint8 Connect_Contact_To_Drain(uint8 contact) {
 // === Section: ADC Range Selection ===
 
 // Change the feedback resistor used in current measurement circuit
-void TIA1_Set_Resistor(uint8 resistor) {
-	TIA1_Selected_Resistor = resistor;
-	TIA_1_SetResFB(TIA1_Resistor_Codes[resistor]);
+void TIA_Set_Resistor(uint8 resistor) {
+	TIA_Selected_Resistor = resistor;
+	if(resistor < TIA_INTERNAL_RESISTOR_COUNT) {
+		TIA_1_SetResFB(TIA_Resistor_Codes[resistor]);
+	} else {
+		AMux_1_Select(TIA_Resistor_Codes[resistor]);
+	}
 }
 
 // Shift feedback resistance to allow ADC to measure larger currents
 void ADC_Increase_Range() {
-	switch(TIA1_Selected_Resistor) {
-		case R20K: 	 break;
-		//case R30K: 	 TIA1_Set_Resistor(R20K); break;
-		//case R40K:	 TIA1_Set_Resistor(R30K); break;
-		//case R80K:	 TIA1_Set_Resistor(R40K); break;
-		//case R120K:	 TIA1_Set_Resistor(R80K); break;
-		//case R250K:	 TIA1_Set_Resistor(R120K); break;
-		//case R500K:	 TIA1_Set_Resistor(R250K); break;
-		case R1000K: TIA1_Set_Resistor(R20K); break;
+	switch(TIA_Selected_Resistor) {
+		case Internal_R20K: 	 break;
+		//case Internal_R30K: 	 TIA_Set_Resistor(Internal_R20K); break;
+		//case Internal_R40K:	 TIA_Set_Resistor(Internal_R30K); break;
+		//case Internal_R80K:	 TIA_Set_Resistor(Internal_R40K); break;
+		//case Internal_R120K:	 TIA_Set_Resistor(Internal_R80K); break;
+		//case Internal_R250K:	 TIA_Set_Resistor(Internal_R120K); break;
+		//case Internal_R500K:	 TIA_Set_Resistor(Internal_R250K); break;
+		case Internal_R1000K:    TIA_Set_Resistor(Internal_R20K); break;
+		case External_R10K:      break;
+		case External_R1M:       break;
+		case External_R100M:     TIA_Set_Resistor(External_R1M); break;
 		default: return;
 	}
 }
 
 // Shift feedback resistance to allow ADC to measure smaller currents
 void ADC_Decrease_Range() {
-	switch(TIA1_Selected_Resistor) {
-		case R20K: 	 TIA1_Set_Resistor(R1000K); break;
-		//case R30K: 	 TIA1_Set_Resistor(R40K); break;
-		//case R40K:	 TIA1_Set_Resistor(R80K); break;
-		//case R80K:	 TIA1_Set_Resistor(R120K); break;
-		//case R120K:	 TIA1_Set_Resistor(R250K); break;
-		//case R250K:	 TIA1_Set_Resistor(R500K); break;
-		//case R500K:	 TIA1_Set_Resistor(R1000K); break;
-		case R1000K: break;
+	switch(TIA_Selected_Resistor) {
+		case Internal_R20K: 	 TIA_Set_Resistor(Internal_R1000K); break;
+		//case Internal_R30K: 	 TIA_Set_Resistor(Internal_R40K); break;
+		//case Internal_R40K:	 TIA_Set_Resistor(Internal_R80K); break;
+		//case Internal_R80K:	 TIA_Set_Resistor(Internal_R120K); break;
+		//case Internal_R120K:	 TIA_Set_Resistor(Internal_R250K); break;
+		//case Internal_R250K:	 TIA_Set_Resistor(Internal_R500K); break;
+		//case Internal_R500K:	 TIA_Set_Resistor(Internal_R1000K); break;
+		case Internal_R1000K:    break;
+		case External_R10K:      TIA_Set_Resistor(External_R1M); break;
+		case External_R1M:       TIA_Set_Resistor(External_R100M); break;
+		case External_R100M:     break;
 		default: return;
 	}
 }
@@ -487,8 +503,8 @@ void Measure_Drain_Current(float* currentAverageIn, float* currentStdDevIn, uint
 	ADC_Adjust_Range(AUTO_RANGE_SAMPLECOUNT);
 	
 	// After auto-ranging completes, determine voltage-current conversion from the chosen feedback resistance 
-	float TIA1_Feedback_R = TIA1_Resistor_Values[TIA1_Selected_Resistor];
-	int32 TIA1_Offset_uV = TIA1_Offsets_uV[TIA1_Selected_Resistor];
+	float TIA1_Feedback_R = TIA_Resistor_Values[TIA_Selected_Resistor];
+	int32 TIA1_Offset_uV = TIA_Offsets_uV[TIA_Selected_Resistor];
 	float unitConversion = -1.0e-6/TIA1_Feedback_R;
 	//unitConversion = -1.0e-6/100e6; //override internal TIA resistor value here
 	
@@ -797,7 +813,7 @@ void Zero_All_DACs() {
 // === Section: Calibration ===
 
 void Calibrate_ADC_Offset(uint32 sampleCount) {
-	uint8 current_range_resistor = TIA1_Selected_Resistor;
+	uint8 current_range_resistor = TIA_Selected_Resistor;
 	
 	// Zero the DACs
 	Set_Vds(0);
@@ -808,18 +824,18 @@ void Calibrate_ADC_Offset(uint32 sampleCount) {
 	int32 voltageSD = 0;
 	
 	// Measure ADC offset voltages
-	for (uint8 i = R20K; i <= R1000K; i++) {
-		TIA1_Set_Resistor(i);
+	for (uint8 i = Internal_R20K; i <= Internal_R1000K; i++) {
+		TIA_Set_Resistor(i);
 		// Take a few measurements to discard any problems with the initial measurements
 		ADC_Measure_uV(&voltage, &voltageSD, 3);
 		ADC_Measure_uV(&voltage, &voltageSD, sampleCount);
-		TIA1_Offsets_uV[i] = -voltage;
-		sprintf(TransmitBuffer, "Offset %e Ohm: %li uV.\r\n", TIA1_Resistor_Values[i], -voltage);
+		TIA_Offsets_uV[i] = -voltage;
+		sprintf(TransmitBuffer, "Offset %e Ohm: %li uV.\r\n", TIA_Resistor_Values[i], -voltage);
 		sendTransmitBuffer();
 	}
 	
 	// Reset TIA Resistor
-	TIA1_Set_Resistor(current_range_resistor);
+	TIA_Set_Resistor(current_range_resistor);
 }
 
 // === End Section: Calibration ===
@@ -1164,7 +1180,7 @@ int main(void) {
 	
 	// Calibrate Delta-Sigma ADC and set initial current range
 	Calibrate_ADC_Offset(ADC_CALIBRATION_SAMPLECOUNT);
-	TIA1_Set_Resistor(TIA1_Selected_Resistor);
+	TIA_Set_Resistor(TIA_Selected_Resistor);
 	
 	// === All components now ready ===
 	
