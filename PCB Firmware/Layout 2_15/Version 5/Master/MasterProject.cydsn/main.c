@@ -1156,7 +1156,7 @@ int main(void) {
 	
 	
 	// Print starting message
-	UART_1_PutString("\r\n# Starting\r\n");
+	UART_1_PutString("\r\n Starting. \r\n");
 	
 	// Prepare to receive commands from the host
 	newData = 0;
@@ -1274,7 +1274,7 @@ int main(void) {
 				uint8 vgsi = strtol(location, &location, 10);
 				Set_Vgs_Raw(vgsi);
 				
-				sprintf(TransmitBuffer, "# Vgs raw set to %u \r\n", vgsi);
+				sprintf(TransmitBuffer, "# Vgs raw set to %u.\r\n", vgsi);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "set-vds-raw ") == &ReceiveBuffer[0]) {
@@ -1282,7 +1282,7 @@ int main(void) {
 				uint8 vdsi = strtol(location, &location, 10);
 				Set_Vds_Raw(vdsi);
 				
-				sprintf(TransmitBuffer, "# Vds raw set to %u \r\n", vdsi);
+				sprintf(TransmitBuffer, "# Vds raw set to %u.\r\n", vdsi);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "set-vgs-rel ") == &ReceiveBuffer[0]) {
@@ -1290,7 +1290,7 @@ int main(void) {
 				int16 vgsi = strtol(location, &location, 10);
 				Set_Vgs_Rel(vgsi);
 				
-				sprintf(TransmitBuffer, "# Vgs relative set to %d \r\n", vgsi);
+				sprintf(TransmitBuffer, "# Vgs relative set to %d.\r\n", vgsi);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "set-vds-rel ") == &ReceiveBuffer[0]) {
@@ -1298,7 +1298,7 @@ int main(void) {
 				int16 vdsi = strtol(location, &location, 10);
 				Set_Vds_Rel(vdsi);
 				
-				sprintf(TransmitBuffer, "# Vds relative set to %d \r\n", vdsi);
+				sprintf(TransmitBuffer, "# Vds relative set to %d.\r\n", vdsi);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "set-vgs ") == &ReceiveBuffer[0]) {
@@ -1306,7 +1306,7 @@ int main(void) {
 				float Vgs = (float)(strtod(location, &location));
 				Set_Vgs(Vgs);
 				
-				sprintf(TransmitBuffer, "# Vgs set to %f V\r\n", Vgs);
+				sprintf(TransmitBuffer, "# Vgs set to %f V.\r\n", Vgs);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "set-vds ") == &ReceiveBuffer[0]) {
@@ -1314,7 +1314,7 @@ int main(void) {
 				float Vds = (float)(strtod(location, &location));
 				Set_Vds(Vds);
 				
-				sprintf(TransmitBuffer, "# Vds set to %f V\r\n", Vds);
+				sprintf(TransmitBuffer, "# Vds set to %f V.\r\n", Vds);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "set-vgs-mv ") == &ReceiveBuffer[0]) {
@@ -1322,7 +1322,7 @@ int main(void) {
 				float Vgs_mV = (float)(strtol(location, &location, 10));
 				Set_Vgs_mV(Vgs_mV);
 				
-				sprintf(TransmitBuffer, "# Vgs set to %f mV\r\n", Vgs_mV);
+				sprintf(TransmitBuffer, "# Vgs set to %f mV.\r\n", Vgs_mV);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "set-vds-mv ") == &ReceiveBuffer[0]) {
@@ -1330,13 +1330,13 @@ int main(void) {
 				float Vds_mV = (float)(strtol(location, &location, 10));
 				Set_Vds_mV(Vds_mV);
 				
-				sprintf(TransmitBuffer, "# Vds set to %f mV\r\n", Vds_mV);
+				sprintf(TransmitBuffer, "# Vds set to %f mV.\r\n", Vds_mV);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "calibrate-adc-offset ") == &ReceiveBuffer[0]) {
 				Calibrate_ADC_Offset(ADC_CALIBRATION_SAMPLECOUNT);
 				
-				sprintf(TransmitBuffer, "# Calibrated ADC Offsets\r\n");
+				sprintf(TransmitBuffer, "# Calibrated ADC Offsets.\r\n");
 				sendTransmitBuffer();
 			} else
 			if (strstr(ReceiveBuffer, "measure ") == &ReceiveBuffer[0]) {
@@ -1406,60 +1406,60 @@ int main(void) {
 				Measure_Full_Drain_Sweep(Vds_increment, 0, 1);
 			} else 
 			if (strstr(ReceiveBuffer, "scan-all-devices ") == &ReceiveBuffer[0]) {
-				sprintf(TransmitBuffer, "\r\n# Scan of All Devices Starting\r\n");
+				sprintf(TransmitBuffer, "\r\n# Scan of All Devices Starting.\r\n");
 				sendTransmitBuffer();
 				
 				Scan_All_Devices(0, 0);
 				
-				sprintf(TransmitBuffer, "\r\n# Scan of All Devices Complete\r\n");
+				sprintf(TransmitBuffer, "\r\n# Scan of All Devices Complete.\r\n");
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "scan-range ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 startDevice = strtol(location, &location, 10);
 				uint8 stopDevice = strtol(location, &location, 10);
-				sprintf(TransmitBuffer, "\r\n# Scan-Range (%u to %u) Starting\r\n", startDevice, stopDevice);
+				sprintf(TransmitBuffer, "\r\n# Scan-Range (%u to %u) Starting.\r\n", startDevice, stopDevice);
 				sendTransmitBuffer();
 				
 				Scan_Range(startDevice, stopDevice, 0, 0);
 				
-				sprintf(TransmitBuffer, "\r\n# Scan-Range (%u to %u) Complete\r\n", startDevice, stopDevice);
+				sprintf(TransmitBuffer, "\r\n# Scan-Range (%u to %u) Complete.\r\n", startDevice, stopDevice);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "scan-range-loop ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 startDevice = strtol(location, &location, 10);
 				uint8 stopDevice = strtol(location, &location, 10);
-				sprintf(TransmitBuffer, "\r\n# Scan-Range-Loop (%u to %u) Starting\r\n", startDevice, stopDevice);
+				sprintf(TransmitBuffer, "\r\n# Scan-Range-Loop (%u to %u) Starting.\r\n", startDevice, stopDevice);
 				sendTransmitBuffer();
 				
 				Scan_Range(startDevice, stopDevice, 0, 1);
 				
-				sprintf(TransmitBuffer, "\r\n# Scan-Range-Loop (%u to %u) Complete\r\n", startDevice, stopDevice);
+				sprintf(TransmitBuffer, "\r\n# Scan-Range-Loop (%u to %u) Complete.\r\n", startDevice, stopDevice);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "enable-uart-sending ") == &ReceiveBuffer[0]) {
 				uartSendingEnabled = true;
 				
-				sprintf(TransmitBuffer, "# Enabled UART Sending\r\n");
+				sprintf(TransmitBuffer, "# Enabled UART Sending.\r\n");
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "enable-usbu-sending ") == &ReceiveBuffer[0]) {
 				usbuSendingEnabled = true;
 				
-				sprintf(TransmitBuffer, "# Enabled USBU Sending\r\n");
+				sprintf(TransmitBuffer, "# Enabled USBU Sending.\r\n");
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "disable-uart-sending ") == &ReceiveBuffer[0]) {
 				uartSendingEnabled = false;
 				
-				sprintf(TransmitBuffer, "# Disabled UART Sending\r\n");
+				sprintf(TransmitBuffer, "# Disabled UART Sending.\r\n");
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "disable-usbu-sending ") == &ReceiveBuffer[0]) {
 				usbuSendingEnabled = false;
 				
-				sprintf(TransmitBuffer, "# Disabled USBU Sending\r\n");
+				sprintf(TransmitBuffer, "# Disabled USBU Sending.\r\n");
 				sendTransmitBuffer();
 			} else {
 				sprintf(TransmitBuffer, "! Unidentified command: |%s|\r\n", ReceiveBuffer);
