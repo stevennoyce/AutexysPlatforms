@@ -291,9 +291,11 @@
       <Data key="77715107-f8d5-47e5-a629-0fb83101ac6b" value="Pin_SolutionGate" />
       <Data key="ac56627b-a45e-428b-80e4-7abdc37c097a" value="Pin_RG1" />
       <Data key="aea7725a-ea8a-41a6-a37e-458b96871364/16a808f6-2e13-45b9-bce0-b001c8655113" value="ADC_SAR_2_Bypass" />
+      <Data key="b1a02231-2628-4fe1-baa9-772592d7c7fc" value="Pin_S3" />
       <Data key="b879bdd2-bdd6-46d1-906e-3af619ec8ed3" value="Pin_BackGate" />
       <Data key="beca5e2d-f70f-4900-a4db-7eca1ed3126e/8b77a6c4-10a0-4390-971c-672353e2a49c" value="USBUART_Dm" />
       <Data key="beca5e2d-f70f-4900-a4db-7eca1ed3126e/618a72fc-5ddd-4df5-958f-a3d55102db42" value="USBUART_Dp" />
+      <Data key="ca615484-8e76-484a-b098-8b36d0332c41" value="Pin_S1" />
       <Data key="d897ddac-8ddf-4a56-9992-12b9a6662dce" value="Pin_Vss" />
       <Data key="ed092b9b-d398-4703-be89-cebf998501f6" value="Tx_UART" />
       <Data key="f94f2f4d-cc9a-47de-975d-400d1ea3dac1" value="Pin_I11" />
@@ -3411,7 +3413,7 @@
     </Group>
     <Group key="027858cd-817f-49a3-a41b-54fd99e13c61">
       <Group key="0">
-        <Data key="Port Format" value="4,2" />
+        <Data key="Port Format" value="4,1" />
       </Group>
     </Group>
     <Group key="1425177d-0d0e-4468-8bcc-e638e5509a9b">
@@ -3429,6 +3431,11 @@
         <Data key="Port Format" value="0,7" />
       </Group>
     </Group>
+    <Group key="b1a02231-2628-4fe1-baa9-772592d7c7fc">
+      <Group key="0">
+        <Data key="Port Format" value="15,5" />
+      </Group>
+    </Group>
     <Group key="b879bdd2-bdd6-46d1-906e-3af619ec8ed3">
       <Group key="0">
         <Data key="Port Format" value="1,5" />
@@ -3442,6 +3449,11 @@
     <Group key="beca5e2d-f70f-4900-a4db-7eca1ed3126e/618a72fc-5ddd-4df5-958f-a3d55102db42">
       <Group key="0">
         <Data key="Port Format" value="15,6" />
+      </Group>
+    </Group>
+    <Group key="ca615484-8e76-484a-b098-8b36d0332c41">
+      <Group key="0">
+        <Data key="Port Format" value="6,1" />
       </Group>
     </Group>
     <Group key="d897ddac-8ddf-4a56-9992-12b9a6662dce">
@@ -3469,7 +3481,7 @@
         <Data key="0" value="132146909323003778" />
       </Group>
       <Group key="92057fdd-a74f-4451-a2b0-2a2284485932">
-        <Data key="0" value="132146909301603748" />
+        <Data key="0" value="132161610491008660" />
       </Group>
     </Group>
     <Group key="Unlocked Pins" />
