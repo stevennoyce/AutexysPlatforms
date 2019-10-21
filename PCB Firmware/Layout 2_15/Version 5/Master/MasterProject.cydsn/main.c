@@ -282,6 +282,27 @@ void Disconnect_Selectors() {
 	}
 }
 
+// CONNECT: Connect this device contact to the source-side of Vds
+void Connect_Contact_To_Source(uint8 contact) {
+	uint8 selector_index = (contact <= 32) ? (1) : (3);
+	Connect_Contact_To_Selector(contact, selector_index);
+	return selector_index;
+}
+
+// CONNECT: Connect this device contact to the drain-side of Vds
+void Connect_Contact_To_Drain(uint8 contact) {
+	uint8 selector_index = (contact <= 32) ? (2) : (4);
+	Connect_Contact_To_Selector(contact, selector_index);
+	return selector_index;
+}
+
+// CONNECT: Connect this device contact to the drain-side of Vds
+void Connect_Contacts_For_Device(uint8 contact1, uint8 contact2) {
+	uint8 selector1 = Connect_Contact_To_Drain(contact1);
+	uint8 selector2 = Connect_Contact_To_Source(contact2);
+	return {selector1, selector2};
+}
+
 // === End Section: Device Selectors & Communication ===
 
 
@@ -1192,7 +1213,7 @@ int main(void) {
 				sprintf(TransmitBuffer, "# Connected contact %u to selector %u.\r\n", contact, selector_index);
 				sendTransmitBuffer();
 			} else 
-			if (strstr(ReceiveBuffer, "connect-c ") == &ReceiveBuffer[0]) {
+			if (strstr(ReceiveBuffer, "connect-channel ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 channel = strtol(location, &location, 10);
 				uint8 selector_index = strtol(location, &location, 10);
@@ -1210,7 +1231,7 @@ int main(void) {
 				sprintf(TransmitBuffer, "# Disonnected contact %u from selector %u.\r\n", contact, selector_index);
 				sendTransmitBuffer();
 			} else 
-			if (strstr(ReceiveBuffer, "disconnect-c ") == &ReceiveBuffer[0]) {
+			if (strstr(ReceiveBuffer, "disconnect-channel ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 channel = strtol(location, &location, 10);
 				uint8 selector_index = strtol(location, &location, 10);
@@ -1219,7 +1240,7 @@ int main(void) {
 				sprintf(TransmitBuffer, "# Disconnected channel %u from selector %u.\r\n", channel, selector_index);
 				sendTransmitBuffer();
 			} else 
-			if (strstr(ReceiveBuffer, "disconnect-from-all ") == &ReceiveBuffer[0]) {
+			if (strstr(ReceiveBuffer, "disconnect-contact-from-all ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 contact = strtol(location, &location, 10);
 				Disconnect_Contact_From_All_Selectors(contact);
@@ -1227,7 +1248,7 @@ int main(void) {
 				sprintf(TransmitBuffer, "# Disconnected contact %u from all selectors.\r\n", contact);
 				sendTransmitBuffer();
 			} else 
-			if (strstr(ReceiveBuffer, "disconnect-all-from ") == &ReceiveBuffer[0]) {
+			if (strstr(ReceiveBuffer, "disconnect-all-from-selector ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 selector_index = strtol(location, &location, 10);
 				Disconnect_All_Contacts_From_Selector(selector_index);
@@ -1267,6 +1288,31 @@ int main(void) {
 				Disconnect_Selectors();
 				
 				sprintf(TransmitBuffer, "# Disconnected all selectors.\r\n");
+				sendTransmitBuffer();
+			} else 
+			if (strstr(ReceiveBuffer, "connect-source-to ") == &ReceiveBuffer[0]) {
+				char* location = strstr(ReceiveBuffer, " ");
+				uint8 contact = strtol(location, &location, 10);
+				uint8 selector_index = Connect_Contact_To_Source(contact);
+				
+				sprintf(TransmitBuffer, "# Connected contact %u to selector %u (source).\r\n", contact, selector_index);
+				sendTransmitBuffer();
+			} else 
+			if (strstr(ReceiveBuffer, "connect-drain-to ") == &ReceiveBuffer[0]) {
+				char* location = strstr(ReceiveBuffer, " ");
+				uint8 contact = strtol(location, &location, 10);
+				uint8 selector_index = Connect_Contact_To_Drain(contact);
+				
+				sprintf(TransmitBuffer, "# Connected contact %u to selector %u (drain).\r\n", contact, selector_index);
+				sendTransmitBuffer();
+			} else 
+			if (strstr(ReceiveBuffer, "connect-device ") == &ReceiveBuffer[0]) {
+				char* location = strstr(ReceiveBuffer, " ");
+				uint8 contact1 = strtol(location, &location, 10);
+				uint8 contact2 = strtol(location, &location, 10);
+				uint8 selector_indices[2] = Connect_Contacts_For_Device(contact1, contact2);
+				
+				sprintf(TransmitBuffer, "# Connected device %u-%u to selectors %u (D) and %u (S).\r\n", contact1, contact2, selectors[0], selectors[1]);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "set-vgs-raw ") == &ReceiveBuffer[0]) {
