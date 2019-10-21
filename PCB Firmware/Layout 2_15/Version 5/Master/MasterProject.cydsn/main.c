@@ -982,7 +982,7 @@ void Measure_Full_Drain_Sweep(uint8 increment, uint8 wide, uint8 loop) {
 		Indexed_Drain_Sweep(imin, imax, increment, 1);
 	}
 	
-	// Ground gate when done
+	// Ground drain when done
 	Set_Vds(0);
 }
 
@@ -992,16 +992,21 @@ void Scan_Range(uint8 startDevice, uint8 stopDevice, uint8 wide, uint8 loop) {
 	if (stopDevice >= CONTACT_COUNT) return;
 	
 	for (uint8 device = startDevice; device <= stopDevice; device++) {
+		// Get contact and selector #'s for this device
 		uint8 contact1 = device;
 		uint8 contact2 = device + 1;
+		uint8 selector1 = (contact1 <= 32) ? (1) : (3);
+		uint8 selector2 = (contact2 <= 32) ? (2) : (4);
 		
+		// Disconnect previoues device and connect this new device
 		Disconnect_All_Contacts_From_All_Selectors();
-		Connect_Contact_To_Selector(contact1, 1);
-		Connect_Contact_To_Selector(contact2, 2);
+		Connect_Contact_To_Selector(contact1, selector1);
+		Connect_Contact_To_Selector(contact2, selector2);
 		
 		sprintf(TransmitBuffer, "\r\n Device %u - %u \r\n", contact1, contact2);
 		sendTransmitBuffer();
 		
+		// Gate Sweep
 		Measure_Full_Gate_Sweep(8, wide, loop);
 		
 		if (G_Break || G_Stop) break;
@@ -1011,22 +1016,7 @@ void Scan_Range(uint8 startDevice, uint8 stopDevice, uint8 wide, uint8 loop) {
 
 // SCAN: Do a gate sweep of every device 
 void Scan_All_Devices(uint8 wide, uint8 loop) {
-	for (uint8 device = 1; device <= CONTACT_COUNT/2; device++) {
-		uint8 contact1 = device;
-		uint8 contact2 = device + 1;
-		
-		Disconnect_All_Contacts_From_All_Selectors();
-		Connect_Contact_To_Selector(contact1, 1);
-		Connect_Contact_To_Selector(contact2, 2);
-		
-		sprintf(TransmitBuffer, "\r\n Device %u - %u \r\n", contact1, contact2);
-		sendTransmitBuffer();
-		
-		Measure_Full_Gate_Sweep(8, wide, loop);
-		
-		if (G_Break || G_Stop) break;
-		while (G_Pause);
-	}
+	Scan_Range(1, CONTACT_COUNT, wide, loop);
 }
 
 // === End Section: Device Measurement ===
@@ -1415,59 +1405,37 @@ int main(void) {
 				uint8 Vds_increment = (strtol(location, &location, 10));
 				Measure_Full_Drain_Sweep(Vds_increment, 0, 1);
 			} else 
-			if (strstr(ReceiveBuffer, "full-drain-gate-sweep ") == &ReceiveBuffer[0]) {
-				char* location = strstr(ReceiveBuffer, " ");
-				uint8 Vds_increment = (strtol(location, &location, 10));
-				Measure_Full_Drain_Sweep(Vds_increment, 1, 0);
-			} else 
-			if (strstr(ReceiveBuffer, "full-wide-drain-sweep-loop ") == &ReceiveBuffer[0]) {
-				char* location = strstr(ReceiveBuffer, " ");
-				uint8 Vds_increment = (strtol(location, &location, 10));
-				Measure_Full_Drain_Sweep(Vds_increment, 1, 1);
-			} else 
-			if (strstr(ReceiveBuffer, "scan ") == &ReceiveBuffer[0]) {
-				sprintf(TransmitBuffer, "\r\n# Scan Starting\r\n");
+			if (strstr(ReceiveBuffer, "scan-all-devices ") == &ReceiveBuffer[0]) {
+				sprintf(TransmitBuffer, "\r\n# Scan of All Devices Starting\r\n");
 				sendTransmitBuffer();
 				
 				Scan_All_Devices(0, 0);
 				
-				sprintf(TransmitBuffer, "\r\n# Scan Complete\r\n");
+				sprintf(TransmitBuffer, "\r\n# Scan of All Devices Complete\r\n");
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "scan-range ") == &ReceiveBuffer[0]) {
-				sprintf(TransmitBuffer, "\r\n# Scan-Range Starting\r\n");
-				sendTransmitBuffer();
-				
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 startDevice = strtol(location, &location, 10);
 				uint8 stopDevice = strtol(location, &location, 10);
+				sprintf(TransmitBuffer, "\r\n# Scan-Range (%u to %u) Starting\r\n", startDevice, stopDevice);
+				sendTransmitBuffer();
+				
 				Scan_Range(startDevice, stopDevice, 0, 0);
 				
-				sprintf(TransmitBuffer, "\r\n# Scan Range Complete\r\n");
+				sprintf(TransmitBuffer, "\r\n# Scan-Range (%u to %u) Complete\r\n", startDevice, stopDevice);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "scan-range-loop ") == &ReceiveBuffer[0]) {
-				sprintf(TransmitBuffer, "\r\n# Scan-Range-Loop Starting\r\n");
-				sendTransmitBuffer();
-				
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 startDevice = strtol(location, &location, 10);
 				uint8 stopDevice = strtol(location, &location, 10);
+				sprintf(TransmitBuffer, "\r\n# Scan-Range-Loop (%u to %u) Starting\r\n", startDevice, stopDevice);
+				sendTransmitBuffer();
+				
 				Scan_Range(startDevice, stopDevice, 0, 1);
 				
-				sprintf(TransmitBuffer, "\r\n# Scan Range Loop Complete\r\n");
-				sendTransmitBuffer();
-			} else 
-			if (strstr(ReceiveBuffer, "scan-range-wide-loop ") == &ReceiveBuffer[0]) {
-				sprintf(TransmitBuffer, "\r\n# Scan-Range-Wide-Loop Starting\r\n");
-				sendTransmitBuffer();
-				
-				char* location = strstr(ReceiveBuffer, " ");
-				uint8 startDevice = strtol(location, &location, 10);
-				uint8 stopDevice = strtol(location, &location, 10);
-				Scan_Range(startDevice, stopDevice, 1, 1);
-				
-				sprintf(TransmitBuffer, "\r\n# Scan Range Wide Loop Complete\r\n");
+				sprintf(TransmitBuffer, "\r\n# Scan-Range-Loop (%u to %u) Complete\r\n", startDevice, stopDevice);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "enable-uart-sending ") == &ReceiveBuffer[0]) {
