@@ -39,8 +39,8 @@
 // Primary Measurement Parameters
 #define DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT (100)
 #define GATE_CURRENT_MEASUREMENT_SAMPLECOUNT (50)
-#define ADC_INCREASE_RANGE_THRESHOLD (870400)
-#define ADC_DECREASE_RANGE_THRESHOLD (10240)
+#define ADC_INCREASE_RANGE_THRESHOLD (1024000 * 0.85)
+#define ADC_DECREASE_RANGE_THRESHOLD (1024000 * 0.01)
 
 
 
@@ -869,7 +869,7 @@ void Measure(uint32 deltaSigmaSampleCount, uint32 SAR1_SampleCount, uint32 SAR2_
 	if(SAR2_SampleCount > 0) {
 		SAR2_Measure_uV(&SAR2_Average, &SAR2_SD, SAR2_SampleCount);
 	}
-	float SAR2 = (1e-6) * SAR2_Average;
+	//float SAR2 = (1e-6) * SAR2_Average;
 	
 	sprintf(TransmitBuffer, "[%e,%f,%f,%e]\r\n", DrainCurrentAverageAmps, Get_Vgs(), Get_Vds(), GateCurrentAverageAmps);
 	sendTransmitBuffer();
@@ -1149,7 +1149,7 @@ int main(void) {
 	// Start communication with device selectors
 	I2C_1_Start();
 	
-	// Start All DACs, ADCs, and TIAs
+	// Start All DACs, ADCs, TIAs, and AMUXes
 	VDAC_Vds_Start();
 	VDAC_Vgs_Start();
 	VDAC_Ref_Start();
@@ -1157,6 +1157,7 @@ int main(void) {
 	ADC_SAR_1_Start();
 	ADC_SAR_2_Start();
 	TIA_1_Start();
+	AMux_1_Start();
 	
 	// Start the op-amp buffers
 	Opamp_1_Start();
