@@ -41,7 +41,7 @@
 #define DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT (100)
 #define GATE_CURRENT_MEASUREMENT_SAMPLECOUNT (50)
 #define ADC_INCREASE_RANGE_THRESHOLD (1024000 * 1.00) //ADC does not saturate until +/- 1.126 V, but "safe" range is up to +/- 1.024 V -- see datasheet for more info
-#define ADC_DECREASE_RANGE_THRESHOLD (1024000 * 0.01)
+#define ADC_DECREASE_RANGE_THRESHOLD (1024000 * 0.0085)
 
 // Compliance Current
 #define COMPLIANCE_CURRENT_LIMIT (10e-6)
@@ -433,6 +433,8 @@ void ADC_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCount
 
 // RANGE: take a test measurement of the delta-sigma ADC and adjust its range if necessary
 void ADC_Adjust_Range(uint32 sampleCount) {
+	if(sampleCount == 0) return;
+	
 	int32 ADC_Voltage = 0;
 	int32 ADC_Voltage_SD = 0;
 	
@@ -830,6 +832,9 @@ void Zero_All_DACs() {
 // === Section: Calibration ===
 
 void Calibrate_ADC_Offset(uint32 sampleCount) {
+	sprintf(TransmitBuffer, "Calibrating ADC Offsets...\r\n");
+	sendTransmitBuffer();
+	
 	uint8 current_range_resistor = TIA_Selected_Resistor;
 	
 	// Zero the DACs
@@ -841,7 +846,7 @@ void Calibrate_ADC_Offset(uint32 sampleCount) {
 	int32 voltageSD = 0;
 	
 	// Measure ADC offset voltages
-	for (uint8 i = Internal_R20K; i <= Internal_R1000K; i++) {
+	for (uint8 i = 0; i < TIA_INTERNAL_RESISTOR_COUNT + AMUX_EXTERNAL_RESISTOR_COUNT; i++) {
 		TIA_Set_Resistor(i);
 		// Take a few measurements to discard any problems with the initial measurements
 		ADC_Measure_uV(&voltage, &voltageSD, 3);
