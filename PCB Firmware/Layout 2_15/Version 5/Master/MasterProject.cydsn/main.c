@@ -32,15 +32,15 @@
 // De-noising Parameters
 #define ADC_MEASUREMENT_CHUNKSIZE (5)
 #define SAR_MEASUREMENT_CHUNKSIZE (5)
-#define CURRENT_MEASUREMENT_DISCARDCOUNT (3)
+#define CURRENT_MEASUREMENT_DISCARDCOUNT (0)
 #define AUTO_RANGE_SAMPLECOUNT (3)
-#define AUTO_RANGE_DISCARDCOUNT (5)
+#define AUTO_RANGE_DISCARDCOUNT (0)
 #define ADC_CALIBRATION_SAMPLECOUNT (300)
 
 // Primary Measurement Parameters
 #define DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT (100)
 #define GATE_CURRENT_MEASUREMENT_SAMPLECOUNT (50)
-#define ADC_INCREASE_RANGE_THRESHOLD (1024000 * 0.85)
+#define ADC_INCREASE_RANGE_THRESHOLD (1024000 * 1.00) //ADC does not saturate until +/- 1.126 V, but "safe" range is up to +/- 1.024 V -- see datasheet for more info
 #define ADC_DECREASE_RANGE_THRESHOLD (1024000 * 0.01)
 
 // Compliance Current
@@ -402,6 +402,8 @@ int32 medianOfArray(int32 array[], uint32 size) {
 
 // MEASURE: Measure Delta-Sigma ADC
 void ADC_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCount) {
+	if(sampleCount == 0) return;
+	
 	int32 ADC_Result = 0;
 	int32 ADC_SD = 0;
 	
@@ -452,6 +454,8 @@ void ADC_Adjust_Range(uint32 sampleCount) {
 
 // MEASURE: Measure SAR1 ADC
 void SAR1_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCount) {
+	if(sampleCount == 0) return;
+	
 	int32 SAR_Result = 0;
 	int32 SAR_SD = 0;
 	
@@ -481,6 +485,8 @@ void SAR1_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCoun
 
 // MEASURE: Measure SAR2 ADC
 void SAR2_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCount) {
+	if(sampleCount == 0) return;
+	
 	int32 SAR_Result = 0;
 	int32 SAR_SD = 0;
 	
