@@ -8,10 +8,12 @@
 
 
 // === Constants ===
+// System Architecture
 #define SELECTOR_COUNT (4u)
 #define CONTACT_COUNT (64u)
 #define CHANNEL_COUNT (34u)
 
+// Device Selector Sub-system Communication
 #define CONTACT_CONNECT_CODE (0xC0u)
 #define CONTACT_DISCONNECT_CODE (0xD1u)
 #define SELECTOR1_I2C_BUS_ADDRESS (0x66)
@@ -20,13 +22,12 @@
 #define SELECTOR4_I2C_BUS_ADDRESS (0x22)
 #define SELECTOR_SIGNAL_CHANNEL (33)
 
+// Quantity and Locations of Feedback Resistors
 #define TIA_INTERNAL_RESISTOR_COUNT (8)
 #define AMUX_EXTERNAL_RESISTOR_COUNT (3)
 #define AMUX_ADDRESS_FEEDBACK_R10K (0)
 #define AMUX_ADDRESS_FEEDBACK_R1M (1)
 #define AMUX_ADDRESS_FEEDBACK_R100M (2)
-
-#define COMPLIANCE_CURRENT_LIMIT (10e-6)
 
 // De-noising Parameters
 #define ADC_MEASUREMENT_CHUNKSIZE (5)
@@ -41,6 +42,9 @@
 #define GATE_CURRENT_MEASUREMENT_SAMPLECOUNT (50)
 #define ADC_INCREASE_RANGE_THRESHOLD (1024000 * 0.85)
 #define ADC_DECREASE_RANGE_THRESHOLD (1024000 * 0.01)
+
+// Compliance Current
+#define COMPLIANCE_CURRENT_LIMIT (10e-6)
 
 
 
@@ -60,19 +64,30 @@ struct Selector_I2C_Struct {
 
 
 // === Variables === 
-struct Selector_I2C_Struct selectors[SELECTOR_COUNT];
+// Serial USB/Bluetooth output buffer
 char TransmitBuffer[USBUART_BUFFER_SIZE];
 
-volatile uint8 newData = 0;
 volatile uint8 G_Stop = 0;
 volatile uint8 G_Break = 0;
 volatile uint8 G_Pause = 0;
 
+// Communication flag (non-zero when receiving a new command [1 == USB, 2 == Bluetooth])
+volatile uint8 newData = 0;
+
+// Bluetooth input buffer
 volatile char UART_Receive_Buffer[USBUART_BUFFER_SIZE];
 volatile uint8 UART_Rx_Position;
 
+// USB input buffer
 volatile char USBUART_Receive_Buffer[USBUART_BUFFER_SIZE];
 volatile uint8 USBUART_Rx_Position;
+
+// Enable/disable communication
+bool uartSendingEnabled = true; //Bluetooth
+bool usbuSendingEnabled = true; //USB
+
+// Device Selectors
+struct Selector_I2C_Struct selectors[SELECTOR_COUNT];
 
 // TIA Properties
 enum TIA_resistor {Internal_R20K, Internal_R30K, Internal_R40K, Internal_R80K, Internal_R120K, Internal_R250K, Internal_R500K, Internal_R1000K, External_R10K, External_R1M, External_R100M};
@@ -81,16 +96,12 @@ uint8 TIA_Resistor_Codes[TIA_INTERNAL_RESISTOR_COUNT + AMUX_EXTERNAL_RESISTOR_CO
 float TIA_Resistor_Values[TIA_INTERNAL_RESISTOR_COUNT + AMUX_EXTERNAL_RESISTOR_COUNT] = {20e3, 30e3, 40e3, 80e3, 120e3, 250e3, 500e3, 1e6, 10e3, 1e6, 100e6};
 int32 TIA_Offsets_uV[TIA_INTERNAL_RESISTOR_COUNT + AMUX_EXTERNAL_RESISTOR_COUNT] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-// Setpoints for VGS and VDS (in the 16-bit format that the DACs use)
+// Setpoints for VGS and VDS (in the signed 9-bit format that the DACs use)
 int16 Vgs_Index_Goal_Relative;
 int16 Vds_Index_Goal_Relative;
 
 // Alert that maximum current limit has been exceeded
 uint8 Compliance_Reached;
-
-bool uartSendingEnabled = true;
-bool usbuSendingEnabled = true;
-
 
 
 
