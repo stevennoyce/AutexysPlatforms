@@ -2151,40 +2151,6 @@ Text GLabel 3700 1650 2    39   Input ~ 0
 GND
 Text GLabel 3700 1550 2    39   Input ~ 0
 VDDD
-Text GLabel 5600 4100 0    39   Input ~ 0
-DisplayMISO
-Text GLabel 5600 4200 0    39   Input ~ 0
-DisplaySCK
-Text GLabel 5600 4300 0    39   Input ~ 0
-DisplayMOSI
-Text GLabel 5600 4400 0    39   Input ~ 0
-DisplayCS
-Text GLabel 5600 4500 0    39   Input ~ 0
-CardCS
-Text GLabel 5600 4600 0    39   Input ~ 0
-DisplayDataOrCommand
-Text GLabel 5600 4700 0    39   Input ~ 0
-DisplayReset
-Text GLabel 5600 4800 0    39   Input ~ 0
-VDDD
-Text GLabel 5600 4900 0    39   Input ~ 0
-GND
-Text GLabel 15250 1300 0    39   Input ~ 0
-DisplayMISO
-Text GLabel 15250 1400 0    39   Input ~ 0
-DisplaySCK
-Text GLabel 15250 1500 0    39   Input ~ 0
-DisplayMOSI
-Text GLabel 15250 1800 0    39   Input ~ 0
-DisplayCS
-Text GLabel 15250 1900 0    39   Input ~ 0
-CardCS
-Text GLabel 15250 2000 0    39   Input ~ 0
-DisplayDataOrCommand
-Text GLabel 15250 2100 0    39   Input ~ 0
-DisplayReset
-Text GLabel 5600 4000 0    39   Input ~ 0
-VDDD
 Text GLabel 7300 4600 0    39   Input ~ 0
 IO1
 Text GLabel 7300 4700 0    39   Input ~ 0
@@ -2888,17 +2854,6 @@ F 1 "68_PLCC_Socket_(8468-21B1-RK-TP)" V 2150 4150 50  0000 C CNN
 F 2 "Custom_Footprint_Library:68_PLCC_Socket_(8468-21B1-RK-TP)" H 1900 4150 50  0001 C CNN
 F 3 "DOCUMENTATION" H 1900 4150 50  0001 C CNN
 	1    1900 4150
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x10 DISP1
-U 1 1 5DB692F1
-P 5800 4400
-F 0 "DISP1" H 5800 4900 50  0000 C CNN
-F 1 "Conn_01x10" V 5900 4400 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x10_P2.54mm_Vertical_SMD_Pin1Left" H 5800 4400 50  0001 C CNN
-F 3 "~" H 5800 4400 50  0001 C CNN
-	1    5800 4400
 	1    0    0    -1  
 $EndComp
 $Comp
