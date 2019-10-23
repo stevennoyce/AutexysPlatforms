@@ -1622,32 +1622,8 @@ Text GLabel 7300 4000 0    39   Input ~ 0
 SolutionGate
 Text GLabel 10200 2050 2    39   Input ~ 0
 GND_GPIO
-Text GLabel 10250 2500 0    39   Input ~ 0
-I2
-Text GLabel 10250 2600 0    39   Input ~ 0
-I3
-Text GLabel 10250 2700 0    39   Input ~ 0
-I4
-Text GLabel 10250 2800 0    39   Input ~ 0
-I5
-Text GLabel 10250 2900 0    39   Input ~ 0
-I6
-Text GLabel 10250 3000 0    39   Input ~ 0
-I7
-Text GLabel 10350 2800 2    39   Input ~ 0
-SS2
 Text GLabel 9700 2050 0    39   Input ~ 0
 GND
-Text GLabel 10350 2500 2    39   Input ~ 0
-SolutionGate
-Text GLabel 10350 2600 2    39   Input ~ 0
-LocalGates
-Text GLabel 10350 2700 2    39   Input ~ 0
-BackGate
-Text GLabel 10350 2900 2    39   Input ~ 0
-SS1
-Text GLabel 10350 3000 2    39   Input ~ 0
-DD2
 Text GLabel 19800 3200 2    39   Input ~ 0
 IO2
 Text GLabel 19800 1900 2    39   Input ~ 0
@@ -1688,14 +1664,6 @@ Text GLabel 5800 5800 1    39   Input ~ 0
 DD2
 Text GLabel 6300 5800 1    39   Input ~ 0
 DD1
-Text GLabel 6800 5800 1    39   Input ~ 0
-IO1
-Text GLabel 7300 5800 1    39   Input ~ 0
-IO2
-Text GLabel 7800 5800 1    39   Input ~ 0
-IO3
-Text GLabel 8300 5800 1    39   Input ~ 0
-IO4
 Text GLabel 25100 11000 2    39   Input ~ 0
 XRES
 Text GLabel 22900 13000 0    39   Input ~ 0
@@ -2023,10 +1991,6 @@ F 3 "~" H 4550 2900 50  0001 C CNN
 	1    4550 2900
 	1    0    0    -1  
 $EndComp
-Text GLabel 10250 3100 0    39   Input ~ 0
-I8
-Text GLabel 10350 3100 2    39   Input ~ 0
-DD1
 Text GLabel 19800 1800 2    39   Input ~ 0
 IO3
 $Comp
@@ -2331,50 +2295,6 @@ F 1 "Conn_01x02" V 6500 5950 50  0000 C CNN
 F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 6300 6000 50  0001 C CNN
 F 3 "~" H 6300 6000 50  0001 C CNN
 	1    6300 6000
-	0    1    1    0   
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x02 IPEX9
-U 1 1 5DB22D42
-P 6800 6000
-F 0 "IPEX9" V 6900 5950 50  0000 C CNN
-F 1 "Conn_01x02" V 7000 5950 50  0000 C CNN
-F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 6800 6000 50  0001 C CNN
-F 3 "~" H 6800 6000 50  0001 C CNN
-	1    6800 6000
-	0    1    1    0   
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x02 IPEX10
-U 1 1 5DB22EDB
-P 7300 6000
-F 0 "IPEX10" V 7400 5950 50  0000 C CNN
-F 1 "Conn_01x02" V 7500 5950 50  0000 C CNN
-F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 7300 6000 50  0001 C CNN
-F 3 "~" H 7300 6000 50  0001 C CNN
-	1    7300 6000
-	0    1    1    0   
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x02 IPEX11
-U 1 1 5DB23078
-P 7800 6000
-F 0 "IPEX11" V 7900 5950 50  0000 C CNN
-F 1 "Conn_01x02" V 8000 5950 50  0000 C CNN
-F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 7800 6000 50  0001 C CNN
-F 3 "~" H 7800 6000 50  0001 C CNN
-	1    7800 6000
-	0    1    1    0   
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x02 IPEX12
-U 1 1 5DB23219
-P 8300 6000
-F 0 "IPEX12" V 8400 5950 50  0000 C CNN
-F 1 "Conn_01x02" V 8500 5950 50  0000 C CNN
-F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 8300 6000 50  0001 C CNN
-F 3 "~" H 8300 6000 50  0001 C CNN
-	1    8300 6000
 	0    1    1    0   
 $EndComp
 Wire Wire Line
