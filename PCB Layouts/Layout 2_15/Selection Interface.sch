@@ -2350,7 +2350,7 @@ $EndComp
 Text GLabel 3400 2100 0    39   Input ~ 0
 GND
 Text Notes 2550 7500 0    60   ~ 0
-- Don’t have gates permanently connected to PSoCs\n- Break out I2C\n- Give Masters ability to reset Slaves\n- PROGRESS: Add more optional TIA resistors\n- Communication between Masters\n- Clock sync between Masters\n- Resistor dividers for input measurements (esp. from AFM)\n- Boost converter for larger gate drive on board\n- Add interface for external chip (tire sensors)\n- Add interface for non-packaged chip (pogo pins)\n- Add temperature, humidity, and pressure sensors\n
+- Break out I2C\n- Give Masters ability to reset Slaves\n- PROGRESS: Add more optional TIA resistors\n- Communication between Masters\n- Clock sync between Masters\n- Resistor dividers for input measurements (esp. from AFM)\n- Boost converter for larger gate drive on board\n- Add interface for external chip (tire sensors)\n- Add interface for non-packaged chip (pogo pins)\n- Add temperature, humidity, and pressure sensors\n
 Wire Wire Line
 	20900 2600 21350 2600
 Wire Wire Line
