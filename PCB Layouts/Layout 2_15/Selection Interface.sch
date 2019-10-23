@@ -14,17 +14,6 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-$Comp
-L Selection-Interface-rescue:68_PLCC_Socket_(8468-21B1-RK-TP) SOCKET1
-U 1 1 5913392C
-P 1900 4150
-F 0 "SOCKET1" H 1900 4050 50  0000 C CNN
-F 1 "68_PLCC_Socket_(8468-21B1-RK-TP)" H 1900 4250 50  0000 C CNN
-F 2 "Custom_Footprint_Library:68_PLCC_Socket_(8468-21B1-RK-TP)" H 1900 4150 50  0001 C CNN
-F 3 "DOCUMENTATION" H 1900 4150 50  0001 C CNN
-	1    1900 4150
-	1    0    0    -1  
-$EndComp
 Text GLabel 1150 800  0    39   Input ~ 0
 LocalGates
 Text GLabel 1150 900  0    39   Input ~ 0
@@ -266,17 +255,6 @@ Text GLabel 24150 10500 1    39   Input ~ 0
 VSSD
 Text GLabel 17500 800  1    39   Input ~ 0
 VDDD
-$Comp
-L Selection-Interface-rescue:CY8C58_(100_TQFP) CPU1
-U 1 1 599B523D
-P 17500 2500
-F 0 "CPU1" H 17500 2400 50  0000 C CNN
-F 1 "CY8C58_(100_TQFP)" H 17500 2600 50  0000 C CNN
-F 2 "Package_QFP:TQFP-100_14x14mm_P0.5mm" H 17500 3000 50  0001 C CNN
-F 3 "DOCUMENTATION" H 17500 2100 50  0001 C CNN
-	1    17500 2500
-	1    0    0    -1  
-$EndComp
 Text GLabel 17400 4200 3    39   Input ~ 0
 VDDD
 Text GLabel 15050 2600 0    39   Input ~ 0
@@ -352,11 +330,7 @@ Wire Wire Line
 Wire Wire Line
 	23450 13150 23450 12600
 Wire Wire Line
-	17700 -300 17700 800 
-Wire Wire Line
 	17700 3500 17600 3500
-Wire Wire Line
-	17600 3500 17600 4200
 Wire Wire Line
 	20300 2600 20600 2600
 Connection ~ 20900 2600
@@ -450,7 +424,6 @@ Connection ~ 16900 -300
 Connection ~ 16600 -300
 Wire Wire Line
 	17500 200  17500 800 
-Connection ~ 17700 800 
 Text GLabel 17150 0    2    39   Input ~ 0
 VSSD
 Text GLabel 17150 500  2    39   Input ~ 0
@@ -839,74 +812,66 @@ Connection ~ 15150 2500
 Wire Wire Line
 	15150 2200 15250 2200
 Connection ~ 15150 2400
-Text GLabel 8650 1550 0    39   Input ~ 0
+Text GLabel 9700 1500 0    39   Input ~ 0
 I2C0_SCL
-Text GLabel 8650 1750 0    39   Input ~ 0
+Text GLabel 9700 1700 0    39   Input ~ 0
 I2C0_SDA
-Text GLabel 9150 1550 2    39   Input ~ 0
+Text GLabel 10200 1500 2    39   Input ~ 0
 VDDIO
 $Comp
 L Device:R R1
 U 1 1 599DAA07
-P 8900 1550
-F 0 "R1" V 8980 1550 50  0000 C CNN
-F 1 "1k" V 8900 1550 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 8830 1550 50  0001 C CNN
-F 3 "" H 8900 1550 50  0000 C CNN
-	1    8900 1550
+P 9950 1500
+F 0 "R1" V 10030 1500 50  0000 C CNN
+F 1 "1k" V 9950 1500 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 9880 1500 50  0001 C CNN
+F 3 "" H 9950 1500 50  0000 C CNN
+	1    9950 1500
 	0    1    1    0   
 $EndComp
 $Comp
 L Device:R R2
 U 1 1 599DAAE7
-P 8900 1750
-F 0 "R2" V 8980 1750 50  0000 C CNN
-F 1 "1k" V 8900 1750 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 8830 1750 50  0001 C CNN
-F 3 "" H 8900 1750 50  0000 C CNN
-	1    8900 1750
+P 9950 1700
+F 0 "R2" V 10030 1700 50  0000 C CNN
+F 1 "1k" V 9950 1700 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 9880 1700 50  0001 C CNN
+F 3 "" H 9950 1700 50  0000 C CNN
+	1    9950 1700
 	0    1    1    0   
 $EndComp
-Text GLabel 9150 1750 2    39   Input ~ 0
+Text GLabel 10200 1700 2    39   Input ~ 0
 VDDIO
 Wire Wire Line
-	8650 1550 8750 1550
+	9700 1500 9800 1500
 Wire Wire Line
-	8650 1750 8750 1750
+	9700 1700 9800 1700
 Wire Wire Line
-	9050 1550 9150 1550
+	10100 1500 10200 1500
 Wire Wire Line
-	9050 1750 9150 1750
+	10100 1700 10200 1700
 $Comp
 L Device:R R3
 U 1 1 599DD406
-P 17200 4700
-F 0 "R3" V 17280 4700 50  0000 C CNN
-F 1 "22R" V 17200 4700 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 17130 4700 50  0001 C CNN
-F 3 "" H 17200 4700 50  0000 C CNN
-	1    17200 4700
+P 17200 4650
+F 0 "R3" V 17280 4650 50  0000 C CNN
+F 1 "22R" V 17200 4650 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 17130 4650 50  0001 C CNN
+F 3 "" H 17200 4650 50  0000 C CNN
+	1    17200 4650
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:R R4
 U 1 1 599DD7C1
-P 17300 4700
-F 0 "R4" V 17380 4700 50  0000 C CNN
-F 1 "22R" V 17300 4700 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 17230 4700 50  0001 C CNN
-F 3 "" H 17300 4700 50  0000 C CNN
-	1    17300 4700
+P 17300 4650
+F 0 "R4" V 17380 4650 50  0000 C CNN
+F 1 "22R" V 17300 4650 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 17230 4650 50  0001 C CNN
+F 3 "" H 17300 4650 50  0000 C CNN
+	1    17300 4650
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	17200 4550 17200 4200
-Wire Wire Line
-	17300 4200 17300 4550
-Wire Wire Line
-	17300 4850 17300 5100
-Wire Wire Line
-	17200 5050 17200 4850
 Text GLabel 23750 10500 1    39   Input ~ 0
 D1
 Text GLabel 23650 10500 1    39   Input ~ 0
@@ -1717,17 +1682,6 @@ Text GLabel 25450 4350 3    39   Input ~ 0
 VDDIO
 Text GLabel 26650 950  1    39   Input ~ 0
 VDDD
-$Comp
-L Selection-Interface-rescue:CY8C58_(100_TQFP) CPU2
-U 1 1 599F6541
-P 26650 2650
-F 0 "CPU2" H 26650 2550 50  0000 C CNN
-F 1 "CY8C58_(100_TQFP)" H 26650 2750 50  0000 C CNN
-F 2 "Package_QFP:TQFP-100_14x14mm_P0.5mm" H 26650 3150 50  0001 C CNN
-F 3 "DOCUMENTATION" H 26650 2250 50  0001 C CNN
-	1    26650 2650
-	1    0    0    -1  
-$EndComp
 Text GLabel 26550 4350 3    39   Input ~ 0
 VDDD
 Text GLabel 24200 2750 0    39   Input ~ 0
@@ -1799,11 +1753,7 @@ Wire Wire Line
 Wire Wire Line
 	23800 3550 23600 3550
 Wire Wire Line
-	26850 -150 26850 950 
-Wire Wire Line
 	26850 3650 26750 3650
-Wire Wire Line
-	26750 3650 26750 4350
 Wire Wire Line
 	29450 2750 29750 2750
 Connection ~ 30050 2750
@@ -1897,7 +1847,6 @@ Connection ~ 26050 -150
 Connection ~ 25750 -150
 Wire Wire Line
 	26650 350  26650 950 
-Connection ~ 26850 950 
 Text GLabel 26300 150  2    39   Input ~ 0
 VSSD
 Text GLabel 26300 650  2    39   Input ~ 0
@@ -2187,12 +2136,12 @@ Wire Wire Line
 	27650 650  27750 650 
 Wire Wire Line
 	27750 650  27750 950 
-Text GLabel 8650 2000 0    39   Input ~ 0
+Text GLabel 9700 1900 0    39   Input ~ 0
 GND
-Text GLabel 9150 2000 2    39   Input ~ 0
+Text GLabel 10200 1900 2    39   Input ~ 0
 VSSD
 Wire Wire Line
-	8650 2000 9150 2000
+	9700 1900 10200 1900
 Text GLabel 16900 800  1    39   Input ~ 0
 DD2
 Text GLabel 16700 800  1    39   Input ~ 0
@@ -2201,57 +2150,57 @@ Text GLabel 26050 950  1    39   Input ~ 0
 DD2
 Text GLabel 25850 950  1    39   Input ~ 0
 DD1
-Text GLabel 3900 1800 0    39   Input ~ 0
+Text GLabel 7300 4400 0    39   Input ~ 0
 SS2
-Text GLabel 3900 1900 0    39   Input ~ 0
+Text GLabel 7300 4500 0    39   Input ~ 0
 SS1
-Text GLabel 4400 1800 2    39   Input ~ 0
+Text GLabel 7800 4400 2    39   Input ~ 0
 DD2
-Text GLabel 4400 1900 2    39   Input ~ 0
+Text GLabel 7800 4500 2    39   Input ~ 0
 DD1
-Text GLabel 3900 1600 0    39   Input ~ 0
+Text GLabel 7300 4200 0    39   Input ~ 0
 LocalGates
-Text GLabel 3900 1400 0    39   Input ~ 0
+Text GLabel 7300 4000 0    39   Input ~ 0
 GND
-Text GLabel 3900 1700 0    39   Input ~ 0
+Text GLabel 7300 4300 0    39   Input ~ 0
 BackGate
-Text GLabel 3900 1500 0    39   Input ~ 0
+Text GLabel 7300 4100 0    39   Input ~ 0
 SolutionGate
-Text GLabel 3050 3100 0    39   Input ~ 0
+Text GLabel 10250 2400 0    39   Input ~ 0
 I1
-Text GLabel 3050 3200 0    39   Input ~ 0
+Text GLabel 10250 2500 0    39   Input ~ 0
 I2
-Text GLabel 3050 3300 0    39   Input ~ 0
+Text GLabel 10250 2600 0    39   Input ~ 0
 I3
-Text GLabel 3050 3400 0    39   Input ~ 0
+Text GLabel 10250 2700 0    39   Input ~ 0
 I4
-Text GLabel 3050 3500 0    39   Input ~ 0
+Text GLabel 10250 2800 0    39   Input ~ 0
 I5
-Text GLabel 3050 3600 0    39   Input ~ 0
+Text GLabel 10250 2900 0    39   Input ~ 0
 I6
-Text GLabel 3050 3700 0    39   Input ~ 0
+Text GLabel 10250 3000 0    39   Input ~ 0
 I7
-Text GLabel 3050 3900 0    39   Input ~ 0
+Text GLabel 10250 3200 0    39   Input ~ 0
 IO1
-Text GLabel 3150 3500 2    39   Input ~ 0
+Text GLabel 10350 2800 2    39   Input ~ 0
 SS2
-Text GLabel 3150 3100 2    39   Input ~ 0
+Text GLabel 10350 2400 2    39   Input ~ 0
 GND
-Text GLabel 3150 3200 2    39   Input ~ 0
+Text GLabel 10350 2500 2    39   Input ~ 0
 SolutionGate
-Text GLabel 3150 3300 2    39   Input ~ 0
+Text GLabel 10350 2600 2    39   Input ~ 0
 LocalGates
-Text GLabel 3150 3400 2    39   Input ~ 0
+Text GLabel 10350 2700 2    39   Input ~ 0
 BackGate
-Text GLabel 3150 3600 2    39   Input ~ 0
+Text GLabel 10350 2900 2    39   Input ~ 0
 SS1
-Text GLabel 3150 3700 2    39   Input ~ 0
+Text GLabel 10350 3000 2    39   Input ~ 0
 DD2
-Text GLabel 3050 4000 0    39   Input ~ 0
+Text GLabel 10250 3300 0    39   Input ~ 0
 IO2
-Text GLabel 3050 4100 0    39   Input ~ 0
+Text GLabel 10250 3400 0    39   Input ~ 0
 IO3
-Text GLabel 3050 4200 0    39   Input ~ 0
+Text GLabel 10250 3500 0    39   Input ~ 0
 IO4
 Text GLabel 19800 3200 2    39   Input ~ 0
 IO2
@@ -2263,13 +2212,13 @@ Text GLabel 28950 1950 2    39   Input ~ 0
 IO3
 Text GLabel 28950 2050 2    39   Input ~ 0
 IO4
-Text GLabel 4350 2600 0    39   Input ~ 0
+Text GLabel 3500 1300 2    39   Input ~ 0
 BT1_RX
-Text GLabel 4650 3500 0    39   Input ~ 0
+Text GLabel 3200 1650 0    39   Input ~ 0
 BT1_TX
-Text GLabel 4650 3600 0    39   Input ~ 0
+Text GLabel 3200 1750 0    39   Input ~ 0
 GND
-Text GLabel 4650 3700 0    39   Input ~ 0
+Text GLabel 3200 1850 0    39   Input ~ 0
 VDDD
 Text GLabel 16600 4200 3    39   Input ~ 0
 BT1_RX
@@ -2279,31 +2228,31 @@ Text GLabel 25850 4350 3    39   Input ~ 0
 BT2_TX
 Text GLabel 25750 4350 3    39   Input ~ 0
 BT2_RX
-Text GLabel 5600 3350 2    39   Input ~ 0
+Text GLabel 4000 2100 2    39   Input ~ 0
 BT2_RX
-Text GLabel 5150 3600 2    39   Input ~ 0
+Text GLabel 3700 1750 2    39   Input ~ 0
 BT2_TX
-Text GLabel 5150 3500 2    39   Input ~ 0
+Text GLabel 3700 1650 2    39   Input ~ 0
 GND
-Text GLabel 5150 3400 2    39   Input ~ 0
+Text GLabel 3700 1550 2    39   Input ~ 0
 VDDD
-Text GLabel 5750 1450 0    39   Input ~ 0
+Text GLabel 5600 4100 0    39   Input ~ 0
 DisplayMISO
-Text GLabel 5750 1550 0    39   Input ~ 0
+Text GLabel 5600 4200 0    39   Input ~ 0
 DisplaySCK
-Text GLabel 5750 1650 0    39   Input ~ 0
+Text GLabel 5600 4300 0    39   Input ~ 0
 DisplayMOSI
-Text GLabel 5750 1750 0    39   Input ~ 0
+Text GLabel 5600 4400 0    39   Input ~ 0
 DisplayCS
-Text GLabel 5750 1850 0    39   Input ~ 0
+Text GLabel 5600 4500 0    39   Input ~ 0
 CardCS
-Text GLabel 5750 1950 0    39   Input ~ 0
+Text GLabel 5600 4600 0    39   Input ~ 0
 DisplayDataOrCommand
-Text GLabel 5750 2050 0    39   Input ~ 0
+Text GLabel 5600 4700 0    39   Input ~ 0
 DisplayReset
-Text GLabel 5750 2150 0    39   Input ~ 0
+Text GLabel 5600 4800 0    39   Input ~ 0
 VDDD
-Text GLabel 5750 2250 0    39   Input ~ 0
+Text GLabel 5600 4900 0    39   Input ~ 0
 GND
 Text GLabel 15250 1300 0    39   Input ~ 0
 DisplayMISO
@@ -2319,37 +2268,18 @@ Text GLabel 15250 2000 0    39   Input ~ 0
 DisplayDataOrCommand
 Text GLabel 15250 2100 0    39   Input ~ 0
 DisplayReset
-Text GLabel 5750 1350 0    39   Input ~ 0
+Text GLabel 5600 4000 0    39   Input ~ 0
 VDDD
-$Comp
-L Selection-Interface-rescue:CONN_01X10 P13
-U 1 1 59A396B9
-P 5950 1800
-F 0 "P13" H 5950 2350 50  0000 C CNN
-F 1 "CONN_01X10" V 6050 1800 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x10_P2.54mm_Vertical_SMD_Pin1Left" H 5950 1800 50  0001 C CNN
-F 3 "" H 5950 1800 50  0000 C CNN
-	1    5950 1800
-	1    0    0    -1  
-$EndComp
-Text GLabel 3900 2000 0    39   Input ~ 0
+Text GLabel 7300 4600 0    39   Input ~ 0
 IO1
-Text GLabel 3900 2100 0    39   Input ~ 0
+Text GLabel 7300 4700 0    39   Input ~ 0
 IO2
-Text GLabel 3900 2200 0    39   Input ~ 0
+Text GLabel 7300 4800 0    39   Input ~ 0
 IO3
-Text GLabel 3900 2300 0    39   Input ~ 0
+Text GLabel 7300 4900 0    39   Input ~ 0
 IO4
 Wire Wire Line
-	3050 3100 3150 3100
-Wire Wire Line
-	4400 1400 4400 1500
-Connection ~ 4400 1600
-Connection ~ 4400 1500
-Wire Wire Line
-	4400 2000 4400 2100
-Connection ~ 4400 2100
-Connection ~ 4400 2200
+	10250 2400 10350 2400
 $Comp
 L Selection-Interface-rescue:CONN_01X02 P15
 U 1 1 59A4036E
@@ -2429,17 +2359,6 @@ Text GLabel 7800 5800 1    39   Input ~ 0
 IO3
 Text GLabel 8300 5800 1    39   Input ~ 0
 IO4
-$Comp
-L Selection-Interface-rescue:CONN_02X10 P6
-U 1 1 59A25C60
-P 4150 1850
-F 0 "P6" H 4150 2400 50  0000 C CNN
-F 1 "CONN_02X10" V 4150 1850 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_2x10_P2.54mm_Vertical_SMD" H 4150 650 50  0001 C CNN
-F 3 "" H 4150 650 50  0000 C CNN
-	1    4150 1850
-	1    0    0    -1  
-$EndComp
 Text GLabel 25100 11000 2    39   Input ~ 0
 XRES
 Text GLabel 22900 13000 0    39   Input ~ 0
@@ -2484,48 +2403,26 @@ Text GLabel 14450 3300 0    39   Input ~ 0
 SWDCLK5
 Text GLabel 14450 3400 0    39   Input ~ 0
 XRES
-Text GLabel 22350 4600 2    39   Input ~ 0
+Text GLabel 3600 3600 2    39   Input ~ 0
 VSSD
-Text GLabel 22350 4700 2    39   Input ~ 0
+Text GLabel 3600 3700 2    39   Input ~ 0
 VDDD
-Text GLabel 22350 4400 2    39   Input ~ 0
+Text GLabel 3600 3400 2    39   Input ~ 0
 SWDCLK
-Text GLabel 22350 4300 2    39   Input ~ 0
+Text GLabel 3600 3300 2    39   Input ~ 0
 SWDIO
-Text GLabel 22350 4500 2    39   Input ~ 0
+Text GLabel 3600 3500 2    39   Input ~ 0
 XRES
-$Comp
-L Selection-Interface-rescue:CONN_02X05 P18
-U 1 1 59A43F1B
-P 22100 4500
-F 0 "P18" H 22100 4800 50  0000 C CNN
-F 1 "CONN_02X05" H 22100 4200 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical_SMD" H 22100 3300 50  0001 C CNN
-F 3 "" H 22100 3300 50  0000 C CNN
-	1    22100 4500
-	1    0    0    -1  
-$EndComp
-Text GLabel 21850 4300 0    39   Input ~ 0
+Text GLabel 3100 3300 0    39   Input ~ 0
 SWDIO
-Text GLabel 21850 4400 0    39   Input ~ 0
+Text GLabel 3100 3400 0    39   Input ~ 0
 SWDCLK
-Text GLabel 21850 4500 0    39   Input ~ 0
+Text GLabel 3100 3500 0    39   Input ~ 0
 XRES
-Text GLabel 21850 4600 0    39   Input ~ 0
+Text GLabel 3100 3600 0    39   Input ~ 0
 VSSD
-Text GLabel 21850 4700 0    39   Input ~ 0
+Text GLabel 3100 3700 0    39   Input ~ 0
 VDDD
-$Comp
-L Selection-Interface-rescue:USB_2.0_B USB1
-U 1 1 59A082C2
-P 17300 5650
-F 0 "USB1" H 17300 5700 60  0000 C CNN
-F 1 "USB_2.0_B" H 17300 5600 60  0000 C CNN
-F 2 "Custom_Footprint_Library:Micro_USB_2.0_B_SMD(10118192-0001LF)" H 17300 5650 60  0001 C CNN
-F 3 "" H 17300 5650 60  0001 C CNN
-	1    17300 5650
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	17300 5100 17200 5100
 Wire Wire Line
@@ -2536,17 +2433,6 @@ Wire Wire Line
 	17250 5050 17250 5150
 Wire Wire Line
 	17250 5150 17300 5150
-$Comp
-L Selection-Interface-rescue:USB_2.0_B USB2
-U 1 1 59A0C386
-P 26450 5850
-F 0 "USB2" H 26450 5900 60  0000 C CNN
-F 1 "USB_2.0_B" H 26450 5800 60  0000 C CNN
-F 2 "Custom_Footprint_Library:Micro_USB_2.0_B_SMD(10118192-0001LF)" H 26450 5850 60  0001 C CNN
-F 3 "" H 26450 5850 60  0001 C CNN
-	1    26450 5850
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	26450 5250 26400 5250
 Wire Wire Line
@@ -2558,76 +2444,55 @@ Wire Wire Line
 Wire Wire Line
 	26450 5300 26450 5350
 $Comp
-L Selection-Interface-rescue:CONN_02X04 P8
-U 1 1 59A10532
-P 4900 3550
-F 0 "P8" H 4900 3800 50  0000 C CNN
-F 1 "CONN_02X04" H 4900 3300 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_2x04_P2.54mm_Vertical_SMD" H 4900 2350 50  0001 C CNN
-F 3 "" H 4900 2350 50  0000 C CNN
-	1    4900 3550
-	1    0    0    -1  
-$EndComp
-$Comp
 L Device:R R15
 U 1 1 59A1B88E
-P 4350 2750
-F 0 "R15" V 4430 2750 50  0000 C CNN
-F 1 "1k" V 4350 2750 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 4280 2750 50  0001 C CNN
-F 3 "" H 4350 2750 50  0000 C CNN
-	1    4350 2750
-	1    0    0    -1  
+P 3350 1300
+F 0 "R15" V 3430 1300 50  0000 C CNN
+F 1 "1k" V 3350 1300 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 3280 1300 50  0001 C CNN
+F 3 "" H 3350 1300 50  0000 C CNN
+	1    3350 1300
+	0    1    1    0   
 $EndComp
 $Comp
 L Device:R R16
 U 1 1 59A1BA2B
-P 4350 3100
-F 0 "R16" V 4430 3100 50  0000 C CNN
-F 1 "2k" V 4350 3100 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 4280 3100 50  0001 C CNN
-F 3 "" H 4350 3100 50  0000 C CNN
-	1    4350 3100
-	1    0    0    -1  
+P 3050 1300
+F 0 "R16" V 3130 1300 50  0000 C CNN
+F 1 "2k" V 3050 1300 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 2980 1300 50  0001 C CNN
+F 3 "" H 3050 1300 50  0000 C CNN
+	1    3050 1300
+	0    1    1    0   
 $EndComp
-Text GLabel 4350 3250 3    39   Input ~ 0
+Text GLabel 2900 1300 0    39   Input ~ 0
 GND
-Wire Wire Line
-	4350 2900 4350 2950
-Wire Wire Line
-	4350 2950 4650 2950
-Wire Wire Line
-	4650 2950 4650 3400
 $Comp
 L Device:R R17
 U 1 1 59A1CCF4
-P 5600 3500
-F 0 "R17" V 5680 3500 50  0000 C CNN
-F 1 "1k" V 5600 3500 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 5530 3500 50  0001 C CNN
-F 3 "" H 5600 3500 50  0000 C CNN
-	1    5600 3500
-	1    0    0    -1  
+P 3850 2100
+F 0 "R17" V 3930 2100 50  0000 C CNN
+F 1 "1k" V 3850 2100 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 3780 2100 50  0001 C CNN
+F 3 "" H 3850 2100 50  0000 C CNN
+	1    3850 2100
+	0    1    1    0   
 $EndComp
 $Comp
 L Device:R R18
 U 1 1 59A1CCFA
-P 5600 3850
-F 0 "R18" V 5680 3850 50  0000 C CNN
-F 1 "2k" V 5600 3850 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 5530 3850 50  0001 C CNN
-F 3 "" H 5600 3850 50  0000 C CNN
-	1    5600 3850
-	1    0    0    -1  
+P 3550 2100
+F 0 "R18" V 3630 2100 50  0000 C CNN
+F 1 "2k" V 3550 2100 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 3480 2100 50  0001 C CNN
+F 3 "" H 3550 2100 50  0000 C CNN
+	1    3550 2100
+	0    1    1    0   
 $EndComp
-Text GLabel 5600 4000 3    39   Input ~ 0
+Text GLabel 3400 2100 0    39   Input ~ 0
 GND
-Wire Wire Line
-	5600 3650 5600 3700
-Wire Wire Line
-	5600 3700 5150 3700
-Text Notes 6600 3750 0    60   ~ 0
-- Don’t have gates permanently connected to PSoCs\n- Break out I2C\n- Give Masters ability to reset Slaves\n- Add more optional TIA resistors\n- DONE: Give PSoCs more natural number labels\n- Communication between Masters\n- Clock sync between Masters\n- Resistor dividers for input measurements (esp. from AFM)\n- Boost converter for larger gate drive on board\n- Add interface for external chip (tire sensors)\n- Add interface for non-packaged chip (pogo pins)\n- Add temperature, humidity, and pressure sensors\n- DONE: Solution Gate and Back Gate are switched on Socket!  Fix!\n- DONE: Need holes for magnets or something to preserve absolute positioning on AFM stage\n
+Text Notes 2550 7500 0    60   ~ 0
+- Don’t have gates permanently connected to PSoCs\n- Break out I2C\n- Give Masters ability to reset Slaves\n- Add more optional TIA resistors\n- Communication between Masters\n- Clock sync between Masters\n- Resistor dividers for input measurements (esp. from AFM)\n- Boost converter for larger gate drive on board\n- Add interface for external chip (tire sensors)\n- Add interface for non-packaged chip (pogo pins)\n- Add temperature, humidity, and pressure sensors\n
 Wire Wire Line
 	20900 2600 21350 2600
 Wire Wire Line
@@ -2654,8 +2519,6 @@ Wire Wire Line
 	16900 -300 17700 -300
 Wire Wire Line
 	16600 -300 16900 -300
-Wire Wire Line
-	17700 800  17700 3500
 Wire Wire Line
 	20900 3050 21150 3050
 Wire Wire Line
@@ -2849,8 +2712,6 @@ Wire Wire Line
 Wire Wire Line
 	25750 -150 26050 -150
 Wire Wire Line
-	26850 950  26850 3650
-Wire Wire Line
 	30050 3200 30300 3200
 Wire Wire Line
 	29750 3200 30050 3200
@@ -2874,121 +2735,113 @@ Wire Wire Line
 	24300 2650 24300 2750
 Wire Wire Line
 	24300 2550 24300 2650
-Wire Wire Line
-	4400 1600 4400 1700
-Wire Wire Line
-	4400 1500 4400 1600
-Wire Wire Line
-	4400 2100 4400 2200
-Wire Wire Line
-	4400 2200 4400 2300
 $Comp
 L Mechanical:MountingHole MH3
 U 1 1 5D9EABCE
-P 10100 5250
-F 0 "MH3" H 10200 5296 50  0000 L CNN
-F 1 "MountingHole" H 10200 5205 50  0000 L CNN
-F 2 "Custom_Footprint_Library:MountingHole_5.1mm" H 10100 5250 50  0001 C CNN
-F 3 "~" H 10100 5250 50  0001 C CNN
-	1    10100 5250
+P 4550 3400
+F 0 "MH3" H 4650 3446 50  0000 L CNN
+F 1 "MountingHole" H 4650 3355 50  0000 L CNN
+F 2 "Custom_Footprint_Library:MountingHole_5.1mm" H 4550 3400 50  0001 C CNN
+F 3 "~" H 4550 3400 50  0001 C CNN
+	1    4550 3400
 	1    0    0    -1  
 $EndComp
 $Comp
 L Mechanical:MountingHole MH2
 U 1 1 5D9EBACA
-P 10100 5000
-F 0 "MH2" H 10200 5046 50  0000 L CNN
-F 1 "MountingHole" H 10200 4955 50  0000 L CNN
-F 2 "Custom_Footprint_Library:MountingHole_5.1mm" H 10100 5000 50  0001 C CNN
-F 3 "~" H 10100 5000 50  0001 C CNN
-	1    10100 5000
+P 4550 3150
+F 0 "MH2" H 4650 3196 50  0000 L CNN
+F 1 "MountingHole" H 4650 3105 50  0000 L CNN
+F 2 "Custom_Footprint_Library:MountingHole_5.1mm" H 4550 3150 50  0001 C CNN
+F 3 "~" H 4550 3150 50  0001 C CNN
+	1    4550 3150
 	1    0    0    -1  
 $EndComp
 $Comp
 L Mechanical:MountingHole MH5
 U 1 1 5DA59D68
-P 10100 5750
-F 0 "MH5" H 10200 5796 50  0000 L CNN
-F 1 "MountingHole" H 10200 5705 50  0000 L CNN
-F 2 "Custom_Footprint_Library:MountingHole_5.1mm" H 10100 5750 50  0001 C CNN
-F 3 "~" H 10100 5750 50  0001 C CNN
-	1    10100 5750
+P 5900 3150
+F 0 "MH5" H 6000 3196 50  0000 L CNN
+F 1 "MountingHole" H 6000 3105 50  0000 L CNN
+F 2 "Custom_Footprint_Library:MountingHole_5.1mm" H 5900 3150 50  0001 C CNN
+F 3 "~" H 5900 3150 50  0001 C CNN
+	1    5900 3150
 	1    0    0    -1  
 $EndComp
 $Comp
 L Mechanical:MountingHole MH6
 U 1 1 5DA59F0E
-P 10100 6000
-F 0 "MH6" H 10200 6046 50  0000 L CNN
-F 1 "MountingHole" H 10200 5955 50  0000 L CNN
-F 2 "Custom_Footprint_Library:MountingHole_5.1mm" H 10100 6000 50  0001 C CNN
-F 3 "~" H 10100 6000 50  0001 C CNN
-	1    10100 6000
+P 5900 3400
+F 0 "MH6" H 6000 3446 50  0000 L CNN
+F 1 "MountingHole" H 6000 3355 50  0000 L CNN
+F 2 "Custom_Footprint_Library:MountingHole_5.1mm" H 5900 3400 50  0001 C CNN
+F 3 "~" H 5900 3400 50  0001 C CNN
+	1    5900 3400
 	1    0    0    -1  
 $EndComp
 $Comp
 L Mechanical:MountingHole MH1
 U 1 1 5DA5A0AE
-P 10100 4750
-F 0 "MH1" H 10200 4796 50  0000 L CNN
-F 1 "MountingHole" H 10200 4705 50  0000 L CNN
-F 2 "Custom_Footprint_Library:MountingHole_5.1mm" H 10100 4750 50  0001 C CNN
-F 3 "~" H 10100 4750 50  0001 C CNN
-	1    10100 4750
+P 4550 2900
+F 0 "MH1" H 4650 2946 50  0000 L CNN
+F 1 "MountingHole" H 4650 2855 50  0000 L CNN
+F 2 "Custom_Footprint_Library:MountingHole_5.1mm" H 4550 2900 50  0001 C CNN
+F 3 "~" H 4550 2900 50  0001 C CNN
+	1    4550 2900
 	1    0    0    -1  
 $EndComp
-Text GLabel 3050 3800 0    39   Input ~ 0
+Text GLabel 10250 3100 0    39   Input ~ 0
 I8
-Text GLabel 3150 3800 2    39   Input ~ 0
+Text GLabel 10350 3100 2    39   Input ~ 0
 DD1
 Text GLabel 19800 1800 2    39   Input ~ 0
 IO3
 $Comp
 L Connector_Generic:Conn_02x06_Odd_Even PROG2
 U 1 1 5DA1458B
-P 4050 4600
-F 0 "PROG2" H 4100 5017 50  0000 C CNN
-F 1 "Conn_02x06_Odd_Even" H 4100 4926 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_2x06_P2.54mm_Vertical_SMD" H 4050 4600 50  0001 C CNN
-F 3 "~" H 4050 4600 50  0001 C CNN
-	1    4050 4600
+P 3300 4600
+F 0 "PROG2" H 3350 5017 50  0000 C CNN
+F 1 "Conn_02x06_Odd_Even" H 3350 4926 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x06_P2.54mm_Vertical_SMD" H 3300 4600 50  0001 C CNN
+F 3 "~" H 3300 4600 50  0001 C CNN
+	1    3300 4600
 	1    0    0    -1  
 $EndComp
-Text GLabel 3850 4400 0    50   Input ~ 0
+Text GLabel 3100 4400 0    50   Input ~ 0
 SWDCLK1
-Text GLabel 3850 4500 0    50   Input ~ 0
+Text GLabel 3100 4500 0    50   Input ~ 0
 SWDCLK2
-Text GLabel 3850 4600 0    50   Input ~ 0
+Text GLabel 3100 4600 0    50   Input ~ 0
 SWDCLK3
-Text GLabel 3850 4700 0    50   Input ~ 0
+Text GLabel 3100 4700 0    50   Input ~ 0
 SWDCLK4
-Text GLabel 3850 4800 0    50   Input ~ 0
+Text GLabel 3100 4800 0    50   Input ~ 0
 SWDCLK5
-Text GLabel 3850 4900 0    50   Input ~ 0
+Text GLabel 3100 4900 0    50   Input ~ 0
 SWDCLK6
-Text GLabel 4350 4400 2    50   Input ~ 0
+Text GLabel 3600 4400 2    50   Input ~ 0
 SWDIO1
-Text GLabel 4350 4500 2    50   Input ~ 0
+Text GLabel 3600 4500 2    50   Input ~ 0
 SWDIO2
-Text GLabel 4350 4600 2    50   Input ~ 0
+Text GLabel 3600 4600 2    50   Input ~ 0
 SWDIO3
-Text GLabel 4350 4700 2    50   Input ~ 0
+Text GLabel 3600 4700 2    50   Input ~ 0
 SWDIO4
-Text GLabel 4350 4800 2    50   Input ~ 0
+Text GLabel 3600 4800 2    50   Input ~ 0
 SWDIO5
-Text GLabel 4350 4900 2    50   Input ~ 0
+Text GLabel 3600 4900 2    50   Input ~ 0
 SWDIO6
 Text GLabel 16700 18250 3    39   Input ~ 0
 D49
 $Comp
 L Mechanical:MountingHole MH4
 U 1 1 5DA3CFD1
-P 10100 5500
-F 0 "MH4" H 10200 5546 50  0000 L CNN
-F 1 "MountingHole" H 10200 5455 50  0000 L CNN
-F 2 "Custom_Footprint_Library:MountingHole_5.1mm" H 10100 5500 50  0001 C CNN
-F 3 "~" H 10100 5500 50  0001 C CNN
-	1    10100 5500
+P 5900 2900
+F 0 "MH4" H 6000 2946 50  0000 L CNN
+F 1 "MountingHole" H 6000 2855 50  0000 L CNN
+F 2 "Custom_Footprint_Library:MountingHole_5.1mm" H 5900 2900 50  0001 C CNN
+F 3 "~" H 5900 2900 50  0001 C CNN
+	1    5900 2900
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -3035,4 +2888,203 @@ F 3 "" H 16850 17200 50  0001 C CNN
 	1    16850 17200
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	3200 1550 3200 1300
+Connection ~ 3200 1300
+Wire Wire Line
+	3700 1850 3700 2100
+Connection ~ 3700 2100
+$Comp
+L Connector_Generic:Conn_02x05_Odd_Even PROG1
+U 1 1 5DF33642
+P 3300 3500
+F 0 "PROG1" H 3350 3917 50  0000 C CNN
+F 1 "Conn_02x05_Odd_Even" H 3350 3826 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical_SMD" H 3300 3500 50  0001 C CNN
+F 3 "~" H 3300 3500 50  0001 C CNN
+	1    3300 3500
+	1    0    0    -1  
+$EndComp
+Text GLabel 3200 1550 0    39   Input ~ 0
+BT1_RXR
+Text GLabel 3700 1850 2    39   Input ~ 0
+BT2_RXR
+Text GLabel 17100 5150 1    39   Input ~ 0
+VBUS1
+Text GLabel 26250 5350 1    39   Input ~ 0
+VBUS2
+$Comp
+L Connector_Generic:Conn_02x10_Odd_Even OUT1
+U 1 1 5DFA7230
+P 7500 4400
+F 0 "OUT1" H 7550 5017 50  0000 C CNN
+F 1 "Conn_02x10_Odd_Even" H 7550 4926 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x10_P2.54mm_Vertical_SMD" H 7500 4400 50  0001 C CNN
+F 3 "~" H 7500 4400 50  0001 C CNN
+	1    7500 4400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7800 4000 7800 4100
+Connection ~ 7800 4100
+Wire Wire Line
+	7800 4100 7800 4200
+Connection ~ 7800 4200
+Wire Wire Line
+	7800 4200 7800 4300
+Wire Wire Line
+	7800 4600 7800 4700
+Connection ~ 7800 4700
+Wire Wire Line
+	7800 4700 7800 4800
+Connection ~ 7800 4800
+Wire Wire Line
+	7800 4800 7800 4900
+Text GLabel 24250 10500 2    39   Input ~ 0
+VCCD_M1
+Text GLabel 23950 9000 1    39   Input ~ 0
+VDDA_M1
+Text GLabel 17350 8800 1    39   Input ~ 0
+VDDA_M2
+Text GLabel 23950 14700 1    39   Input ~ 0
+VDDA_M3
+Text GLabel 17100 14650 1    39   Input ~ 0
+VDDA_M4
+Text GLabel 17650 10300 2    39   Input ~ 0
+VCCD_M2
+Text GLabel 24250 16200 2    39   Input ~ 0
+VCCD_M3
+Text GLabel 17400 16150 2    39   Input ~ 0
+VCCD_M4
+Text GLabel 29250 2450 1    39   Input ~ 0
+VDDA_C2
+Text GLabel 20100 2300 1    39   Input ~ 0
+VDDA_C1
+Text GLabel 29250 2900 3    39   Input ~ 0
+VCCA_C2
+Text GLabel 20100 2750 3    39   Input ~ 0
+VCCA_C1
+Text GLabel 26850 -150 1    39   Input ~ 0
+VCCD_C2
+Text GLabel 17700 -300 1    39   Input ~ 0
+VCCD_C1
+Text GLabel 17400 5150 1    39   Input ~ 0
+USB1_ID
+Text GLabel 26550 5350 1    39   Input ~ 0
+USB2_ID
+Text GLabel 17200 4800 0    39   Input ~ 0
+USB1_D+
+Wire Wire Line
+	17200 4800 17200 5050
+Wire Wire Line
+	17300 4800 17300 5100
+Text GLabel 17300 4800 2    39   Input ~ 0
+USB1_D-
+Wire Wire Line
+	17200 4500 17200 4200
+Wire Wire Line
+	17300 4500 17300 4200
+Text GLabel 26450 5000 2    39   Input ~ 0
+USB2_D-
+Text GLabel 26350 5000 0    39   Input ~ 0
+USB2_D+
+Text GLabel 26350 4700 0    39   Input ~ 0
+USBDP_C2
+Text GLabel 26450 4700 2    39   Input ~ 0
+USBDM_C2
+Text GLabel 17200 4500 0    39   Input ~ 0
+USBDP_C1
+Text GLabel 17300 4500 2    39   Input ~ 0
+USBDM_C1
+$Comp
+L Connector_Generic:Conn_02x04_Odd_Even B1
+U 1 1 5E1340AC
+P 3400 1650
+F 0 "B1" H 3450 1600 50  0000 C CNN
+F 1 "Conn_02x04_Odd_Even" H 3450 1350 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x04_P2.54mm_Vertical_SMD" H 3400 1650 50  0001 C CNN
+F 3 "~" H 3400 1650 50  0001 C CNN
+	1    3400 1650
+	1    0    0    -1  
+$EndComp
+$Comp
+L Custom_Schematic_Library:USB_2.0_B USB2
+U 1 1 5DB32F80
+P 26450 5850
+F 0 "USB2" H 26450 5900 60  0000 C CNN
+F 1 "USB_2.0_B" H 26450 5800 60  0000 C CNN
+F 2 "Custom_Footprint_Library:Micro_USB_2.0_B_SMD(10118192-0001LF)" H 26450 5850 60  0001 C CNN
+F 3 "" H 26450 5850 60  0001 C CNN
+	1    26450 5850
+	1    0    0    -1  
+$EndComp
+$Comp
+L Custom_Schematic_Library:USB_2.0_B USB1
+U 1 1 5DB67E6B
+P 17300 5650
+F 0 "USB1" H 17300 5700 60  0000 C CNN
+F 1 "USB_2.0_B" H 17300 5600 60  0000 C CNN
+F 2 "Custom_Footprint_Library:Micro_USB_2.0_B_SMD(10118192-0001LF)" H 17300 5650 60  0001 C CNN
+F 3 "" H 17300 5650 60  0001 C CNN
+	1    17300 5650
+	1    0    0    -1  
+$EndComp
+$Comp
+L Custom_Schematic_Library:68_PLCC_Socket_(8468-21B1-RK-TP) SOCKET1
+U 1 1 5DB4BA8D
+P 1900 4150
+F 0 "SOCKET1" V 1900 4200 50  0000 C CNN
+F 1 "68_PLCC_Socket_(8468-21B1-RK-TP)" V 2150 4150 50  0000 C CNN
+F 2 "Custom_Footprint_Library:68_PLCC_Socket_(8468-21B1-RK-TP)" H 1900 4150 50  0001 C CNN
+F 3 "DOCUMENTATION" H 1900 4150 50  0001 C CNN
+	1    1900 4150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x10 DISP1
+U 1 1 5DB692F1
+P 5800 4400
+F 0 "DISP1" H 5800 4900 50  0000 C CNN
+F 1 "Conn_01x10" V 5900 4400 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x10_P2.54mm_Vertical_SMD_Pin1Left" H 5800 4400 50  0001 C CNN
+F 3 "~" H 5800 4400 50  0001 C CNN
+	1    5800 4400
+	1    0    0    -1  
+$EndComp
+$Comp
+L Custom_Schematic_Library:CY8C58_(100_TQFP) CPU1
+U 1 1 5DC0AF8F
+P 17500 2500
+F 0 "CPU1" H 17500 2300 50  0000 C CNN
+F 1 "CY8C58_(100_TQFP)" H 17500 2700 50  0000 C CNN
+F 2 "Package_QFP:TQFP-100_14x14mm_P0.5mm" H 17500 3000 50  0001 C CNN
+F 3 "DOCUMENTATION" H 17500 2100 50  0001 C CNN
+	1    17500 2500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	17700 -300 17700 800 
+Connection ~ 17700 800 
+Wire Wire Line
+	17700 800  17700 3500
+Wire Wire Line
+	17600 3500 17600 4200
+Wire Wire Line
+	26850 -150 26850 950 
+$Comp
+L Custom_Schematic_Library:CY8C58_(100_TQFP) CPU2
+U 1 1 5DC936A6
+P 26650 2650
+F 0 "CPU2" H 26650 2450 50  0000 C CNN
+F 1 "CY8C58_(100_TQFP)" H 26650 2900 50  0000 C CNN
+F 2 "Package_QFP:TQFP-100_14x14mm_P0.5mm" H 26650 3150 50  0001 C CNN
+F 3 "DOCUMENTATION" H 26650 2250 50  0001 C CNN
+	1    26650 2650
+	1    0    0    -1  
+$EndComp
+Connection ~ 26850 950 
+Wire Wire Line
+	26850 950  26850 3650
+Wire Wire Line
+	26750 3650 26750 4350
 $EndSCHEMATC
