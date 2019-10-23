@@ -15,11 +15,11 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 Text GLabel 1150 800  0    39   Input ~ 0
-LocalGates
+LocalGates_Socket
 Text GLabel 1150 900  0    39   Input ~ 0
-SolutionGate
+SolutionGate_Socket
 Text GLabel 1150 1000 0    39   Input ~ 0
-BackGate
+BackGate_Socket
 Text GLabel 1150 1200 0    60   Input ~ 0
 D1
 Text GLabel 1150 1300 0    60   Input ~ 0
@@ -2081,13 +2081,13 @@ Text GLabel 7800 4400 2    39   Input ~ 0
 DD2
 Text GLabel 7800 4500 2    39   Input ~ 0
 DD1
-Text GLabel 7300 4200 0    39   Input ~ 0
-LocalGates
-Text GLabel 7300 4000 0    39   Input ~ 0
-GND
-Text GLabel 7300 4300 0    39   Input ~ 0
-BackGate
 Text GLabel 7300 4100 0    39   Input ~ 0
+LocalGates
+Text GLabel 7800 4300 2    39   Input ~ 0
+GND
+Text GLabel 7300 4200 0    39   Input ~ 0
+BackGate
+Text GLabel 7300 4000 0    39   Input ~ 0
 SolutionGate
 Text GLabel 10200 2050 2    39   Input ~ 0
 GND_GPIO
@@ -2196,11 +2196,11 @@ IO4
 Text GLabel 2800 5800 1    39   Input ~ 0
 GND_GPIO
 Text GLabel 3300 5800 1    39   Input ~ 0
-SolutionGate
+SolutionGate_Socket
 Text GLabel 3800 5800 1    39   Input ~ 0
-LocalGates
+LocalGates_Socket
 Text GLabel 4300 5800 1    39   Input ~ 0
-BackGate
+BackGate_Socket
 Text GLabel 4800 5800 1    39   Input ~ 0
 SS2
 Text GLabel 5300 5800 1    39   Input ~ 0
@@ -2783,14 +2783,6 @@ F 3 "~" H 7500 4400 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	7800 4000 7800 4100
-Connection ~ 7800 4100
-Wire Wire Line
-	7800 4100 7800 4200
-Connection ~ 7800 4200
-Wire Wire Line
-	7800 4200 7800 4300
-Wire Wire Line
 	7800 4600 7800 4700
 Connection ~ 7800 4700
 Wire Wire Line
@@ -3079,4 +3071,12 @@ F 3 "~" H 8300 6000 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	9700 2050 10200 2050
+Text GLabel 7800 4000 2    39   Input ~ 0
+SolutionGate_Socket
+Text GLabel 7800 4100 2    39   Input ~ 0
+LocalGates_Socket
+Text GLabel 7800 4200 2    39   Input ~ 0
+BackGate_Socket
+Text GLabel 7300 4300 0    39   Input ~ 0
+GND
 $EndSCHEMATC
