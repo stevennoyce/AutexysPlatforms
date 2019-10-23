@@ -868,7 +868,7 @@ SS2
 Text GLabel 17100 800  1    39   Input ~ 0
 SS1
 Text GLabel 15250 3500 0    39   Input ~ 0
-I1
+GND_GPIO
 Text GLabel 15250 3700 0    39   Input ~ 0
 SolutionGate
 Text GLabel 16500 4200 3    39   Input ~ 0
@@ -1930,7 +1930,7 @@ SS2
 Text GLabel 26250 950  1    39   Input ~ 0
 SS1
 Text GLabel 24400 3650 0    39   Input ~ 0
-I1
+GND_GPIO
 Text GLabel 24400 3850 0    39   Input ~ 0
 SolutionGate
 Text GLabel 25650 4350 3    39   Input ~ 0
@@ -2089,8 +2089,8 @@ Text GLabel 7300 4300 0    39   Input ~ 0
 BackGate
 Text GLabel 7300 4100 0    39   Input ~ 0
 SolutionGate
-Text GLabel 10250 2400 0    39   Input ~ 0
-I1
+Text GLabel 10200 2050 2    39   Input ~ 0
+GND_GPIO
 Text GLabel 10250 2500 0    39   Input ~ 0
 I2
 Text GLabel 10250 2600 0    39   Input ~ 0
@@ -2103,11 +2103,9 @@ Text GLabel 10250 2900 0    39   Input ~ 0
 I6
 Text GLabel 10250 3000 0    39   Input ~ 0
 I7
-Text GLabel 10250 3200 0    39   Input ~ 0
-IO1
 Text GLabel 10350 2800 2    39   Input ~ 0
 SS2
-Text GLabel 10350 2400 2    39   Input ~ 0
+Text GLabel 9700 2050 0    39   Input ~ 0
 GND
 Text GLabel 10350 2500 2    39   Input ~ 0
 SolutionGate
@@ -2119,12 +2117,6 @@ Text GLabel 10350 2900 2    39   Input ~ 0
 SS1
 Text GLabel 10350 3000 2    39   Input ~ 0
 DD2
-Text GLabel 10250 3300 0    39   Input ~ 0
-IO2
-Text GLabel 10250 3400 0    39   Input ~ 0
-IO3
-Text GLabel 10250 3500 0    39   Input ~ 0
-IO4
 Text GLabel 19800 3200 2    39   Input ~ 0
 IO2
 Text GLabel 19800 1900 2    39   Input ~ 0
@@ -2201,10 +2193,8 @@ Text GLabel 7300 4800 0    39   Input ~ 0
 IO3
 Text GLabel 7300 4900 0    39   Input ~ 0
 IO4
-Wire Wire Line
-	10250 2400 10350 2400
 Text GLabel 2800 5800 1    39   Input ~ 0
-I1
+GND_GPIO
 Text GLabel 3300 5800 1    39   Input ~ 0
 SolutionGate
 Text GLabel 3800 5800 1    39   Input ~ 0
@@ -2360,7 +2350,7 @@ $EndComp
 Text GLabel 3400 2100 0    39   Input ~ 0
 GND
 Text Notes 2550 7500 0    60   ~ 0
-- Don’t have gates permanently connected to PSoCs\n- Break out I2C\n- Give Masters ability to reset Slaves\n- Add more optional TIA resistors\n- Communication between Masters\n- Clock sync between Masters\n- Resistor dividers for input measurements (esp. from AFM)\n- Boost converter for larger gate drive on board\n- Add interface for external chip (tire sensors)\n- Add interface for non-packaged chip (pogo pins)\n- Add temperature, humidity, and pressure sensors\n
+- Don’t have gates permanently connected to PSoCs\n- Break out I2C\n- Give Masters ability to reset Slaves\n- PROGRESS: Add more optional TIA resistors\n- Communication between Masters\n- Clock sync between Masters\n- Resistor dividers for input measurements (esp. from AFM)\n- Boost converter for larger gate drive on board\n- Add interface for external chip (tire sensors)\n- Add interface for non-packaged chip (pogo pins)\n- Add temperature, humidity, and pressure sensors\n
 Wire Wire Line
 	20900 2600 21350 2600
 Wire Wire Line
@@ -3087,4 +3077,6 @@ F 3 "~" H 8300 6000 50  0001 C CNN
 	1    8300 6000
 	0    1    1    0   
 $EndComp
+Wire Wire Line
+	9700 2050 10200 2050
 $EndSCHEMATC
