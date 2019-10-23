@@ -148,83 +148,6 @@ Text GLabel 1150 7400 0    60   Input ~ 0
 D63
 Text GLabel 1150 7500 0    60   Input ~ 0
 D64
-$Comp
-L Selection-Interface-rescue:CONN_01X02 P4
-U 1 1 59134F99
-P 4250 6000
-F 0 "P4" H 4250 6150 50  0000 C CNN
-F 1 "CONN_01X02" V 4350 6000 50  0000 C CNN
-F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 4250 6000 50  0001 C CNN
-F 3 "" H 4250 6000 50  0000 C CNN
-	1    4250 6000
-	0    1    1    0   
-$EndComp
-$Comp
-L Selection-Interface-rescue:CONN_01X02 P3
-U 1 1 5913521A
-P 3750 6000
-F 0 "P3" H 3750 6150 50  0000 C CNN
-F 1 "CONN_01X02" V 3850 6000 50  0000 C CNN
-F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 3750 6000 50  0001 C CNN
-F 3 "" H 3750 6000 50  0000 C CNN
-	1    3750 6000
-	0    1    1    0   
-$EndComp
-$Comp
-L Selection-Interface-rescue:CONN_01X02 P2
-U 1 1 591352F8
-P 3250 6000
-F 0 "P2" H 3250 6150 50  0000 C CNN
-F 1 "CONN_01X02" V 3350 6000 50  0000 C CNN
-F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 3250 6000 50  0001 C CNN
-F 3 "" H 3250 6000 50  0000 C CNN
-	1    3250 6000
-	0    1    1    0   
-$EndComp
-$Comp
-L Selection-Interface-rescue:CONN_01X02 P1
-U 1 1 591353C2
-P 2750 6000
-F 0 "P1" H 2750 6150 50  0000 C CNN
-F 1 "CONN_01X02" V 2850 6000 50  0000 C CNN
-F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 2750 6000 50  0001 C CNN
-F 3 "" H 2750 6000 50  0000 C CNN
-	1    2750 6000
-	0    1    1    0   
-$EndComp
-$Comp
-L Selection-Interface-rescue:CONN_01X02 P5
-U 1 1 59135703
-P 4750 6000
-F 0 "P5" H 4750 6150 50  0000 C CNN
-F 1 "CONN_01X02" V 4850 6000 50  0000 C CNN
-F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 4750 6000 50  0001 C CNN
-F 3 "" H 4750 6000 50  0000 C CNN
-	1    4750 6000
-	0    1    1    0   
-$EndComp
-$Comp
-L Selection-Interface-rescue:CONN_01X02 P7
-U 1 1 59135DD9
-P 5250 6000
-F 0 "P7" H 5250 6150 50  0000 C CNN
-F 1 "CONN_01X02" V 5350 6000 50  0000 C CNN
-F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 5250 6000 50  0001 C CNN
-F 3 "" H 5250 6000 50  0000 C CNN
-	1    5250 6000
-	0    1    1    0   
-$EndComp
-$Comp
-L Selection-Interface-rescue:CONN_01X02 P9
-U 1 1 59135E3E
-P 5750 6000
-F 0 "P9" H 5750 6150 50  0000 C CNN
-F 1 "CONN_01X02" V 5850 6000 50  0000 C CNN
-F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 5750 6000 50  0001 C CNN
-F 3 "" H 5750 6000 50  0000 C CNN
-	1    5750 6000
-	0    1    1    0   
-$EndComp
 Text GLabel 1150 1100 0    39   Input ~ 0
 GND
 Text GLabel 15250 1600 0    39   Input ~ 0
@@ -2280,61 +2203,6 @@ Text GLabel 7300 4900 0    39   Input ~ 0
 IO4
 Wire Wire Line
 	10250 2400 10350 2400
-$Comp
-L Selection-Interface-rescue:CONN_01X02 P15
-U 1 1 59A4036E
-P 7750 6000
-F 0 "P15" H 7750 6150 50  0000 C CNN
-F 1 "CONN_01X02" V 7850 6000 50  0000 C CNN
-F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 7750 6000 50  0001 C CNN
-F 3 "" H 7750 6000 50  0000 C CNN
-	1    7750 6000
-	0    1    1    0   
-$EndComp
-$Comp
-L Selection-Interface-rescue:CONN_01X02 P14
-U 1 1 59A40374
-P 7250 6000
-F 0 "P14" H 7250 6150 50  0000 C CNN
-F 1 "CONN_01X02" V 7350 6000 50  0000 C CNN
-F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 7250 6000 50  0001 C CNN
-F 3 "" H 7250 6000 50  0000 C CNN
-	1    7250 6000
-	0    1    1    0   
-$EndComp
-$Comp
-L Selection-Interface-rescue:CONN_01X02 P12
-U 1 1 59A4037A
-P 6750 6000
-F 0 "P12" H 6750 6150 50  0000 C CNN
-F 1 "CONN_01X02" V 6850 6000 50  0000 C CNN
-F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 6750 6000 50  0001 C CNN
-F 3 "" H 6750 6000 50  0000 C CNN
-	1    6750 6000
-	0    1    1    0   
-$EndComp
-$Comp
-L Selection-Interface-rescue:CONN_01X02 P11
-U 1 1 59A40380
-P 6250 6000
-F 0 "P11" H 6250 6150 50  0000 C CNN
-F 1 "CONN_01X02" V 6350 6000 50  0000 C CNN
-F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 6250 6000 50  0001 C CNN
-F 3 "" H 6250 6000 50  0000 C CNN
-	1    6250 6000
-	0    1    1    0   
-$EndComp
-$Comp
-L Selection-Interface-rescue:CONN_01X02 P16
-U 1 1 59A40386
-P 8250 6000
-F 0 "P16" H 8250 6150 50  0000 C CNN
-F 1 "CONN_01X02" V 8350 6000 50  0000 C CNN
-F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 8250 6000 50  0001 C CNN
-F 3 "" H 8250 6000 50  0000 C CNN
-	1    8250 6000
-	0    1    1    0   
-$EndComp
 Text GLabel 2800 5800 1    39   Input ~ 0
 I1
 Text GLabel 3300 5800 1    39   Input ~ 0
@@ -3087,4 +2955,136 @@ Wire Wire Line
 	26850 950  26850 3650
 Wire Wire Line
 	26750 3650 26750 4350
+$Comp
+L Connector_Generic:Conn_01x02 IPEX1
+U 1 1 5DB20476
+P 2800 6000
+F 0 "IPEX1" V 2900 5950 50  0000 C CNN
+F 1 "Conn_01x02" V 3000 5950 50  0000 C CNN
+F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 2800 6000 50  0001 C CNN
+F 3 "~" H 2800 6000 50  0001 C CNN
+	1    2800 6000
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x02 IPEX2
+U 1 1 5DB21D81
+P 3300 6000
+F 0 "IPEX2" V 3400 5950 50  0000 C CNN
+F 1 "Conn_01x02" V 3500 5950 50  0000 C CNN
+F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 3300 6000 50  0001 C CNN
+F 3 "~" H 3300 6000 50  0001 C CNN
+	1    3300 6000
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x02 IPEX3
+U 1 1 5DB221F3
+P 3800 6000
+F 0 "IPEX3" V 3900 5950 50  0000 C CNN
+F 1 "Conn_01x02" V 4000 5950 50  0000 C CNN
+F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 3800 6000 50  0001 C CNN
+F 3 "~" H 3800 6000 50  0001 C CNN
+	1    3800 6000
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x02 IPEX4
+U 1 1 5DB2237A
+P 4300 6000
+F 0 "IPEX4" V 4400 5950 50  0000 C CNN
+F 1 "Conn_01x02" V 4500 5950 50  0000 C CNN
+F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 4300 6000 50  0001 C CNN
+F 3 "~" H 4300 6000 50  0001 C CNN
+	1    4300 6000
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x02 IPEX5
+U 1 1 5DB22505
+P 4800 6000
+F 0 "IPEX5" V 4900 5950 50  0000 C CNN
+F 1 "Conn_01x02" V 5000 5950 50  0000 C CNN
+F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 4800 6000 50  0001 C CNN
+F 3 "~" H 4800 6000 50  0001 C CNN
+	1    4800 6000
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x02 IPEX6
+U 1 1 5DB22692
+P 5300 6000
+F 0 "IPEX6" V 5400 5950 50  0000 C CNN
+F 1 "Conn_01x02" V 5500 5950 50  0000 C CNN
+F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 5300 6000 50  0001 C CNN
+F 3 "~" H 5300 6000 50  0001 C CNN
+	1    5300 6000
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x02 IPEX7
+U 1 1 5DB22A1C
+P 5800 6000
+F 0 "IPEX7" V 5900 5950 50  0000 C CNN
+F 1 "Conn_01x02" V 6000 5950 50  0000 C CNN
+F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 5800 6000 50  0001 C CNN
+F 3 "~" H 5800 6000 50  0001 C CNN
+	1    5800 6000
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x02 IPEX8
+U 1 1 5DB22BAE
+P 6300 6000
+F 0 "IPEX8" V 6400 5950 50  0000 C CNN
+F 1 "Conn_01x02" V 6500 5950 50  0000 C CNN
+F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 6300 6000 50  0001 C CNN
+F 3 "~" H 6300 6000 50  0001 C CNN
+	1    6300 6000
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x02 IPEX9
+U 1 1 5DB22D42
+P 6800 6000
+F 0 "IPEX9" V 6900 5950 50  0000 C CNN
+F 1 "Conn_01x02" V 7000 5950 50  0000 C CNN
+F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 6800 6000 50  0001 C CNN
+F 3 "~" H 6800 6000 50  0001 C CNN
+	1    6800 6000
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x02 IPEX10
+U 1 1 5DB22EDB
+P 7300 6000
+F 0 "IPEX10" V 7400 5950 50  0000 C CNN
+F 1 "Conn_01x02" V 7500 5950 50  0000 C CNN
+F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 7300 6000 50  0001 C CNN
+F 3 "~" H 7300 6000 50  0001 C CNN
+	1    7300 6000
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x02 IPEX11
+U 1 1 5DB23078
+P 7800 6000
+F 0 "IPEX11" V 7900 5950 50  0000 C CNN
+F 1 "Conn_01x02" V 8000 5950 50  0000 C CNN
+F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 7800 6000 50  0001 C CNN
+F 3 "~" H 7800 6000 50  0001 C CNN
+	1    7800 6000
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x02 IPEX12
+U 1 1 5DB23219
+P 8300 6000
+F 0 "IPEX12" V 8400 5950 50  0000 C CNN
+F 1 "Conn_01x02" V 8500 5950 50  0000 C CNN
+F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 8300 6000 50  0001 C CNN
+F 3 "~" H 8300 6000 50  0001 C CNN
+	1    8300 6000
+	0    1    1    0   
+$EndComp
 $EndSCHEMATC
