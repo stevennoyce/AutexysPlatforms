@@ -1648,8 +1648,6 @@ Text GLabel 7300 4800 0    39   Input ~ 0
 IO3
 Text GLabel 7300 4900 0    39   Input ~ 0
 IO4
-Text GLabel 2800 5800 1    39   Input ~ 0
-GND_GPIO
 Text GLabel 3300 5800 1    39   Input ~ 0
 SolutionGate_Socket
 Text GLabel 3800 5800 1    39   Input ~ 0
@@ -1993,17 +1991,6 @@ F 3 "~" H 4550 2900 50  0001 C CNN
 $EndComp
 Text GLabel 19800 1800 2    39   Input ~ 0
 IO3
-$Comp
-L Connector_Generic:Conn_02x06_Odd_Even PROG2
-U 1 1 5DA1458B
-P 3300 4600
-F 0 "PROG2" H 3350 5017 50  0000 C CNN
-F 1 "Conn_02x06_Odd_Even" H 3350 4926 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_2x06_P2.54mm_Vertical_SMD" H 3300 4600 50  0001 C CNN
-F 3 "~" H 3300 4600 50  0001 C CNN
-	1    3300 4600
-	1    0    0    -1  
-$EndComp
 Text GLabel 3100 4400 0    50   Input ~ 0
 SWDCLK1
 Text GLabel 3100 4500 0    50   Input ~ 0
@@ -2210,17 +2197,6 @@ Wire Wire Line
 Wire Wire Line
 	17600 3500 17600 4200
 $Comp
-L Connector_Generic:Conn_01x02 IPEX1
-U 1 1 5DB20476
-P 2800 6000
-F 0 "IPEX1" V 2900 5950 50  0000 C CNN
-F 1 "Conn_01x02" V 3000 5950 50  0000 C CNN
-F 2 "Custom_Footprint_Library:IPEX_Connector_SMD_(RECE.20279.001E.01)" H 2800 6000 50  0001 C CNN
-F 3 "~" H 2800 6000 50  0001 C CNN
-	1    2800 6000
-	0    1    1    0   
-$EndComp
-$Comp
 L Connector_Generic:Conn_01x02 IPEX2
 U 1 1 5DB21D81
 P 3300 6000
@@ -2307,4 +2283,15 @@ Text GLabel 7800 4200 2    39   Input ~ 0
 BackGate_Socket
 Text GLabel 7300 4300 0    39   Input ~ 0
 GND
+$Comp
+L Connector_Generic:Conn_02x05_Odd_Even PROG2
+U 1 1 5DC89FB3
+P 3300 4600
+F 0 "PROG2" H 3350 5017 50  0000 C CNN
+F 1 "Conn_02x05_Odd_Even" H 3350 4926 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical_SMD" H 3300 4600 50  0001 C CNN
+F 3 "~" H 3300 4600 50  0001 C CNN
+	1    3300 4600
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
