@@ -239,15 +239,9 @@ $EndComp
 Text GLabel 21350 2600 2    39   Input ~ 0
 VSSD
 Wire Wire Line
-	15250 2700 14650 2700
-Wire Wire Line
-	14650 2700 14650 3400
-Wire Wire Line
 	15250 3200 14450 3200
 Wire Wire Line
 	15250 3300 14450 3300
-Wire Wire Line
-	14650 3400 14450 3400
 Wire Wire Line
 	23250 13000 23250 12600
 Wire Wire Line
@@ -1537,63 +1531,36 @@ DD2
 $Comp
 L Device:R R7
 U 1 1 599FA581
-P 18300 650
-F 0 "R7" V 18380 650 50  0000 C CNN
-F 1 "R" V 18300 650 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 18230 650 50  0001 C CNN
-F 3 "" H 18300 650 50  0000 C CNN
-	1    18300 650 
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R R5
-U 1 1 599FA76F
-P 17900 650
-F 0 "R5" V 17980 650 50  0000 C CNN
-F 1 "R" V 17900 650 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 17830 650 50  0001 C CNN
-F 3 "" H 17900 650 50  0000 C CNN
-	1    17900 650 
-	1    0    0    -1  
+P 18300 -350
+F 0 "R7" V 18380 -350 50  0000 C CNN
+F 1 "10k" V 18300 -350 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 18230 -350 50  0001 C CNN
+F 3 "" H 18300 -350 50  0000 C CNN
+	1    18300 -350
+	-1   0    0    1   
 $EndComp
 $Comp
 L Device:R R6
 U 1 1 599FA901
-P 18100 650
-F 0 "R6" V 18180 650 50  0000 C CNN
-F 1 "R" V 18100 650 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 18030 650 50  0001 C CNN
-F 3 "" H 18100 650 50  0000 C CNN
-	1    18100 650 
-	1    0    0    -1  
+P 18000 -50
+F 0 "R6" V 18080 -50 50  0000 C CNN
+F 1 "1M" V 18000 -50 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 17930 -50 50  0001 C CNN
+F 3 "" H 18000 -50 50  0000 C CNN
+	1    18000 -50 
+	-1   0    0    1   
 $EndComp
 $Comp
 L Device:R R8
 U 1 1 599FAA80
-P 18500 650
-F 0 "R8" V 18580 650 50  0000 C CNN
-F 1 "R" V 18500 650 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 18430 650 50  0001 C CNN
-F 3 "" H 18500 650 50  0000 C CNN
-	1    18500 650 
-	1    0    0    -1  
+P 14550 1800
+F 0 "R8" V 14630 1800 50  0000 C CNN
+F 1 "1M" V 14550 1800 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 14480 1800 50  0001 C CNN
+F 3 "" H 14550 1800 50  0000 C CNN
+	1    14550 1800
+	0    1    1    0   
 $EndComp
-Wire Wire Line
-	17900 500  18000 500 
-Wire Wire Line
-	18000 500  18000 800 
-Wire Wire Line
-	18100 500  18200 500 
-Wire Wire Line
-	18200 500  18200 800 
-Wire Wire Line
-	18300 500  18400 500 
-Wire Wire Line
-	18400 500  18400 800 
-Wire Wire Line
-	18500 500  18600 500 
-Wire Wire Line
-	18600 500  18600 800 
 Text GLabel 9700 1900 0    39   Input ~ 0
 GND
 Text GLabel 10200 1900 2    39   Input ~ 0
@@ -1698,7 +1665,7 @@ Text GLabel 14450 3200 0    39   Input ~ 0
 SWDIO5
 Text GLabel 14450 3300 0    39   Input ~ 0
 SWDCLK5
-Text GLabel 14450 3400 0    39   Input ~ 0
+Text GLabel 14450 2700 0    39   Input ~ 0
 XRES
 Text GLabel 3600 3600 2    39   Input ~ 0
 VSSD
@@ -2294,4 +2261,61 @@ F 3 "~" H 3300 4600 50  0001 C CNN
 	1    3300 4600
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	14450 2700 15250 2700
+Wire Wire Line
+	18300 -500 18200 -500
+Text GLabel 18200 -500 1    39   Input ~ 0
+TIA_R_COMMON
+Text GLabel 18100 800  1    39   Input ~ 0
+TIA_R100M
+Text GLabel 18000 800  1    39   Input ~ 0
+TIA_R1M
+Text GLabel 18300 800  1    39   Input ~ 0
+TIA_R10k
+$Comp
+L Device:R R5
+U 1 1 599FA76F
+P 18100 250
+F 0 "R5" V 18180 250 50  0000 C CNN
+F 1 "100M" V 18100 250 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 18030 250 50  0001 C CNN
+F 3 "" H 18100 250 50  0000 C CNN
+	1    18100 250 
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	18300 -200 18300 800 
+Wire Wire Line
+	18000 100  18000 800 
+Wire Wire Line
+	18100 400  18100 800 
+Text GLabel 15250 1900 0    39   Input ~ 0
+Gate_R1M_High
+Text GLabel 15250 1800 0    39   Input ~ 0
+Gate_R1M_Low
+Wire Wire Line
+	14700 1800 15250 1800
+Wire Wire Line
+	14400 1800 14400 1900
+Wire Wire Line
+	14400 1900 15250 1900
+Wire Wire Line
+	18000 -200 18200 -200
+Wire Wire Line
+	18200 -200 18200 100 
+Wire Wire Line
+	18100 100  18200 100 
+Connection ~ 18200 100 
+Wire Wire Line
+	18200 100  18200 800 
+Wire Wire Line
+	18200 -200 18200 -500
+Connection ~ 18200 -200
+Text GLabel 15250 2800 0    39   Input ~ 0
+OPAMP_VOUT
+Text GLabel 15250 2100 0    39   Input ~ 0
+OPAMP_Vplus
+Text GLabel 15250 2000 0    39   Input ~ 0
+OPAMP_Vminus
 $EndSCHEMATC
