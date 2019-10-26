@@ -792,11 +792,7 @@ SS1
 Text GLabel 15250 3500 0    39   Input ~ 0
 GND_GPIO
 Text GLabel 15250 3700 0    39   Input ~ 0
-SolutionGate
-Text GLabel 16500 4200 3    39   Input ~ 0
-LocalGates
-Text GLabel 16800 4200 3    39   Input ~ 0
-BackGate
+Gate
 Text GLabel 17000 4200 3    39   Input ~ 0
 IO1
 Text GLabel 15700 11900 0    39   Input ~ 0
@@ -1565,13 +1561,13 @@ DD2
 Text GLabel 7800 4500 2    39   Input ~ 0
 DD1
 Text GLabel 7300 4100 0    39   Input ~ 0
-LocalGates
+Gate
 Text GLabel 7800 4300 2    39   Input ~ 0
 GND
 Text GLabel 7300 4200 0    39   Input ~ 0
-BackGate
+Gate
 Text GLabel 7300 4000 0    39   Input ~ 0
-SolutionGate
+Gate
 Text GLabel 10200 2050 2    39   Input ~ 0
 GND_GPIO
 Text GLabel 9700 2050 0    39   Input ~ 0
