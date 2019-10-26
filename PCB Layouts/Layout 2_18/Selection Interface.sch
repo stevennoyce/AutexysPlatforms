@@ -343,8 +343,6 @@ Wire Wire Line
 	17500 200  17500 800 
 Text GLabel 17150 0    2    39   Input ~ 0
 VSSD
-Text GLabel 17150 500  2    39   Input ~ 0
-VSSD
 $Comp
 L Device:C C41
 U 1 1 599CF615
@@ -630,17 +628,6 @@ F 3 "" H 9850 1000 50  0000 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L Device:C C7
-U 1 1 599D66A9
-P 10150 1000
-F 0 "C7" H 10175 1100 50  0000 L CNN
-F 1 "0.1uF" H 10175 900 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric" H 10188 850 50  0001 C CNN
-F 3 "" H 10150 1000 50  0000 C CNN
-	1    10150 1000
-	1    0    0    1   
-$EndComp
-$Comp
 L Device:C C8
 U 1 1 599D675F
 P 10450 1000
@@ -652,10 +639,8 @@ F 3 "" H 10450 1000 50  0000 C CNN
 	1    0    0    1   
 $EndComp
 Connection ~ 9850 850 
-Connection ~ 10150 850 
 Connection ~ 10450 850 
 Connection ~ 9850 1150
-Connection ~ 10150 1150
 Connection ~ 10450 1150
 Text GLabel 10750 1150 2    39   Input ~ 0
 VSSD
@@ -1798,17 +1783,9 @@ Wire Wire Line
 Wire Wire Line
 	9550 850  9850 850 
 Wire Wire Line
-	9850 850  10150 850 
-Wire Wire Line
-	10150 850  10450 850 
-Wire Wire Line
 	10450 850  10750 850 
 Wire Wire Line
 	9550 1150 9850 1150
-Wire Wire Line
-	9850 1150 10150 1150
-Wire Wire Line
-	10150 1150 10450 1150
 Wire Wire Line
 	10450 1150 10750 1150
 Wire Wire Line
@@ -2312,10 +2289,70 @@ Wire Wire Line
 Wire Wire Line
 	18200 -200 18200 -500
 Connection ~ 18200 -200
-Text GLabel 15250 2800 0    39   Input ~ 0
-OPAMP_VOUT
-Text GLabel 15250 2100 0    39   Input ~ 0
-OPAMP_Vplus
-Text GLabel 15250 2000 0    39   Input ~ 0
-OPAMP_Vminus
+Text GLabel 16800 -1300 0    39   Input ~ 0
+AMP1_VOUT
+Text GLabel 16800 -1100 0    39   Input ~ 0
+AMP1_Vplus
+Text GLabel 17600 -1100 2    39   Input ~ 0
+AMP1_Vminus
+$Comp
+L Custom_Schematic_Library:OPA363 AMP1
+U 1 1 5DB59C43
+P 17200 -1200
+F 0 "AMP1" H 17200 -835 50  0000 C CNN
+F 1 "OPA363" H 17200 -926 50  0000 C CNN
+F 2 "Package_TO_SOT_SMD:SOT-23-6" H 17200 -750 50  0001 C CNN
+F 3 "" H 17200 -750 50  0001 C CNN
+	1    17200 -1200
+	1    0    0    -1  
+$EndComp
+Text GLabel 17600 -1300 2    39   Input ~ 0
+VDDD
+Text GLabel 16800 -1200 0    39   Input ~ 0
+GND
+Wire Wire Line
+	17600 -1200 17600 -1300
+Wire Wire Line
+	17600 -1100 17900 -1100
+Wire Wire Line
+	16800 -950 16800 -1100
+$Comp
+L Device:C C60
+U 1 1 5DC4A0EA
+P 17750 -950
+F 0 "C60" H 17775 -850 50  0000 L CNN
+F 1 "1pF" H 17775 -1050 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 17788 -1100 50  0001 C CNN
+F 3 "" H 17750 -950 50  0000 C CNN
+	1    17750 -950
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	17600 -950 16800 -950
+Wire Wire Line
+	17600 -950 17600 -700
+Wire Wire Line
+	17600 -700 17800 -700
+Wire Wire Line
+	17800 -700 17800 800 
+Wire Wire Line
+	17900 -1100 17900 -950
+Connection ~ 17900 -950
+Wire Wire Line
+	17900 -950 17900 800 
+Connection ~ 17600 -950
+Wire Wire Line
+	16600 800  16600 550 
+Wire Wire Line
+	16600 550  16150 550 
+Wire Wire Line
+	16150 550  16150 -1300
+Wire Wire Line
+	16150 -1300 16800 -1300
+Wire Wire Line
+	9850 1150 10450 1150
+Wire Wire Line
+	9850 850  10450 850 
+Text GLabel 17150 500  2    39   Input ~ 0
+VSSD
 $EndSCHEMATC

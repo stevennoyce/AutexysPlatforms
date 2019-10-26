@@ -393,6 +393,24 @@ X P2.4 99 -1100 1700 300 D 50 50 1 1 B
 ENDDRAW
 ENDDEF
 #
+# Custom_Schematic_Library:OPA363
+#
+DEF Custom_Schematic_Library:OPA363 AMP 0 40 Y Y 1 F N
+F0 "AMP" 0 350 50 H V C CNN
+F1 "Custom_Schematic_Library:OPA363" 0 250 50 H V C CNN
+F2 "" 0 450 50 H I C CNN
+F3 "" 0 450 50 H I C CNN
+DRAW
+S -300 -200 300 200 0 1 0 N
+X VOUT 1 -400 100 100 R 50 50 1 1 I
+X VDD- 2 -400 0 100 R 50 50 1 1 I
+X IN+ 3 -400 -100 100 R 50 50 1 1 I
+X IN- 4 400 -100 100 L 50 50 1 1 I
+X Enable 5 400 0 100 L 50 50 1 1 I
+X VDD+ 6 400 100 100 L 50 50 1 1 I
+ENDDRAW
+ENDDEF
+#
 # Custom_Schematic_Library:USB_2.0_B
 #
 DEF Custom_Schematic_Library:USB_2.0_B U 0 40 Y Y 1 F N
