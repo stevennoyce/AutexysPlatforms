@@ -20,7 +20,8 @@
 #define SELECTOR2_I2C_BUS_ADDRESS (0x11)
 #define SELECTOR3_I2C_BUS_ADDRESS (0x44)
 #define SELECTOR4_I2C_BUS_ADDRESS (0x22)
-#define SELECTOR_SIGNAL_CHANNEL (33)
+#define SELECTOR_SIGNAL_CHANNEL1 (33)
+#define SELECTOR_SIGNAL_CHANNEL2 (34)
 
 // Quantity and Locations of Feedback Resistors
 #define TIA_INTERNAL_RESISTOR_COUNT (8)
@@ -263,42 +264,6 @@ void Disconnect_All_Contacts_From_All_Selectors() {
 	}
 }
 
-// CONNECT: Makes the connection on the source/drain-signal channel for a specific device selector
-void Connect_Selector(uint8 selector_index) {
-	switch (selector_index) {
-		case 1: Connect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL, 1); break;
-		case 2: Connect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL, 2); break;
-		case 3: Connect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL, 3); break;
-		case 4: Connect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL, 4); break;
-		default: return;
-	}
-}
-
-// DISCONNECT: Breaks the connection on the drain/source-signal channel for a specific device selector
-void Disconnect_Selector(uint8 selector_index) {
-	switch (selector_index) {
-		case 1: Disconnect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL, 1); break;
-		case 2: Disconnect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL, 2); break;
-		case 3: Disconnect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL, 3); break;
-		case 4: Disconnect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL, 4); break;
-		default: return;
-	}
-}
-
-// CONNECT: Connects the source/drain-signal channels to all device selectors
-void Connect_Selectors() {
-	for (uint8 i = 1; i <= SELECTOR_COUNT; i++) {
-		Connect_Selector(i);
-	}
-}
-
-// CONNECT: Disconnects the source/drain-signal channels from all device selectors
-void Disconnect_Selectors() {
-	for (uint8 i = 1; i <= SELECTOR_COUNT; i++) {
-		Disconnect_Selector(i);
-	}
-}
-
 // CONNECT: Connect this device contact to the source-side of Vds
 uint8 Connect_Contact_To_Source(uint8 contact) {
 	uint8 selector_index = (contact <= 32) ? (1) : (3);
@@ -311,6 +276,82 @@ uint8 Connect_Contact_To_Drain(uint8 contact) {
 	uint8 selector_index = (contact <= 32) ? (2) : (4);
 	Connect_Contact_To_Selector(contact, selector_index);
 	return selector_index;
+}
+
+// CONNECT: Makes the connection on the primary source/drain-signal channel (DD1 for selectors 1 & 3, SS1 for selectors 2 & 4)
+void Connect_Selector_Signal_Channel1(uint8 selector_index) {
+	switch (selector_index) {
+		case 1: Connect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL1, 1); break;
+		case 2: Connect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL1, 2); break;
+		case 3: Connect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL1, 3); break;
+		case 4: Connect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL1, 4); break;
+		default: return;
+	}
+}
+
+// DISCONNECT: Breaks the connection on the primary drain/source-signal channel (DD1 for selectors 1 & 3, SS1 for selectors 2 & 4)
+void Disconnect_Selector_Signal_Channel1(uint8 selector_index) {
+	switch (selector_index) {
+		case 1: Disconnect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL1, 1); break;
+		case 2: Disconnect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL1, 2); break;
+		case 3: Disconnect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL1, 3); break;
+		case 4: Disconnect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL1, 4); break;
+		default: return;
+	}
+}
+
+// CONNECT: Makes the connection on the backup source/drain-signal channel (DD2 for selectors 1 & 3, SS2 for selectors 2 & 4)
+void Connect_Selector_Signal_Channel2(uint8 selector_index) {
+	switch (selector_index) {
+		case 1: Connect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL2, 1); break;
+		case 2: Connect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL2, 2); break;
+		case 3: Connect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL2, 3); break;
+		case 4: Connect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL2, 4); break;
+		default: return;
+	}
+}
+
+// DISCONNECT: Breaks the connection on the backup drain/source-signal channel (DD2 for selectors 1 & 3, SS2 for selectors 2 & 4)
+void Disconnect_Selector_Signal_Channel2(uint8 selector_index) {
+	switch (selector_index) {
+		case 1: Disconnect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL2, 1); break;
+		case 2: Disconnect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL2, 2); break;
+		case 3: Disconnect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL2, 3); break;
+		case 4: Disconnect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL2, 4); break;
+		default: return;
+	}
+}
+
+// CONNECT: Connects the primary source/drain-signal channels to all device selectors
+void Connect_Selectors_To_Primary_Signal_Channel() {
+	for (uint8 i = 1; i <= SELECTOR_COUNT; i++) {
+		Connect_Selector_Signal_Channel1(i);
+	}
+}
+
+// CONNECT: Connects the backup source/drain-signal channels to all device selectors
+void Connect_Selectors_To_Secondary_Signal_Channel() {
+	for (uint8 i = 1; i <= SELECTOR_COUNT; i++) {
+		Connect_Selector_Signal_Channel2(i);
+	}
+}
+
+// DISCONNECT: Disconnects the source/drain-signal channels from all device selectors
+void Disconnect_Selectors() {
+	for (uint8 i = 1; i <= SELECTOR_COUNT; i++) {
+		Disconnect_Selector_Signal_Channel1(i);
+		Disconnect_Selector_Signal_Channel2(i);
+	}
+}
+
+// CONNECT: Connects the backup source/drain-signal channels to all device selectors
+void Switch_Selectors_To_Signal_Channel(uint8 signal_channel) {
+	Disconnect_Selectors();
+	if(signal_channel == 1) {
+		Connect_Selectors_To_Primary_Signal_Channel();
+	} else if(signal_channel == 2) {
+		Connect_Selectors_To_Secondary_Signal_Channel();
+	}
 }
 
 // === End Section: Device Selectors & Communication ===
@@ -1198,7 +1239,7 @@ int main(void) {
 	
 	
 	// Connect SS1 and DD1 to the analog MUXes of any device selector they are routed to
-	Connect_Selectors();
+	Connect_Selectors_To_Primary_Signal_Channel();
 	
 	// Calibrate Delta-Sigma ADC and set initial current range
 	Calibrate_ADC_Offset(ADC_CALIBRATION_SAMPLECOUNT);
@@ -1297,29 +1338,53 @@ int main(void) {
 			if (strstr(ReceiveBuffer, "connect-selector ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 selector_index = strtol(location, &location, 10);
-				Connect_Selector(selector_index);
+				Connect_Selector_Signal_Channel1(selector_index);
 				
-				sprintf(TransmitBuffer, "# Connected selector %u.\r\n", selector_index);
+				sprintf(TransmitBuffer, "# Connected selector %u to primary signal channel.\r\n", selector_index);
+				sendTransmitBuffer();
+			} else 
+			if (strstr(ReceiveBuffer, "connect-selector-secondary ") == &ReceiveBuffer[0]) {
+				char* location = strstr(ReceiveBuffer, " ");
+				uint8 selector_index = strtol(location, &location, 10);
+				Connect_Selector_Signal_Channel2(selector_index);
+				
+				sprintf(TransmitBuffer, "# Connected selector %u to secondary signal channel.\r\n", selector_index);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "disconnect-selector ") == &ReceiveBuffer[0]) {
 				char* location = strstr(ReceiveBuffer, " ");
 				uint8 selector_index = strtol(location, &location, 10);
-				Disconnect_Selector(selector_index);
+				Disconnect_Selector_Signal_Channel1(selector_index);
+				Disconnect_Selector_Signal_Channel2(selector_index);
 				
-				sprintf(TransmitBuffer, "# Disconnected selector %u.\r\n", selector_index);
+				sprintf(TransmitBuffer, "# Disconnected selector %u from signal channels.\r\n", selector_index);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "connect-all-selectors ") == &ReceiveBuffer[0]) {
-				Connect_Selectors();
+				Connect_Selectors_To_Primary_Signal_Channel();
 				
-				sprintf(TransmitBuffer, "# Connected all selectors.\r\n");
+				sprintf(TransmitBuffer, "# Connected all selectors to primary signal channels.\r\n");
+				sendTransmitBuffer();
+			} else 
+			if (strstr(ReceiveBuffer, "connect-all-selectors-secondary ") == &ReceiveBuffer[0]) {
+				Connect_Selectors_To_Secondary_Signal_Channel();
+				
+				sprintf(TransmitBuffer, "# Connected all selectors to secondary signal channels.\r\n");
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "disconnect-all-selectors ") == &ReceiveBuffer[0]) {
 				Disconnect_Selectors();
 				
-				sprintf(TransmitBuffer, "# Disconnected all selectors.\r\n");
+				sprintf(TransmitBuffer, "# Disconnected all selectors from signal channels.\r\n");
+				sendTransmitBuffer();
+			} else 
+			if (strstr(ReceiveBuffer, "switch-all-selectors-to-signal ") == &ReceiveBuffer[0]) {
+				char* location = strstr(ReceiveBuffer, " ");
+				uint8 signal_channel = strtol(location, &location, 10);
+				
+				Switch_Selectors_To_Signal_Channel(signal_channel);
+				
+				sprintf(TransmitBuffer, "# Connected all selectors to signal channel %u.\r\n", signal_channel);
 				sendTransmitBuffer();
 			} else 
 			if (strstr(ReceiveBuffer, "connect-source-to ") == &ReceiveBuffer[0]) {
