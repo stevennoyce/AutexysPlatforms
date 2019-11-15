@@ -64,16 +64,9 @@ struct Selector_I2C_Struct {
 
 
 
-// === Variables === 
+// === Communication Variables === 
 // Serial USB/Bluetooth output buffer
 char TransmitBuffer[USBUART_BUFFER_SIZE];
-
-volatile uint8 G_Stop = 0;
-volatile uint8 G_Break = 0;
-volatile uint8 G_Pause = 0;
-
-// Communication flag (non-zero when receiving a new command [1 == USB, 2 == Bluetooth])
-volatile uint8 newData = 0;
 
 // Bluetooth input buffer
 volatile char UART_Receive_Buffer[USBUART_BUFFER_SIZE];
@@ -87,12 +80,25 @@ volatile uint8 USBUART_Rx_Position;
 bool uartSendingEnabled = true; //Bluetooth
 bool usbuSendingEnabled = true; //USB
 
+// Global flags for stopping or pausing long procedures
+volatile uint8 G_Stop = 0;
+volatile uint8 G_Break = 0;
+volatile uint8 G_Pause = 0;
+
+// Communication flag (non-zero when receiving a new command [1 == USB, 2 == Bluetooth])
+volatile uint8 newData = 0;
+
+
+
+// === System Variables === 
 // Device Selectors
 struct Selector_I2C_Struct selectors[SELECTOR_COUNT];
 
-// TIA Properties
+// Internal state to track currently-selected TIA Feedback Resistor
 enum TIA_resistor {Internal_R20K, Internal_R30K, Internal_R40K, Internal_R80K, Internal_R120K, Internal_R250K, Internal_R500K, Internal_R1000K, External_R10K, External_R1M, External_R100M};
 uint8 TIA_Selected_Resistor = Internal_R20K;
+
+// TIA Resistor Properties (access codes, impedance values, input offset voltages)
 uint8 TIA_Resistor_Codes[TIA_INTERNAL_RESISTOR_COUNT + AMUX_EXTERNAL_RESISTOR_COUNT] = {TIA_1_RES_FEEDBACK_20K, TIA_1_RES_FEEDBACK_30K, TIA_1_RES_FEEDBACK_40K, TIA_1_RES_FEEDBACK_80K, TIA_1_RES_FEEDBACK_120K, TIA_1_RES_FEEDBACK_250K, TIA_1_RES_FEEDBACK_500K, TIA_1_RES_FEEDBACK_1000K, AMUX_ADDRESS_FEEDBACK_R10K, AMUX_ADDRESS_FEEDBACK_R1M, AMUX_ADDRESS_FEEDBACK_R100M};
 float TIA_Resistor_Values[TIA_INTERNAL_RESISTOR_COUNT + AMUX_EXTERNAL_RESISTOR_COUNT] = {20e3, 30e3, 40e3, 80e3, 120e3, 250e3, 500e3, 1e6, 10e3, 1e6, 100e6};
 int32 TIA_Offsets_uV[TIA_INTERNAL_RESISTOR_COUNT + AMUX_EXTERNAL_RESISTOR_COUNT] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -382,7 +388,7 @@ void ADC_Increase_Range() {
 		//case Internal_R500K:	 TIA_Set_Resistor(Internal_R250K); break;
 		case Internal_R1000K:    TIA_Set_Resistor(Internal_R20K); break;
 		case External_R10K:      break;
-		case External_R1M:       break;
+		case External_R1M:       TIA_Set_Resistor(External_R10K); break;
 		case External_R100M:     TIA_Set_Resistor(External_R1M); break;
 		default: return;
 	}
