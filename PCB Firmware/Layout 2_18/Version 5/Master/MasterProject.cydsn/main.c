@@ -22,6 +22,10 @@
 #define SELECTOR4_I2C_BUS_ADDRESS (0x22)
 #define SELECTOR_SIGNAL_CHANNEL1 (33)
 #define SELECTOR_SIGNAL_CHANNEL2 (34)
+#define SELECTOR_SOURCE_TOP (1)
+#define SELECTOR_SOURCE_BOTTOM (3)
+#define SELECTOR_DRAIN_TOP (2)
+#define SELECTOR_DRAIN_BOTTOM (4)
 
 // Quantity and Locations of Feedback Resistors
 #define TIA_INTERNAL_RESISTOR_COUNT (8)
@@ -30,7 +34,10 @@
 #define AMUX_ADDRESS_FEEDBACK_R1M (1)
 #define AMUX_ADDRESS_FEEDBACK_R100M (2)
 
-// De-noising Parameters
+// Voltage Output DAC Parameters 
+#define DAC_VOLTAGE_MAXIMUM (4.080)
+
+// ADC De-noising Parameters
 #define ADC_MEASUREMENT_CHUNKSIZE (5)
 #define SAR_MEASUREMENT_CHUNKSIZE (5)
 #define CURRENT_MEASUREMENT_DISCARDCOUNT (0)
@@ -272,14 +279,14 @@ void Disconnect_All_Contacts_From_All_Selectors() {
 
 // CONNECT: Connect this device contact to the source-side of Vds
 uint8 Connect_Contact_To_Source(uint8 contact) {
-	uint8 selector_index = (contact <= 32) ? (1) : (3);
+	uint8 selector_index = (contact <= CONTACT_COUNT/2) ? (SELECTOR_SOURCE_TOP) : (SELECTOR_SOURCE_BOTTOM);
 	Connect_Contact_To_Selector(contact, selector_index);
 	return selector_index;
 }
 
 // CONNECT: Connect this device contact to the drain-side of Vds
 uint8 Connect_Contact_To_Drain(uint8 contact) {
-	uint8 selector_index = (contact <= 32) ? (2) : (4);
+	uint8 selector_index = (contact <= CONTACT_COUNT/2) ? (SELECTOR_DRAIN_TOP) : (SELECTOR_DRAIN_BOTTOM);
 	Connect_Contact_To_Selector(contact, selector_index);
 	return selector_index;
 }
@@ -677,7 +684,7 @@ void Handle_Compliance_Breach() {
 
 // GET: Get the reference voltage in volts
 float Get_Ref() {
-	float result = 4.080/255.0*VDAC_Ref_Data;
+	float result = DAC_VOLTAGE_MAXIMUM/255.0*VDAC_Ref_Data;
 	if (VDAC_Ref_CR0 & (VDAC_Ref_RANGE_1V & VDAC_Ref_RANGE_MASK)) {
 		result = 1.020/255.0*VDAC_Ref_Data;
 	}
@@ -686,7 +693,7 @@ float Get_Ref() {
 
 // GET: Get Vgs in volts
 float Get_Vgs() {
-	float result = 4.080/255.0*VDAC_Vgs_Data - Get_Ref();
+	float result = DAC_VOLTAGE_MAXIMUM/255.0*VDAC_Vgs_Data - Get_Ref();
 	if (VDAC_Vgs_CR0 & (VDAC_Vgs_RANGE_1V & VDAC_Vgs_RANGE_MASK)) {
 		result = 1.020/255.0*VDAC_Vgs_Data - Get_Ref();
 	}
@@ -695,7 +702,7 @@ float Get_Vgs() {
 
 // GET: Get Vds in volts
 float Get_Vds() {
-	float result = 4.080/255.0*VDAC_Vds_Data - Get_Ref();
+	float result = DAC_VOLTAGE_MAXIMUM/255.0*VDAC_Vds_Data - Get_Ref();
 	if (VDAC_Vds_CR0 & (VDAC_Vds_RANGE_1V & VDAC_Vds_RANGE_MASK)) {
 		result = 1.020/255.0*VDAC_Vds_Data - Get_Ref();
 	}
@@ -848,12 +855,12 @@ void Set_Vgs_Rel(int16 value) {
 
 // VOLTS: Set Vgs by volts (good for readability, but requires passing floats)
 void Set_Vgs(float voltage) {
-	Set_Vgs_Rel((voltage/4.080)*255.0);
+	Set_Vgs_Rel((voltage/DAC_VOLTAGE_MAXIMUM)*255.0);
 }
 
 // VOLTS: Set Vds by volts (good for readability, but requires passing floats)
 void Set_Vds(float voltage) {
-	Set_Vds_Rel((voltage/4.080)*255.0);
+	Set_Vds_Rel((voltage/DAC_VOLTAGE_MAXIMUM)*255.0);
 }
 
 // MILLIVOLTS: Set Vgs by mV (good for passing in integers instead of floats)
@@ -905,6 +912,14 @@ void Calibrate_ADC_Offset(uint32 sampleCount) {
 	
 	// Reset TIA Resistor
 	TIA_Set_Resistor(current_range_resistor);
+}
+
+void Zero_ADC_Offset() {
+	for (uint8 i = 0; i < TIA_INTERNAL_RESISTOR_COUNT + AMUX_EXTERNAL_RESISTOR_COUNT; i++) {
+		TIA_Offsets_uV[i] = 0;
+		sprintf(TransmitBuffer, "Offset %e Ohm: 0 uV.\r\n", TIA_Resistor_Values[i]);
+		sendTransmitBuffer();
+	}
 }
 
 // === End Section: Calibration ===
@@ -1091,17 +1106,16 @@ void Scan_Range(uint8 startDevice, uint8 stopDevice, uint8 wide, uint8 loop) {
 	if (stopDevice >= CONTACT_COUNT) return;
 	
 	for (uint8 device = startDevice; device <= stopDevice; device++) {
-		// Get contact and selector #'s for this device
+		// Disconnect previous device
+		Disconnect_All_Contacts_From_All_Selectors();
+		
+		// Connect this device
 		uint8 contact1 = device;
 		uint8 contact2 = device + 1;
-		uint8 selector1 = (contact1 <= 32) ? (1) : (3);
-		uint8 selector2 = (contact2 <= 32) ? (2) : (4);
+		Connect_Contact_To_Source(contact1);
+		Connect_Contact_To_Drain(contact2);
 		
-		// Disconnect previoues device and connect this new device
-		Disconnect_All_Contacts_From_All_Selectors();
-		Connect_Contact_To_Selector(contact1, selector1);
-		Connect_Contact_To_Selector(contact2, selector2);
-		
+		// Print
 		sprintf(TransmitBuffer, "\r\n Device %u - %u \r\n", contact1, contact2);
 		sendTransmitBuffer();
 		
@@ -1487,6 +1501,12 @@ int main(void) {
 				Calibrate_ADC_Offset(ADC_CALIBRATION_SAMPLECOUNT);
 				
 				sprintf(TransmitBuffer, "# Calibrated ADC Offsets.\r\n");
+				sendTransmitBuffer();
+			} else
+			if (strstr(ReceiveBuffer, "zero-adc-offset ") == &ReceiveBuffer[0]) {
+				Zero_ADC_Offset();
+				
+				sprintf(TransmitBuffer, "# Set ADC Offsets to zero.\r\n");
 				sendTransmitBuffer();
 			} else
 			if (strstr(ReceiveBuffer, "measure ") == &ReceiveBuffer[0]) {
