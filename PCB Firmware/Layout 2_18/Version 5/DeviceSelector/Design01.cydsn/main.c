@@ -1,7 +1,7 @@
 #include "project.h"
 
-// Change this index from 1 to 4 when re-programming device selectors
-#define SELECTOR_ID (4)
+// Change this index from 0 to 3 when re-programming device selectors
+#define SELECTOR_ID (0)
 
 #define SELECTOR_COUNT (4u)
 #define CONTACT_COUNT (64u)
@@ -32,7 +32,7 @@ int main(void) {
 	ADC_SAR_Seq_1_Start();
 	
 	EZI2C_1_Start();
-	EZI2C_1_EzI2CSetAddress1(I2C_Bus_Addresses[SELECTOR_ID - 1]);
+	EZI2C_1_EzI2CSetAddress1(I2C_Bus_Addresses[SELECTOR_ID]);
 	EZI2C_1_EzI2CSetBuffer1(sizeof(selector), sizeof(selector), (uint8*) &selector);
 	
 	while(1) {
