@@ -1,7 +1,12 @@
 #include "project.h"
 
 // Change this index from 0 to 3 when re-programming device selectors
-#define SELECTOR_ID (0)
+#define SELECTOR_ID (3)
+
+#define SELECTOR1_I2C_BUS_ADDRESS (0x66)
+#define SELECTOR2_I2C_BUS_ADDRESS (0x11)
+#define SELECTOR3_I2C_BUS_ADDRESS (0x44)
+#define SELECTOR4_I2C_BUS_ADDRESS (0x22)
 
 #define SELECTOR_COUNT (4u)
 #define CONTACT_COUNT (64u)
@@ -24,7 +29,7 @@ int main(void) {
 	CyGlobalIntEnable;
 	
 	struct Selector_I2C_Struct selector;
-	uint8 I2C_Bus_Addresses[SELECTOR_COUNT] = {0x66, 0x11, 0x44, 0x22};
+	uint8 I2C_Bus_Addresses[SELECTOR_COUNT] = {SELECTOR1_I2C_BUS_ADDRESS, SELECTOR2_I2C_BUS_ADDRESS, SELECTOR3_I2C_BUS_ADDRESS, SELECTOR4_I2C_BUS_ADDRESS};
 
 	// Start all hardware blocks
 	AMux_1_Start();

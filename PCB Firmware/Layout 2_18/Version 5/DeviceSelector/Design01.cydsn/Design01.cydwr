@@ -38,6 +38,7 @@
       <Data key="77715107-f8d5-47e5-a629-0fb83101ac6b" value="Pin_1" />
       <Data key="84327200-96ad-4fae-836a-143acdfb701b" value="Pin_34" />
       <Data key="a8a29c14-e23a-4c2f-a361-10ed7837f8da" value="Pin_21" />
+      <Data key="ac87782a-9754-490c-a90f-5faf775933d9" value="Pin_35" />
       <Data key="ad69e645-e68c-40a3-bfb8-7c2530b95d64" value="Pin_33" />
       <Data key="c0330545-9eb2-45ef-8d4e-9970eebcbd1e" value="Pin_17" />
       <Data key="cbe15481-1053-4f8d-8fbb-534e7a856e52" value="Pin_22" />
@@ -2245,6 +2246,15 @@
       </Group>
     </Group>
     <Group key="UnAssigned Pins" />
+    <Group key="Unlocked Pins">
+      <Group key="ac87782a-9754-490c-a90f-5faf775933d9">
+        <Group key="0">
+          <Group key="132185827160255366">
+            <Data key="Port Format" value="3,2" />
+          </Group>
+        </Group>
+      </Group>
+    </Group>
   </Group>
   <Group key="PlaceDir">
     <Data key="count" value="0" />
