@@ -206,6 +206,9 @@ void Update_Selector(uint8 selector_index) {
 
 // CONNECT: Make a connection on one of the 34 channels in a device selector's analog mux
 void Connect_Channel_On_Selector(uint8 channel, uint8 selector_index) {
+	sprintf(TransmitBuffer, "Connecting channel %u::%u.\r\n", selector_index, channel);
+	sendTransmitBuffer();
+	
 	channel--;
 	selector_index--;
 	
@@ -217,6 +220,9 @@ void Connect_Channel_On_Selector(uint8 channel, uint8 selector_index) {
 
 // DISCONNECT: Break a connection on one of the 34 channels in a device selector's analog mux
 void Disconnect_Channel_On_Selector(uint8 channel, uint8 selector_index) {
+	sprintf(TransmitBuffer, "Disconnecting channel %u::%u.\r\n", selector_index, channel);
+	sendTransmitBuffer();
+	
 	channel--;
 	selector_index--;
 	
