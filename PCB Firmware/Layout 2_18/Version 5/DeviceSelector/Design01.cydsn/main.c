@@ -4,7 +4,6 @@
 #define SELECTOR_ID (4)
 
 #define SELECTOR_COUNT (4u)
-#define INTERMEDIATE_COUNT (4u)
 #define CONTACT_COUNT (64u)
 #define CONTACT_CONNECT_CODE (0xC0u)
 #define CONTACT_DISCONNECT_CODE (0xD1u)

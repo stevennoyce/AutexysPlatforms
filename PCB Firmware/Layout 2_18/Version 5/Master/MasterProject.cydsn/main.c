@@ -132,9 +132,12 @@ void Setup_Selector_I2C_Struct(struct Selector_I2C_Struct *selector) {
 	selector->write.subAddress = 1;
 	selector->read.subAddress = sizeof(selector->write) + 1;
 	
+	// Initialize the Device Selector's "write" buffer (these bits control the AMUX)
 	for (uint16 i = 0; i < sizeof(selector->write.data); i++) {
 		selector->write.data[i] = i + 6;
 	}
+	
+	// Initialize the Device Selector's "read" buffer (these are bits that the Device Selector can use to send messages to the Master CPU)
 	for (uint16 i = 0; i < sizeof(selector->read.data); i++) {
 		selector->read.data[i] = 0xbe;
 	}
@@ -152,11 +155,11 @@ void Setup_Selectors() {
 
 // Use I2C communication to tell a selector to update its connections
 void Update_Selector(uint8 selector_index) {
-	sprintf(TransmitBuffer, "Updating Selector %u...\r\n", selector_index + 1);
-	sendTransmitBuffer();
-	
 	// Get reference to selector communication data structure for this selector index
 	struct Selector_I2C_Struct* selector = &selectors[selector_index];
+	
+	sprintf(TransmitBuffer, "Updating Selector %u (addr: %02x)...\r\n", selector_index + 1, selector->busAddress);
+	sendTransmitBuffer();
 	
 	// Clear any previous alerts and send new communication onto the I2C bus
 	I2C_1_MasterClearStatus();
@@ -173,17 +176,20 @@ void Update_Selector(uint8 selector_index) {
 		}
 	}
 	
+	// Tell Device Selector to send the data from its read buffer
 	// I2C_1_MasterClearStatus();
 	// I2C_1_MasterWriteBuf(selector->busAddress, (uint8 *) &selector->read.subAddress, 1, I2C_1_MODE_NO_STOP);
-	// for (uint32 i - 0; i < 4e5; i++) {
+	// for (uint32 i = 0; i < 4e5; i++) {
 	// 	if ((I2C_1_MasterStatus() & I2C_1_MSTAT_WR_CMPLT)) break;
 	// }
 	
+	// Read data from the Device Selector
 	// I2C_1_MasterReadBuf(selector->busAddress, (uint8 *) &selector->read.data, sizeof(selector->read.data), I2C_1_MODE_REPEAT_START);
-	// for (uint32 i - 0; i < 4e5; i++) {
+	// for (uint32 i = 0; i < 4e5; i++) {
 	// 	if ((I2C_1_MasterStatus() & I2C_1_MSTAT_RD_CMPLT)) break;
 	// }
 	
+	// Check for any errors that could have occurred
 	if (I2C_1_MasterStatus() & I2C_1_MSTAT_ERR_XFER) {
 		if(I2C_1_MSTAT_ERR_ADDR_NAK) {
 			sprintf(TransmitBuffer, "I2C Transfer Error! Type: NAK\r\n");
