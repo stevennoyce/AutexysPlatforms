@@ -158,7 +158,7 @@ void Update_Selector(uint8 selector_index) {
 	// Get reference to selector communication data structure for this selector index
 	struct Selector_I2C_Struct* selector = &selectors[selector_index];
 	
-	sprintf(TransmitBuffer, "Updating Selector %u (addr: %02x)...\r\n", selector_index + 1, selector->busAddress);
+	sprintf(TransmitBuffer, "Updating Selector %u (addr: 0x%02x)...\r\n", selector_index + 1, selector->busAddress);
 	sendTransmitBuffer();
 	
 	// Clear any previous alerts and send new communication onto the I2C bus
@@ -299,6 +299,8 @@ uint8 Connect_Contact_To_Drain(uint8 contact) {
 
 // CONNECT: Makes the connection on the primary source/drain-signal channel (DD1 for selectors 1 & 3, SS1 for selectors 2 & 4)
 void Connect_Selector_Signal_Channel1(uint8 selector_index) {
+	sprintf(TransmitBuffer, "Connecting selector %u to primary signal channel.\r\n", selector_index);
+	sendTransmitBuffer();
 	switch (selector_index) {
 		case 1: Connect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL1, 1); break;
 		case 2: Connect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL1, 2); break;
@@ -310,6 +312,8 @@ void Connect_Selector_Signal_Channel1(uint8 selector_index) {
 
 // DISCONNECT: Breaks the connection on the primary drain/source-signal channel (DD1 for selectors 1 & 3, SS1 for selectors 2 & 4)
 void Disconnect_Selector_Signal_Channel1(uint8 selector_index) {
+	sprintf(TransmitBuffer, "Disconnecting selector %u from primary signal channel.\r\n", selector_index);
+	sendTransmitBuffer();
 	switch (selector_index) {
 		case 1: Disconnect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL1, 1); break;
 		case 2: Disconnect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL1, 2); break;
@@ -321,6 +325,8 @@ void Disconnect_Selector_Signal_Channel1(uint8 selector_index) {
 
 // CONNECT: Makes the connection on the backup source/drain-signal channel (DD2 for selectors 1 & 3, SS2 for selectors 2 & 4)
 void Connect_Selector_Signal_Channel2(uint8 selector_index) {
+	sprintf(TransmitBuffer, "Connecting selector %u to secondary signal channel.\r\n", selector_index);
+	sendTransmitBuffer();
 	switch (selector_index) {
 		case 1: Connect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL2, 1); break;
 		case 2: Connect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL2, 2); break;
@@ -332,6 +338,8 @@ void Connect_Selector_Signal_Channel2(uint8 selector_index) {
 
 // DISCONNECT: Breaks the connection on the backup drain/source-signal channel (DD2 for selectors 1 & 3, SS2 for selectors 2 & 4)
 void Disconnect_Selector_Signal_Channel2(uint8 selector_index) {
+	sprintf(TransmitBuffer, "Disconnecting selector %u from secondary signal channel.\r\n", selector_index);
+	sendTransmitBuffer();
 	switch (selector_index) {
 		case 1: Disconnect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL2, 1); break;
 		case 2: Disconnect_Channel_On_Selector(SELECTOR_SIGNAL_CHANNEL2, 2); break;
@@ -1276,7 +1284,8 @@ int main(void) {
 	
 	
 	// Print starting message
-	UART_1_PutString("\r\n Starting. \r\n");
+	sprintf(TransmitBuffer, "\r\n Starting. \r\n");
+	sendTransmitBuffer();
 	
 	// Prepare to receive commands from the host
 	newData = 0;
