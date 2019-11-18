@@ -32,7 +32,7 @@ int main(void) {
 	uint8 I2C_Bus_Addresses[SELECTOR_COUNT] = {SELECTOR1_I2C_BUS_ADDRESS, SELECTOR2_I2C_BUS_ADDRESS, SELECTOR3_I2C_BUS_ADDRESS, SELECTOR4_I2C_BUS_ADDRESS};
 
 	// Start all hardware blocks
-	AMux_1_Start();
+	AMux_1_Start(); //NOTE: AMux_1 should be set to "medium" isolation, not "maximum"
 	//Opamp_1_Start();
 	ADC_SAR_Seq_1_Start();
 	
