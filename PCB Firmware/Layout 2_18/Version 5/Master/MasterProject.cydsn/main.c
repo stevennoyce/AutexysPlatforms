@@ -38,16 +38,16 @@
 #define DAC_VOLTAGE_MAXIMUM (4.080)
 
 // ADC De-noising Parameters
-#define ADC_MEASUREMENT_CHUNKSIZE (3)
-#define SAR_MEASUREMENT_CHUNKSIZE (3)
+#define ADC_MEASUREMENT_CHUNKSIZE (9)
+#define SAR_MEASUREMENT_CHUNKSIZE (9)
 #define CURRENT_MEASUREMENT_DISCARDCOUNT (0)
 #define AUTO_RANGE_SAMPLECOUNT (3)
 #define AUTO_RANGE_DISCARDCOUNT (0)
-#define ADC_CALIBRATION_SAMPLECOUNT (300)
+#define ADC_CALIBRATION_SAMPLECOUNT (100)
 
 // Primary Measurement Parameters
-#define DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT (60)
-#define GATE_CURRENT_MEASUREMENT_SAMPLECOUNT (30)
+#define DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT (45)
+#define GATE_CURRENT_MEASUREMENT_SAMPLECOUNT (90)
 #define ADC_INCREASE_RANGE_THRESHOLD (1024000 * 1.00) //ADC does not saturate until +/- 1.126 V, but "safe" range is up to +/- 1.024 V -- see datasheet for more info
 #define ADC_DECREASE_RANGE_THRESHOLD (1024000 * 0.0085)
 
@@ -84,7 +84,7 @@ volatile char USBUART_Receive_Buffer[USBUART_BUFFER_SIZE];
 volatile uint8 USBUART_Rx_Position;
 
 // Enable/disable communication
-bool uartSendingEnabled = true; //Bluetooth
+bool uartSendingEnabled = false; //Bluetooth
 bool usbuSendingEnabled = true; //USB
 
 // Global flags for stopping or pausing long procedures
@@ -107,6 +107,7 @@ uint8 TIA_Selected_Resistor = Internal_R20K;
 
 // TIA Resistor Properties (access codes, impedance values, input offset voltages)
 uint8 TIA_Resistor_Codes[TIA_INTERNAL_RESISTOR_COUNT + AMUX_EXTERNAL_RESISTOR_COUNT] = {TIA_1_RES_FEEDBACK_20K, TIA_1_RES_FEEDBACK_30K, TIA_1_RES_FEEDBACK_40K, TIA_1_RES_FEEDBACK_80K, TIA_1_RES_FEEDBACK_120K, TIA_1_RES_FEEDBACK_250K, TIA_1_RES_FEEDBACK_500K, TIA_1_RES_FEEDBACK_1000K, AMUX_ADDRESS_FEEDBACK_R10K, AMUX_ADDRESS_FEEDBACK_R1M, AMUX_ADDRESS_FEEDBACK_R100M};
+uint8 TIA_Resistor_Enabled[TIA_INTERNAL_RESISTOR_COUNT + AMUX_EXTERNAL_RESISTOR_COUNT] = {true, false, false, false, false, false, false, true, true, true, true};
 float TIA_Resistor_Values[TIA_INTERNAL_RESISTOR_COUNT + AMUX_EXTERNAL_RESISTOR_COUNT] = {20e3, 30e3, 40e3, 80e3, 120e3, 250e3, 500e3, 1e6, 10e3, 1e6, 100e6};
 int32 TIA_Offsets_uV[TIA_INTERNAL_RESISTOR_COUNT + AMUX_EXTERNAL_RESISTOR_COUNT] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
@@ -921,13 +922,15 @@ void Calibrate_ADC_Offset(uint32 sampleCount) {
 	
 	// Measure ADC offset voltages
 	for (uint8 i = 0; i < TIA_INTERNAL_RESISTOR_COUNT + AMUX_EXTERNAL_RESISTOR_COUNT; i++) {
-		TIA_Set_Resistor(i);
-		// Take a few measurements to discard any problems with the initial measurements
-		ADC_Measure_uV(&voltage, &voltageSD, 3);
-		ADC_Measure_uV(&voltage, &voltageSD, sampleCount);
-		TIA_Offsets_uV[i] = -voltage;
-		sprintf(TransmitBuffer, "Offset %e Ohm: %li uV.\r\n", TIA_Resistor_Values[i], -voltage);
-		sendTransmitBuffer();
+		if(TIA_Resistor_Enabled[i]) {
+			TIA_Set_Resistor(i);
+			// Take a few measurements to discard any problems with the initial measurements
+			ADC_Measure_uV(&voltage, &voltageSD, 3);
+			ADC_Measure_uV(&voltage, &voltageSD, sampleCount);
+			TIA_Offsets_uV[i] = -voltage;
+			sprintf(TransmitBuffer, "Offset %e Ohm: %li uV.\r\n", TIA_Resistor_Values[i], -voltage);
+			sendTransmitBuffer();
+		}
 	}
 	
 	// Reset TIA Resistor
@@ -975,7 +978,16 @@ void Measure(uint32 deltaSigmaSampleCount, uint32 SAR1_SampleCount, uint32 SAR2_
 	}
 	//float SAR2 = (1e-6) * SAR2_Average;
 	
+	// Convert to integers for faster communication (if desired0
+	int32 microVoltGateVoltage  = Get_Vgs() * 1e6;
+	int32 microVoltDrainVoltage = Get_Vds() * 1e6;
+	//int32 DrainCurrentAveragePicoAmps = DrainCurrentAverageAmps * 1e12;
+	//int32 GateCurrentAveragePicoAmps  = GateCurrentAverageAmps * 1e12;
+	
+	// Transmit data measurement
 	sprintf(TransmitBuffer, "[%e,%f,%f,%e]\r\n", DrainCurrentAverageAmps, Get_Vgs(), Get_Vds(), GateCurrentAverageAmps);
+	//sprintf(TransmitBuffer, "[%e,%ld,%ld,%e]\r\n", DrainCurrentAverageAmps, microVoltGateVoltage, microVoltDrainVoltage, GateCurrentAverageAmps);
+	//sprintf(TransmitBuffer, "[%ld,%ld,%ld,%ld]\r\n", DrainCurrentAveragePicoAmps, microVoltGateVoltage, microVoltDrainVoltage, GateCurrentAveragePicoAmps);
 	sendTransmitBuffer();
 }
 
