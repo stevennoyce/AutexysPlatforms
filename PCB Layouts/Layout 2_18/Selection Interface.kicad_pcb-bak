@@ -2,7 +2,7 @@
 
   (general
     (thickness 1.6)
-    (drawings 357)
+    (drawings 363)
     (tracks 3419)
     (zones 0)
     (modules 96)
@@ -18,11 +18,11 @@
     (32 B.Adhes user)
     (33 F.Adhes user)
     (34 B.Paste user)
-    (35 F.Paste user)
+    (35 F.Paste user hide)
     (36 B.SilkS user)
     (37 F.SilkS user)
     (38 B.Mask user)
-    (39 F.Mask user)
+    (39 F.Mask user hide)
     (40 Dwgs.User user)
     (41 Cmts.User user)
     (42 Eco1.User user)
@@ -30,9 +30,9 @@
     (44 Edge.Cuts user)
     (45 Margin user)
     (46 B.CrtYd user)
-    (47 F.CrtYd user)
+    (47 F.CrtYd user hide)
     (48 B.Fab user)
-    (49 F.Fab user)
+    (49 F.Fab user hide)
   )
 
   (setup
@@ -4754,6 +4754,12 @@
     )
   )
 
+  (gr_circle (center 222.55 136.5) (end 222.7 136.5) (layer F.SilkS) (width 0.1))
+  (gr_circle (center 218.5 79) (end 218.75 78.75) (layer F.SilkS) (width 0.2))
+  (gr_circle (center 176.5 84.5) (end 176.75 84.25) (layer F.SilkS) (width 0.2))
+  (gr_circle (center 181.5 120.5) (end 181.75 120.25) (layer F.SilkS) (width 0.2))
+  (gr_circle (center 223.5 115.5) (end 223.75 115.25) (layer F.SilkS) (width 0.2))
+  (gr_circle (center 233.25 140.75) (end 233 141) (layer F.SilkS) (width 0.2))
   (gr_line (start 152.5 133.5) (end 152.5 145) (layer Edge.Cuts) (width 0.15))
   (gr_line (start 152.5 145) (end 157.5 150) (layer Edge.Cuts) (width 0.15))
   (gr_line (start 172.085 140.335) (end 173.355 140.335) (layer B.SilkS) (width 0.2))
