@@ -38,16 +38,16 @@
 #define DAC_VOLTAGE_MAXIMUM (4.080)
 
 // ADC De-noising Parameters
-#define ADC_MEASUREMENT_CHUNKSIZE (5)
-#define SAR_MEASUREMENT_CHUNKSIZE (5)
+#define ADC_MEASUREMENT_CHUNKSIZE (3)
+#define SAR_MEASUREMENT_CHUNKSIZE (3)
 #define CURRENT_MEASUREMENT_DISCARDCOUNT (0)
 #define AUTO_RANGE_SAMPLECOUNT (3)
 #define AUTO_RANGE_DISCARDCOUNT (0)
 #define ADC_CALIBRATION_SAMPLECOUNT (300)
 
 // Primary Measurement Parameters
-#define DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT (100)
-#define GATE_CURRENT_MEASUREMENT_SAMPLECOUNT (50)
+#define DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT (60)
+#define GATE_CURRENT_MEASUREMENT_SAMPLECOUNT (30)
 #define ADC_INCREASE_RANGE_THRESHOLD (1024000 * 1.00) //ADC does not saturate until +/- 1.126 V, but "safe" range is up to +/- 1.024 V -- see datasheet for more info
 #define ADC_DECREASE_RANGE_THRESHOLD (1024000 * 0.0085)
 
@@ -1285,12 +1285,17 @@ int main(void) {
 	Calibrate_ADC_Offset(ADC_CALIBRATION_SAMPLECOUNT);
 	TIA_Set_Resistor(TIA_Selected_Resistor);
 	
+	// Take one test measurement to make sure ADCs are fully activated
+	sprintf(TransmitBuffer, "Making test measurement... \r\n");
+	sendTransmitBuffer();
+	Measure(DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT, GATE_CURRENT_MEASUREMENT_SAMPLECOUNT, 0);
+	
 	// === All components now ready ===
 	
 	
 	
 	// Print starting message
-	sprintf(TransmitBuffer, "\r\n Starting. \r\n");
+	sprintf(TransmitBuffer, "Startup complete. System is ready. \r\n");
 	sendTransmitBuffer();
 	
 	// Prepare to receive commands from the host
