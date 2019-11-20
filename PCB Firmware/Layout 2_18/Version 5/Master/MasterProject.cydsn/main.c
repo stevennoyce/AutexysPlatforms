@@ -103,7 +103,7 @@ struct Selector_I2C_Struct selectors[SELECTOR_COUNT];
 
 // Internal state to track currently-selected TIA Feedback Resistor
 enum TIA_resistor {Internal_R20K, Internal_R30K, Internal_R40K, Internal_R80K, Internal_R120K, Internal_R250K, Internal_R500K, Internal_R1000K, External_R10K, External_R1M, External_R100M};
-uint8 TIA_Selected_Resistor = Internal_R20K;
+uint8 TIA_Selected_Resistor = External_R1M;
 
 // TIA Resistor Properties (access codes, impedance values, input offset voltages)
 uint8 TIA_Resistor_Codes[TIA_INTERNAL_RESISTOR_COUNT + AMUX_EXTERNAL_RESISTOR_COUNT] = {TIA_1_RES_FEEDBACK_20K, TIA_1_RES_FEEDBACK_30K, TIA_1_RES_FEEDBACK_40K, TIA_1_RES_FEEDBACK_80K, TIA_1_RES_FEEDBACK_120K, TIA_1_RES_FEEDBACK_250K, TIA_1_RES_FEEDBACK_500K, TIA_1_RES_FEEDBACK_1000K, AMUX_ADDRESS_FEEDBACK_R10K, AMUX_ADDRESS_FEEDBACK_R1M, AMUX_ADDRESS_FEEDBACK_R100M};
