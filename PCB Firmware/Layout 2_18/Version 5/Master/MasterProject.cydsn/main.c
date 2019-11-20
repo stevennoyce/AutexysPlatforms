@@ -986,6 +986,7 @@ void Measure(uint32 deltaSigmaSampleCount, uint32 SAR1_SampleCount, uint32 SAR2_
 	
 	// Transmit data measurement
 	sprintf(TransmitBuffer, "[%e,%f,%f,%e]\r\n", DrainCurrentAverageAmps, Get_Vgs(), Get_Vds(), GateCurrentAverageAmps);
+	//sprintf(TransmitBuffer, "[%e,%f,%f,%e,%e]\r\n", DrainCurrentAverageAmps, Get_Vgs(), Get_Vds(), GateCurrentAverageAmps, TIA_Resistor_Values[TIA_Selected_Resistor]);
 	//sprintf(TransmitBuffer, "[%e,%ld,%ld,%e]\r\n", DrainCurrentAverageAmps, microVoltGateVoltage, microVoltDrainVoltage, GateCurrentAverageAmps);
 	//sprintf(TransmitBuffer, "[%ld,%ld,%ld,%ld]\r\n", DrainCurrentAveragePicoAmps, microVoltGateVoltage, microVoltDrainVoltage, GateCurrentAveragePicoAmps);
 	sendTransmitBuffer();
