@@ -2238,8 +2238,6 @@ Wire Wire Line
 	14450 2700 15250 2700
 Wire Wire Line
 	18300 -500 18200 -500
-Text GLabel 18200 -500 1    39   Input ~ 0
-TIA_R_COMMON
 Text GLabel 18100 800  1    39   Input ~ 0
 TIA_R100M
 Text GLabel 18000 800  1    39   Input ~ 0
@@ -2279,9 +2277,6 @@ Wire Wire Line
 	18200 -200 18200 100 
 Wire Wire Line
 	18100 100  18200 100 
-Connection ~ 18200 100 
-Wire Wire Line
-	18200 100  18200 800 
 Wire Wire Line
 	18200 -200 18200 -500
 Connection ~ 18200 -200
@@ -2351,27 +2346,12 @@ Wire Wire Line
 	9850 850  10450 850 
 Text GLabel 17150 500  2    39   Input ~ 0
 VSSD
-$Comp
-L Connector_Generic:Conn_01x02 J1
-U 1 1 5DD45C60
-P 18200 -1700
-F 0 "J1" H 18280 -1708 50  0000 L CNN
-F 1 "Conn_01x02" H 18280 -1799 50  0000 L CNN
-F 2 "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm" H 18200 -1700 50  0001 C CNN
-F 3 "~" H 18200 -1700 50  0001 C CNN
-	1    18200 -1700
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	16150 -1300 16150 -1700
-Wire Wire Line
-	16150 -1700 18000 -1700
 Connection ~ 16150 -1300
-Wire Wire Line
-	18000 -1600 18000 -1350
-Wire Wire Line
-	18000 -1350 18200 -1350
-Wire Wire Line
-	18200 -1350 18200 -500
 Connection ~ 18200 -500
+Wire Wire Line
+	18200 -1700 18200 -500
+Wire Wire Line
+	16150 -1700 18200 -1700
 $EndSCHEMATC
