@@ -543,9 +543,11 @@ void SAR1_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCoun
 	uint32 medianCount = sampleCount/medianArraySize;
 	int32 medianArray[medianArraySize];
 	
+	// ** Only defined if SAR_2 is enabled in the design
+	#ifdef ADC_SAR_1_RETURN_STATUS
+	//ADC_SAR_1_StartConvert();
 	for (uint32 i = 1; i <= medianCount; i++) {
 		for (uint32 j = 0; j < medianArraySize; j++) {
-			ADC_SAR_1_StartConvert();
 			while (!ADC_SAR_1_IsEndConversion(ADC_SAR_1_RETURN_STATUS));
 			medianArray[j] = ADC_SAR_1_CountsTo_uVolts(ADC_SAR_1_GetResult16());
 		}
@@ -555,6 +557,8 @@ void SAR1_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCoun
 		SAR_SD += (float)(i-1)/(float)(i)*(SAR1_Result_Current - SAR_Result)*(SAR1_Result_Current - SAR_Result);
 		SAR_Result += ((float)SAR1_Result_Current - (float)SAR_Result)/(float)i;
 	}
+	//ADC_SAR_1_StopConvert();
+	#endif
 	
 	*average = SAR_Result;
 	*standardDeviation = SAR_SD;
@@ -574,9 +578,11 @@ void SAR2_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCoun
 	uint32 medianCount = sampleCount/medianArraySize;
 	int32 medianArray[medianArraySize];
 	
+	// ** Only defined if SAR_2 is enabled in the design
+	#ifdef ADC_SAR_2_RETURN_STATUS 
+	//ADC_SAR_2_StartConvert();
 	for (uint32 i = 1; i <= medianCount; i++) {
 		for (uint32 j = 0; j < medianArraySize; j++) {
-			ADC_SAR_2_StartConvert();
 			while (!ADC_SAR_2_IsEndConversion(ADC_SAR_2_RETURN_STATUS));
 			medianArray[j] = ADC_SAR_2_CountsTo_uVolts(ADC_SAR_2_GetResult16());
 		}
@@ -586,6 +592,8 @@ void SAR2_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCoun
 		SAR_SD += (float)(i-1)/(float)(i)*(SAR2_Result_Current - SAR_Result)*(SAR2_Result_Current - SAR_Result);
 		SAR_Result += ((float)SAR2_Result_Current - (float)SAR_Result)/(float)i;
 	}
+	//ADC_SAR_2_StopConvert();
+	#endif
 	
 	*average = SAR_Result;
 	*standardDeviation = SAR_SD;
@@ -1269,11 +1277,17 @@ int main(void) {
 	VDAC_Vds_Start();
 	VDAC_Vgs_Start();
 	VDAC_Ref_Start();
-	ADC_DelSig_1_Start();
-	ADC_SAR_1_Start();
-	ADC_SAR_2_Start();
 	TIA_1_Start();
 	AMux_1_Start();
+	ADC_DelSig_1_Start();
+	#ifdef ADC_SAR_1_RETURN_STATUS //only defined if SAR_1 is enabled in the design
+	ADC_SAR_1_Start();
+	ADC_SAR_1_StartConvert();
+	#endif
+	#ifdef ADC_SAR_2_RETURN_STATUS //only defined if SAR_2 is enabled in the design
+	ADC_SAR_2_Start();
+	ADC_SAR_2_StartConvert();
+	#endif
 	
 	// Start the op-amp buffers
 	Opamp_1_Start();
