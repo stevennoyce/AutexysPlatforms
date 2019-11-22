@@ -2118,22 +2118,6 @@ F 3 "DOCUMENTATION" H 1900 4150 50  0001 C CNN
 	1    1900 4150
 	1    0    0    -1  
 $EndComp
-$Comp
-L Custom_Schematic_Library:CY8C58_(100_TQFP) CPU1
-U 1 1 5DC0AF8F
-P 17500 2500
-F 0 "CPU1" H 17500 2300 50  0000 C CNN
-F 1 "CY8C58_(100_TQFP)" H 17500 2700 50  0000 C CNN
-F 2 "Package_QFP:TQFP-100_14x14mm_P0.5mm" H 17500 3000 50  0001 C CNN
-F 3 "DOCUMENTATION" H 17500 2100 50  0001 C CNN
-	1    17500 2500
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	17700 -300 17700 800 
-Connection ~ 17700 800 
-Wire Wire Line
-	17700 800  17700 3500
 Wire Wire Line
 	17600 3500 17600 4200
 $Comp
@@ -2354,4 +2338,47 @@ Wire Wire Line
 	18200 -1700 18200 -500
 Wire Wire Line
 	16150 -1700 18200 -1700
+Text GLabel 18700 800  1    39   Input ~ 0
+SAR1_Bypass_Cap
+Text GLabel 19800 1500 2    39   Input ~ 0
+SAR2_Bypass_Cap
+Text GLabel 19800 1400 2    39   Input ~ 0
+DeltaSigma_Bypass_Cap
+Wire Wire Line
+	17700 800  17700 3500
+Wire Wire Line
+	17700 -300 17700 800 
+Connection ~ 17700 800 
+$Comp
+L Custom_Schematic_Library:CY8C58_(100_TQFP) CPU1
+U 1 1 5DC0AF8F
+P 17500 2500
+F 0 "CPU1" H 17500 2300 50  0000 C CNN
+F 1 "CY8C58_(100_TQFP)" H 17500 2700 50  0000 C CNN
+F 2 "Package_QFP:TQFP-100_14x14mm_P0.5mm" H 17500 3000 50  0001 C CNN
+F 3 "DOCUMENTATION" H 17500 2100 50  0001 C CNN
+	1    17500 2500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C CB1
+U 1 1 5DDECF0D
+P 18700 0
+F 0 "CB1" H 18725 100 50  0000 L CNN
+F 1 "1uF" H 18725 -100 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 18738 -150 50  0001 C CNN
+F 3 "" H 18700 0   50  0000 C CNN
+	1    18700 0   
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	18700 150  18700 800 
+Text GLabel 18700 -150 1    39   Input ~ 0
+VSSD
+Text GLabel 19450 500  0    39   Input ~ 0
+SAR1_Bypass_Cap
+Text GLabel 19650 500  2    39   Input ~ 0
+SAR2_Bypass_Cap
+Wire Wire Line
+	19450 500  19650 500 
 $EndSCHEMATC
