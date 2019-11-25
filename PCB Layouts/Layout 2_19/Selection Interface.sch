@@ -2375,10 +2375,19 @@ Wire Wire Line
 	18700 150  18700 800 
 Text GLabel 18700 -150 1    39   Input ~ 0
 VSSD
-Text GLabel 19450 500  0    39   Input ~ 0
-SAR1_Bypass_Cap
-Text GLabel 19650 500  2    39   Input ~ 0
-SAR2_Bypass_Cap
+$Comp
+L Device:C CB2
+U 1 1 5DDD7238
+P 20750 1400
+F 0 "CB2" H 20775 1500 50  0000 L CNN
+F 1 "1uF" H 20775 1300 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 20788 1250 50  0001 C CNN
+F 3 "" H 20750 1400 50  0000 C CNN
+	1    20750 1400
+	0    1    1    0   
+$EndComp
+Text GLabel 20900 1400 2    39   Input ~ 0
+VSSD
 Wire Wire Line
-	19450 500  19650 500 
+	20600 1400 19800 1400
 $EndSCHEMATC
