@@ -987,8 +987,8 @@ void Measure(uint32 deltaSigmaSampleCount, uint32 SAR1_SampleCount, uint32 SAR2_
 	//float SAR2 = (1e-6) * SAR2_Average;
 	
 	// Convert to integers for faster communication (if desired0
-	int32 microVoltGateVoltage  = Get_Vgs() * 1e6;
-	int32 microVoltDrainVoltage = Get_Vds() * 1e6;
+	//int32 microVoltGateVoltage  = Get_Vgs() * 1e6;
+	//int32 microVoltDrainVoltage = Get_Vds() * 1e6;
 	//int32 DrainCurrentAveragePicoAmps = DrainCurrentAverageAmps * 1e12;
 	//int32 GateCurrentAveragePicoAmps  = GateCurrentAverageAmps * 1e12;
 	
