@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source "/Users/jaydoherty/Documents/myWorkspaces/Research/Autexys/AutexysPlatforms/PCB Layouts/Layout 2_19/Selection Interface.sch")
-    (date "Monday, December 02, 2019 at 01:00:47 AM")
+    (date "Monday, December 02, 2019 at 02:47:58 PM")
     (tool "Eeschema (5.0.0-3-g5ebb6b6)")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -551,7 +551,7 @@
       (sheetpath (names /) (tstamps /))
       (tstamp 5DDD7238))
     (comp (ref CG1)
-      (value 1uF)
+      (value 1nF)
       (footprint Capacitor_SMD:C_0603_1608Metric)
       (libsource (lib Device) (part C) (description "Unpolarized capacitor"))
       (sheetpath (names /) (tstamps /))
