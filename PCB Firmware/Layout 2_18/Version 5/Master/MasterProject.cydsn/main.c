@@ -38,12 +38,15 @@
 #define DAC_VOLTAGE_MAXIMUM (4.080)
 
 // ADC De-noising Parameters
-#define ADC_MEASUREMENT_CHUNKSIZE (9)
-#define SAR_MEASUREMENT_CHUNKSIZE (9)
-#define CURRENT_MEASUREMENT_DISCARDCOUNT (0)
+#define ADC_MEASUREMENT_MEDIAN_CHUNKSIZE (9)
+#define ADC_MEASUREMENT_MEAN_CHUNKSIZE (15)
+#define SAR_MEASUREMENT_MEDIAN_CHUNKSIZE (9)
+#define SAR_MEASUREMENT_MEAN_CHUNKSIZE (30)
+#define ADC_CALIBRATION_SAMPLECOUNT (100)
 #define AUTO_RANGE_SAMPLECOUNT (3)
 #define AUTO_RANGE_DISCARDCOUNT (0)
-#define ADC_CALIBRATION_SAMPLECOUNT (100)
+#define DRAIN_CURRENT_MEASUREMENT_DISCARDCOUNT (0)
+#define GATE_CURRENT_MEASUREMENT_DISCARDCOUNT (0)
 
 // Primary Measurement Parameters
 #define DRAIN_CURRENT_MEASUREMENT_SAMPLECOUNT (45)
@@ -475,15 +478,56 @@ int32 medianOfArray(int32 array[], uint32 size) {
 	}
 }
 
+// HELPER: get the mean of an array
+float meanOfArray(int32 array[], uint32 size) {
+	int32 sum = 0;
+	
+	for (uint32 i = 0; i < size; i++) {
+		sum += array[i];
+	}
+	
+	return ((float)sum)/((float)size);
+}
+
 // MEASURE: Measure Delta-Sigma ADC
-void ADC_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCount) {
+void ADC_Means_Measure_uV(int32* average, uint32 sampleCount) {
+	if(sampleCount == 0) return;
+	
+	// Samples will be sorted, allowing extreme values to be discarded, and the mean of the remaining middle chunk gives the final result
+	uint32 meanArraySize = ADC_MEASUREMENT_MEAN_CHUNKSIZE;
+	if(sampleCount < meanArraySize) meanArraySize = sampleCount;
+	uint32 discardOffset = (sampleCount - meanArraySize)/2;
+	
+	// Define arrays
+	int32 sampleArray[sampleCount];
+	int32 meanArray[meanArraySize];
+	
+	for (uint32 i = 0; i < sampleCount; i++) {
+		while (!ADC_DelSig_1_IsEndConversion(ADC_DelSig_1_RETURN_STATUS));
+		sampleArray[i] = ADC_DelSig_1_CountsTo_uVolts(ADC_DelSig_1_GetResult32());
+	}
+	
+	// Sort and discard samples at high and low extremes, keeping the middle chunk of values
+	sortArray(sampleArray, sampleCount);
+	for (uint32 i = 0; i < meanArraySize; i++) {
+		meanArray[i] = sampleArray[i+discardOffset];
+	}
+	
+	// Average middle chunk of values for the final result
+	int32 ADC_Result = meanOfArray(meanArray, meanArraySize);
+	
+	*average = ADC_Result;
+}
+
+// MEASURE: Measure Delta-Sigma ADC
+void ADC_Medians_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCount) {
 	if(sampleCount == 0) return;
 	
 	int32 ADC_Result = 0;
 	int32 ADC_SD = 0;
 	
 	// Split measurements into chunks, taking the median of each chunk and averaging those medians for the final result
-	uint32 medianArraySize = ADC_MEASUREMENT_CHUNKSIZE;
+	uint32 medianArraySize = ADC_MEASUREMENT_MEDIAN_CHUNKSIZE;
 	if (sampleCount < medianArraySize) medianArraySize = sampleCount;
 	
 	uint32 medianCount = sampleCount/medianArraySize;
@@ -504,6 +548,12 @@ void ADC_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCount
 	
 	*average = ADC_Result;
 	*standardDeviation = ADC_SD;
+}
+
+// MEASURE: Measure Delta-Sigma ADC
+void ADC_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCount) {
+	ADC_Means_Measure_uV(average, sampleCount);
+	//ADC_Medians_Measure_uV(average, standardDeviation, sampleCount);
 }
 
 // RANGE: take a test measurement of the delta-sigma ADC and adjust its range if necessary
@@ -529,21 +579,56 @@ void ADC_Adjust_Range(uint32 sampleCount) {
 	ADC_Measure_uV(&ADC_Voltage, &ADC_Voltage_SD, AUTO_RANGE_DISCARDCOUNT);
 }
 
-// MEASURE: Measure SAR1 ADC
-void SAR1_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCount) {
+// MEASURE: Measure SAR1 ADC (using primarily means)
+void SAR1_Means_Measure_uV(int32* average, uint32 sampleCount) {
+	if(sampleCount == 0) return;
+	
+	// Samples will be sorted, allowing extreme values to be discarded, and the mean of the remaining middle chunk gives the final result
+	uint32 meanArraySize = SAR_MEASUREMENT_MEAN_CHUNKSIZE;
+	if(sampleCount < meanArraySize) meanArraySize = sampleCount;
+	uint32 discardOffset = (sampleCount - meanArraySize)/2;
+	
+	// Define arrays
+	int32 sampleArray[sampleCount];
+	int32 meanArray[meanArraySize];
+	
+	// ** Only defined if SAR_1 is enabled in the design
+	#ifdef ADC_SAR_1_RETURN_STATUS
+	//ADC_SAR_1_StartConvert();
+	for (uint32 i = 0; i < sampleCount; i++) {
+		while (!ADC_SAR_1_IsEndConversion(ADC_SAR_1_RETURN_STATUS));
+		sampleArray[i] = ADC_SAR_1_CountsTo_uVolts(ADC_SAR_1_GetResult16());
+	}
+	//ADC_SAR_1_StopConvert();
+	#endif
+	
+	// Sort and discard samples at high and low extremes, keeping the middle chunk of values
+	sortArray(sampleArray, sampleCount);
+	for (uint32 i = 0; i < meanArraySize; i++) {
+		meanArray[i] = sampleArray[i+discardOffset];
+	}
+	
+	// Average middle chunk of values for the final result
+	int32 SAR_Result = meanOfArray(meanArray, meanArraySize);
+	
+	*average = SAR_Result;
+}
+
+// MEASURE: Measure SAR1 ADC (using primarily medians)
+void SAR1_Medians_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCount) {
 	if(sampleCount == 0) return;
 	
 	int32 SAR_Result = 0;
 	int32 SAR_SD = 0;
 	
 	// Split measurements into chunks, taking the median of each chunk and averaging those medians for the final result
-	uint32 medianArraySize = SAR_MEASUREMENT_CHUNKSIZE;
+	uint32 medianArraySize = SAR_MEASUREMENT_MEDIAN_CHUNKSIZE;
 	if (sampleCount < medianArraySize) medianArraySize = sampleCount;
 	
 	uint32 medianCount = sampleCount/medianArraySize;
 	int32 medianArray[medianArraySize];
 	
-	// ** Only defined if SAR_2 is enabled in the design
+	// ** Only defined if SAR_1 is enabled in the design
 	#ifdef ADC_SAR_1_RETURN_STATUS
 	//ADC_SAR_1_StartConvert();
 	for (uint32 i = 1; i <= medianCount; i++) {
@@ -564,15 +649,56 @@ void SAR1_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCoun
 	*standardDeviation = SAR_SD;
 }
 
-// MEASURE: Measure SAR2 ADC
-void SAR2_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCount) {
+// MEASURE: Measure SAR1 ADC
+void SAR1_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCount) {
+	SAR1_Means_Measure_uV(average, sampleCount);
+	//SAR1_Medians_Measure_uV(average, standardDeviation, sampleCount);
+}
+
+// MEASURE: Measure SAR1 ADC (using primarily means)
+void SAR2_Means_Measure_uV(int32* average, uint32 sampleCount) {
+	if(sampleCount == 0) return;
+	
+	// Samples will be sorted, allowing extreme values to be discarded, and the mean of the remaining middle chunk gives the final result
+	uint32 meanArraySize = SAR_MEASUREMENT_MEAN_CHUNKSIZE;
+	if(sampleCount < meanArraySize) meanArraySize = sampleCount;
+	uint32 discardOffset = (sampleCount - meanArraySize)/2;
+	
+	// Define arrays
+	int32 sampleArray[sampleCount];
+	int32 meanArray[meanArraySize];
+	
+	// ** Only defined if SAR_2 is enabled in the design
+	#ifdef ADC_SAR_2_RETURN_STATUS
+	//ADC_SAR_2_StartConvert();
+	for (uint32 i = 0; i < sampleCount; i++) {
+		while (!ADC_SAR_2_IsEndConversion(ADC_SAR_2_RETURN_STATUS));
+		sampleArray[i] = ADC_SAR_2_CountsTo_uVolts(ADC_SAR_2_GetResult16());
+	}
+	//ADC_SAR_2_StopConvert();
+	#endif
+	
+	// Sort and discard samples at high and low extremes, keeping the middle chunk of values
+	sortArray(sampleArray, sampleCount);
+	for (uint32 i = 0; i < meanArraySize; i++) {
+		meanArray[i] = sampleArray[i+discardOffset];
+	}
+	
+	// Average middle chunk of values for the final result
+	int32 SAR_Result = meanOfArray(meanArray, meanArraySize);
+	
+	*average = SAR_Result;
+}
+
+// MEASURE: Measure SAR2 ADC (using primarily medians)
+void SAR2_Medians_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCount) {
 	if(sampleCount == 0) return;
 	
 	int32 SAR_Result = 0;
 	int32 SAR_SD = 0;
 	
 	// Split measurements into chunks, taking the median of each chunk and averaging those medians for the final result
-	uint32 medianArraySize = SAR_MEASUREMENT_CHUNKSIZE;
+	uint32 medianArraySize = SAR_MEASUREMENT_MEDIAN_CHUNKSIZE;
 	if (sampleCount < medianArraySize) medianArraySize = sampleCount;
 	
 	uint32 medianCount = sampleCount/medianArraySize;
@@ -599,6 +725,12 @@ void SAR2_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCoun
 	*standardDeviation = SAR_SD;
 }
 
+// MEASURE: Measure SAR2 ADC
+void SAR2_Measure_uV(int32* average, int32* standardDeviation, uint32 sampleCount) {
+	SAR2_Means_Measure_uV(average, sampleCount);
+	//SAR2_Medians_Measure_uV(average, standardDeviation, sampleCount);
+}
+
 // MEASURE: Measure drain current
 void Measure_Drain_Current(float* currentAverageIn, float* currentStdDevIn, uint32 sampleCount) {		
 	// Auto-adjust the current range
@@ -619,7 +751,8 @@ void Measure_Drain_Current(float* currentAverageIn, float* currentStdDevIn, uint
 	float currentStdDev = 0;
 	
 	// Allow for the first measurement (normally not correct) to take place
-	ADC_Measure_uV(&ADC_Voltage, &ADC_Voltage_SD, CURRENT_MEASUREMENT_DISCARDCOUNT);
+	int32 discard = 0;
+	ADC_Measure_uV(&discard, &discard, DRAIN_CURRENT_MEASUREMENT_DISCARDCOUNT);
 	
 	// Now take the real ADC measurement
 	ADC_Measure_uV(&ADC_Voltage, &ADC_Voltage_SD, sampleCount);
@@ -639,19 +772,23 @@ void Measure_Gate_Current(float* currentAverageIn, float* currentStdDevIn, uint3
 	float unitConversion = 1.0e-6/Vgs_DAC_Series_R;
 	
 	// Voltage and its standard deviation (in uV)
-	int32 ADC_Voltage = 0;
-	int32 ADC_Voltage_SD = 0;
+	int32 SAR_Voltage = 0;
+	int32 SAR_Voltage_SD = 0;
 	
 	// Current and its standard deviation (in A)
 	float currentAverage = 0;
 	float currentStdDev = 0;
 	
+	// Allow for the first measurement (normally not correct) to take place
+	int32 discard = 0;
+	SAR1_Measure_uV(&discard, &discard, GATE_CURRENT_MEASUREMENT_DISCARDCOUNT);
+	
 	// Take the measurement
-	SAR1_Measure_uV(&ADC_Voltage, &ADC_Voltage_SD, sampleCount);
+	SAR1_Measure_uV(&SAR_Voltage, &SAR_Voltage_SD, sampleCount);
 	
 	// Convert from ADC microvolts to a measurement of current in amperes (using the value of series resistance)
-	currentAverage = unitConversion * (ADC_Voltage);
-	currentStdDev = unitConversion * (ADC_Voltage_SD);
+	currentAverage = unitConversion * (SAR_Voltage);
+	currentStdDev = unitConversion * (SAR_Voltage_SD);
 	
 	*currentAverageIn = currentAverage;
 	*currentStdDevIn = currentStdDev;
