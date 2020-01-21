@@ -1320,20 +1320,23 @@ CY_ISR (CommunicationHandlerISR) {
 	// --- USB Communication Handling ---
 	if (USBUARTH_DataIsReady()) {
 		
-		// Put recieved characters into a temporary buffer
+		// Store all recieved characters from the USBU module in a temporary buffer
 		char temp_buffer[USBUART_BUFFER_SIZE];
 		uint8 temp_count = USBUART_GetAll((uint8*) temp_buffer);
 		
-		// For each recieved character, place it into the global USBUART_Receive_Buffer if it is not an end-of-line character.
+		// For each recieved character, place it into the global USBUART-Receive-Buffer if it is not an end-of-line character.
 		for (uint8 i = 0; i < temp_count; i++) {
 			char c = temp_buffer[i];
-			USBUART_Receive_Buffer[USBUART_Rx_Position] = c;
 			
-			// Replace EOL characters with '\0' and set "newData = 1" when we are ready for the message in USBUART_Receive_Buffer to be interpretted by the rest of our code.
+			// Replace EOL characters with '\0' and set "newData = 1" when we are ready for the message in USBUART-Receive-Buffer to be interpretted by the rest of our code.
 			if (c == '\r' || c == '\n' || c == '!') {
-				USBUART_Receive_Buffer[USBUART_Rx_Position] = 0;
-				if (USBUART_Rx_Position) newData = 1;
+				if (USBUART_Rx_Position) { // EOL characters at the front of the buffer are ignored
+					USBUART_Receive_Buffer[USBUART_Rx_Position] = 0;
+					newData = 1;
+				}
 			} else {
+				// Ordinary characters are placed directly into the global USBUART-Receive-Buffer
+				USBUART_Receive_Buffer[USBUART_Rx_Position] = c;
 				USBUART_Rx_Position++;
 			}
 			
@@ -1347,15 +1350,20 @@ CY_ISR (CommunicationHandlerISR) {
 	
 	// --- Bluetooth Communication Handling ---
 	if (UART_1_GetRxBufferSize()) {
-		// For each recieved character, place it into the global UART_Receive_Buffer if it is not an end-of-line character.
-		UART_Receive_Buffer[UART_Rx_Position] = UART_1_GetChar();
 		
-		// Replace EOL characters with '\0' and set "newData = 2" when we are ready for the message in UART_Receive_Buffer to be interpretted by the rest of our code.
-		if (UART_Receive_Buffer[UART_Rx_Position] == '\r' || UART_Receive_Buffer[UART_Rx_Position] == '\n' || UART_Receive_Buffer[UART_Rx_Position] == '!') {
-			UART_Receive_Buffer[UART_Rx_Position] = 0;
-			if (UART_Rx_Position) newData = 2;
+		// Store the received character from the UART module
+		char c = UART_1_GetChar();
+		
+		// Replace EOL characters with '\0' and set "newData = 2" when we are ready for the message in UART-Receive-Buffer to be interpretted by the rest of our code.
+		if (c == '\r' || c == '\n' || c == '!') {
+			if (UART_Rx_Position) { // EOL characters at the front of the buffer are ignored
+				UART_Receive_Buffer[UART_Rx_Position] = 0;
+			 	newData = 2;
+			}
 			UART_Rx_Position = 0;
 		} else {
+			// Ordinary characters are placed directly into the global UART-Receive-Buffer
+			UART_Receive_Buffer[UART_Rx_Position] = c;
 			UART_Rx_Position++;
 		}
 		
