@@ -1333,7 +1333,6 @@ CY_ISR (CommunicationHandlerISR) {
 			if (c == '\r' || c == '\n' || c == '!') {
 				USBUART_Receive_Buffer[USBUART_Rx_Position] = 0;
 				if (USBUART_Rx_Position) newData = 1;
-				USBUART_Rx_Position = 0;
 			} else {
 				USBUART_Rx_Position++;
 			}
@@ -1341,10 +1340,14 @@ CY_ISR (CommunicationHandlerISR) {
 			// OVERFLOW: this means the command was too long for our buffer to handle. There is no good solution, so we have to just start overwriting characters at the front of the buffer.
 			if (USBUART_Rx_Position >= USBUART_BUFFER_SIZE) USBUART_Rx_Position = 0;
 		}
+		
+		// Finally, reset the USB buffer Rx position if this message was a complete command. 
+		if (newData) USBUART_Rx_Position = 0;
 	} else
 	
 	// --- Bluetooth Communication Handling ---
 	if (UART_1_GetRxBufferSize()) {
+		// For each recieved character, place it into the global UART_Receive_Buffer if it is not an end-of-line character.
 		UART_Receive_Buffer[UART_Rx_Position] = UART_1_GetChar();
 		
 		// Replace EOL characters with '\0' and set "newData = 2" when we are ready for the message in UART_Receive_Buffer to be interpretted by the rest of our code.
