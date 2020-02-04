@@ -2182,19 +2182,4 @@ Wire Wire Line
 	24050 9400 25300 9400
 Wire Wire Line
 	17450 9200 18700 9200
-$Comp
-L Device:C CG1
-U 1 1 5DE5749E
-P 9900 5850
-F 0 "CG1" H 9925 5950 50  0000 L CNN
-F 1 "1nF" H 9925 5750 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric" H 9938 5700 50  0001 C CNN
-F 3 "" H 9900 5850 50  0000 C CNN
-	1    9900 5850
-	1    0    0    -1  
-$EndComp
-Text GLabel 9900 5700 1    39   Input ~ 0
-Gate
-Text GLabel 9900 6000 3    39   Input ~ 0
-GND
 $EndSCHEMATC
