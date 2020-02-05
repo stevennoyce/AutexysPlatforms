@@ -2182,4 +2182,12 @@ Wire Wire Line
 	24050 9400 25300 9400
 Wire Wire Line
 	17450 9200 18700 9200
+Text GLabel 3700 1550 2    39   Input ~ 0
+BT1_RXR
+Text GLabel 3700 1650 2    39   Input ~ 0
+BT1_TX
+Text GLabel 3700 1750 2    39   Input ~ 0
+GND
+Text GLabel 3700 1850 2    39   Input ~ 0
+VDDD
 $EndSCHEMATC
