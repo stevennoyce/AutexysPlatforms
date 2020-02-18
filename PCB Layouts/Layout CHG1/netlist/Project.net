@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source "/Users/jaydoherty/Documents/myWorkspaces/Research/Autexys/AutexysPlatforms/PCB Layouts/Layout CHG1/Project.sch")
-    (date "Tuesday, February 18, 2020 at 03:17:03 AM")
+    (date "Tuesday, February 18, 2020 at 11:19:12 AM")
     (tool "Eeschema (5.0.0-3-g5ebb6b6)")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -31,7 +31,7 @@
       (tstamp 5E4B72EC))
     (comp (ref JSTPH1)
       (value Conn_01x02)
-      (footprint Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal)
+      (footprint "Custom_Footprint_Library:JST Lipo Header (S2B-PH-SM4-TB)")
       (datasheet ~)
       (libsource (lib Connector_Generic) (part Conn_01x02) (description "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"))
       (sheetpath (names /) (tstamps /))
