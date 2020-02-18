@@ -1,7 +1,7 @@
 (export (version D)
   (design
-    (source "/Users/jaydoherty/Documents/myWorkspaces/Research/Autexys/AutexysPlatforms/PCB Layouts/Layout CHG1/Project.sch")
-    (date "Tuesday, February 18, 2020 at 11:19:12 AM")
+    (source "/Users/jaydoherty/Documents/myWorkspaces/Research/Autexys/AutexysPlatforms/PCB Layouts/Layout CG1/Project.sch")
+    (date "Tuesday, February 18, 2020 at 05:07:28 PM")
     (tool "Eeschema (5.0.0-3-g5ebb6b6)")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -91,7 +91,21 @@
       (datasheet ~)
       (libsource (lib Device) (part D) (description Diode))
       (sheetpath (names /) (tstamps /))
-      (tstamp 5E4BA0EB)))
+      (tstamp 5E4BA0EB))
+    (comp (ref MH1)
+      (value MountingHole)
+      (footprint Custom_Footprint_Library:MountingHole_2.2mm)
+      (datasheet ~)
+      (libsource (lib Mechanical) (part MountingHole) (description "Mounting Hole without connection"))
+      (sheetpath (names /) (tstamps /))
+      (tstamp 5E4C45A5))
+    (comp (ref MH2)
+      (value MountingHole)
+      (footprint Custom_Footprint_Library:MountingHole_2.2mm)
+      (datasheet ~)
+      (libsource (lib Mechanical) (part MountingHole) (description "Mounting Hole without connection"))
+      (sheetpath (names /) (tstamps /))
+      (tstamp 5E4C463D)))
   (libparts
     (libpart (lib Battery_Management) (part MCP73832-2-OT)
       (aliases
@@ -188,14 +202,24 @@
         (field (name Value) R))
       (pins
         (pin (num 1) (name ~) (type passive))
-        (pin (num 2) (name ~) (type passive)))))
+        (pin (num 2) (name ~) (type passive))))
+    (libpart (lib Mechanical) (part MountingHole)
+      (description "Mounting Hole without connection")
+      (docs ~)
+      (footprints
+        (fp MountingHole*))
+      (fields
+        (field (name Reference) MH)
+        (field (name Value) MountingHole))))
   (libraries
     (library (logical Battery_Management)
       (uri "/Library/Application Support/kicad/library/Battery_Management.lib"))
     (library (logical Connector_Generic)
       (uri "/Library/Application Support/kicad/library/Connector_Generic.lib"))
     (library (logical Device)
-      (uri "/Library/Application Support/kicad/library/Device.lib")))
+      (uri "/Library/Application Support/kicad/library/Device.lib"))
+    (library (logical Mechanical)
+      (uri "/Library/Application Support/kicad/library/Mechanical.lib")))
   (nets
     (net (code 1) (name PROG)
       (node (ref RREF1) (pin 2))

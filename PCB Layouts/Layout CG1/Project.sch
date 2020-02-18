@@ -222,4 +222,26 @@ Wire Wire Line
 	3700 1750 3700 1850
 Wire Wire Line
 	3700 2150 3700 2250
+$Comp
+L Mechanical:MountingHole MH1
+U 1 1 5E4C45A5
+P 6650 1050
+F 0 "MH1" H 6750 1096 50  0000 L CNN
+F 1 "MountingHole" H 6750 1005 50  0000 L CNN
+F 2 "Custom_Footprint_Library:MountingHole_2.2mm" H 6650 1050 50  0001 C CNN
+F 3 "~" H 6650 1050 50  0001 C CNN
+	1    6650 1050
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole MH2
+U 1 1 5E4C463D
+P 6650 1300
+F 0 "MH2" H 6750 1346 50  0000 L CNN
+F 1 "MountingHole" H 6750 1255 50  0000 L CNN
+F 2 "Custom_Footprint_Library:MountingHole_2.2mm" H 6650 1300 50  0001 C CNN
+F 3 "~" H 6650 1300 50  0001 C CNN
+	1    6650 1300
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
