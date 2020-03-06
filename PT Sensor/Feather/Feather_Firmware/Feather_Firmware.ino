@@ -8,6 +8,7 @@ void setup() {
 }
 
 void loop() {
+  while(psocSerial.available()) { psocSerial.read(); }
   delay(500);
   
   int32_t mag_uv = psocSerial.parseInt();
