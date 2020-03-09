@@ -5,7 +5,7 @@
 
 // Defines optional fixed delays (in milliseconds)
 #define LOOP_DELAY_MS 0
-#define CONTINUOUS_PRINT_DELAY_MS 500
+#define CONTINUOUS_PRINT_DELAY_MS 250
 
 // Defines the maximum length string to read/print over USB
 #define USB_BUFFER_SIZE 64
@@ -79,10 +79,14 @@ void recvFromUSB() {
 
 void handleMessageFromUSB() {
   if(usbNewMessage) {
-    if(ReceiveBufferUSB == "CONN") {
+    if(strcmp(ReceiveBufferUSB, "CONN") == 0) {
       ModeConnectedToHost = true;
-    } else if(ReceiveBufferUSB == "MEAS") {
+      Serial.println("# Connected to Host CPU.");
+    } else if(strcmp(ReceiveBufferUSB, "MEAS") == 0) {
       printMeasurement();
+    } else if(strcmp(ReceiveBufferUSB, "RESET") == 0) {
+      ModeConnectedToHost = false;
+      Serial.println("# Disconnected from Host CPU.");
     }
 
     usbNewMessage = false;
