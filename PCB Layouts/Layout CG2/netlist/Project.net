@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source "/Users/jaydoherty/Documents/myWorkspaces/Research/Autexys/AutexysPlatforms/PCB Layouts/Layout CG2/Project.sch")
-    (date "Friday, February 28, 2020 at 12:18:39 PM")
+    (date "Thursday, March 12, 2020 at 12:26:42 AM")
     (tool "Eeschema (5.0.0-3-g5ebb6b6)")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -238,9 +238,9 @@
       (node (ref J1) (pin 2))
       (node (ref JSTPH1) (pin 2))
       (node (ref D3) (pin 1)))
-    (net (code 4) (name RX)
+    (net (code 4) (name TX)
       (node (ref J1) (pin 3)))
-    (net (code 5) (name TX)
+    (net (code 5) (name RX)
       (node (ref J1) (pin 4)))
     (net (code 6) (name VBAT)
       (node (ref JSTPH1) (pin 1))

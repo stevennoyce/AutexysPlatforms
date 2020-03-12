@@ -118,6 +118,6 @@ void updateMeasurement(int32_t PSoC_Measurement_uV) {
 }
 
 void printMeasurement() {
-  sprintf(TransmitBufferUSB, "{'impedance':%f}", MeasurementImpedance);
+  sprintf(TransmitBufferUSB, "{\"impedance\":%f}", MeasurementImpedance);
   Serial.println(TransmitBufferUSB);
 }

@@ -17,9 +17,9 @@ Text GLabel 5300 1050 0    50   Input ~ 0
 VDD
 Text GLabel 5300 1150 0    50   Input ~ 0
 GND
-Text GLabel 5300 1250 0    50   Input ~ 0
-RX
 Text GLabel 5300 1350 0    50   Input ~ 0
+RX
+Text GLabel 5300 1250 0    50   Input ~ 0
 TX
 $Comp
 L Battery_Management:MCP73831-2-OT CGU1
