@@ -1,8 +1,0 @@
-PCB Re-Design Plans
-
-1. Fix the MUXes to make all 64 devices accessible.
-2. Add 100 to 220 ohm resistors to any PCB trace that could conceivably carry very high current during a short circuit.
-3. Add jumpers to VGS so that there can be (a) direct connection from Master PSoC to specific socket pin (b) connection from Master PSoC to a MUX and (c) direct connection from specfic socket pin to IPEX.
-4. Improve naming conventions to make things easier for more people to understand.
-5. Double check naming conventions of Back/Local/Solution gates to make sure the socket pin locations are the same as blue board
-6. Add resistors in known locations that are 1 kOhm, 10 kOhm, 100 kOhm, 1 MOhm, 10 MOhm
