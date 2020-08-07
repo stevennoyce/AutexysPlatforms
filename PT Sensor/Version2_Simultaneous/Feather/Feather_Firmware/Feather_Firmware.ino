@@ -32,8 +32,6 @@ boolean usbNewMessage = false;
 
 boolean ModeConnectedToHost = false; 
 
-float MeasurementImpedance = 0;
-
 int32_t PSoC_Measurement_uV0;
 int32_t PSoC_Measurement_uV1;
 int32_t PSoC_Measurement_uV2;
@@ -75,13 +73,13 @@ void setup() {
 
 void loop() {
   // Receive and handle new data from PSoC
-    for (int i=0; i<1000; i++){
+  for (int i=0; i<100; i++){
     recChar[i] = recvFromPSOC();
-    }
+  }
 
-    Split();
-    updateMeasurement();
-    testText();
+  Split();
+  updateMeasurement();
+  testText();
    
 
   // Receive and handle messages from host CPU (if any)
@@ -149,7 +147,7 @@ void handleMessageFromUSB() {
 }
 
 int32_t recvFromPSOC() {
-//   Clear old data from PSoC
+  // Clear old data from PSoC
   while(psocSerial.available()) {return psocSerial.read(); }
 }
 
@@ -179,12 +177,18 @@ void Split() {
 // I1 = I2, V1/R1 = V2/R2
 // R1 = R2 * V1/V2 = R2 * (0.3 - V2)/V2
 void updateMeasurement() {
-  float VoltageRatio0 = ((float)(300000 - PSoC_Measurement_uV0))/PSoC_Measurement_uV0;
-  MeasurementImpedance0 = EXTERNAL_RESISTOR_OHMS * VoltageRatio0;
-  float VoltageRatio1 = ((float)(300000 - PSoC_Measurement_uV1))/PSoC_Measurement_uV1;
-  MeasurementImpedance1 = EXTERNAL_RESISTOR_OHMS * VoltageRatio1;
-  float VoltageRatio2 = ((float)(300000 - PSoC_Measurement_uV2))/PSoC_Measurement_uV2;
-  MeasurementImpedance2 = EXTERNAL_RESISTOR_OHMS * VoltageRatio2;
+  if(PSoC_Measurement_uV0 != 0) {
+    float VoltageRatio0 = ((float)(300000 - PSoC_Measurement_uV0))/PSoC_Measurement_uV0;
+    MeasurementImpedance0 = EXTERNAL_RESISTOR_OHMS * VoltageRatio0;
+  }
+  if(PSoC_Measurement_uV1 != 0) {
+    float VoltageRatio1 = ((float)(300000 - PSoC_Measurement_uV1))/PSoC_Measurement_uV1;
+    MeasurementImpedance1 = EXTERNAL_RESISTOR_OHMS * VoltageRatio1;
+  }
+  if(PSoC_Measurement_uV2 != 0) {
+    float VoltageRatio2 = ((float)(300000 - PSoC_Measurement_uV2))/PSoC_Measurement_uV2;
+    MeasurementImpedance2 = EXTERNAL_RESISTOR_OHMS * VoltageRatio2;
+  }
 }
 
 void printMeasurement() {
