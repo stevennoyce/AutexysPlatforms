@@ -13,6 +13,15 @@
 
 #define EXTERNAL_RESISTOR_OHMS 499
 
+#include <SPI.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_ILI9341.h>
+#define STMPE_CS 6
+#define TFT_CS 9
+#define TFT_DC 10
+#define SD_CS 5
+
+
 
 
 // === Variables ===
@@ -25,6 +34,18 @@ boolean ModeConnectedToHost = false;
 
 float MeasurementImpedance = 0;
 
+int32_t PSoC_Measurement_uV0;
+int32_t PSoC_Measurement_uV1;
+int32_t PSoC_Measurement_uV2;
+char recChar[1000];
+float MeasurementImpedance0 = 0;
+float MeasurementImpedance1 = 0;
+float MeasurementImpedance2 = 0;
+
+
+Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
+
+
 
 
 // === Setup & Loop ===
@@ -33,12 +54,33 @@ void setup() {
   Serial.begin(115200);
   psocSerial.begin(115200);
   Serial.println("Startup complete. System is ready.");
+
+  tft.begin();
+
+  // read diagnostics (optional but can help debug problems)
+  uint8_t x = tft.readcommand8(ILI9341_RDMODE);
+  Serial.print("Display Power Mode: 0x"); Serial.println(x, HEX);
+  x = tft.readcommand8(ILI9341_RDMADCTL);
+  Serial.print("MADCTL Mode: 0x"); Serial.println(x, HEX);
+  x = tft.readcommand8(ILI9341_RDPIXFMT);
+  Serial.print("Pixel Format: 0x"); Serial.println(x, HEX);
+  x = tft.readcommand8(ILI9341_RDIMGFMT);
+  Serial.print("Image Format: 0x"); Serial.println(x, HEX);
+  x = tft.readcommand8(ILI9341_RDSELFDIAG);
+  Serial.print("Self Diagnostic: 0x"); Serial.println(x, HEX); 
 }
+
 
 void loop() {
   // Receive and handle new data from PSoC
-  int32_t PSoC_Measurement_uV = recvFromPSOC();
-  updateMeasurement(PSoC_Measurement_uV);
+    for (int i=0; i<1000; i++){
+    recChar[i] = recvFromPSOC();
+    }
+
+    Split();
+    updateMeasurement();
+    testText();
+   
 
   // Receive and handle messages from host CPU (if any)
   recvFromUSB();
@@ -56,6 +98,17 @@ void loop() {
 
 
 // === Communication Functions ===
+
+unsigned long testText(){
+   tft.fillScreen(ILI9341_BLACK);
+    tft.setCursor(0, 0);
+    tft.setTextColor(ILI9341_WHITE);
+    tft.setTextSize(5);
+    tft.println(MeasurementImpedance0);
+    tft.println(MeasurementImpedance1);
+    tft.println(MeasurementImpedance2);
+}
+
 
 void recvFromUSB() {
   char rc;
@@ -94,11 +147,22 @@ void handleMessageFromUSB() {
 }
 
 int32_t recvFromPSOC() {
-  // Clear old data from PSoC
-  while(psocSerial.available()) { psocSerial.read(); }
+//   Clear old data from PSoC
+  while(psocSerial.available()) {return psocSerial.read(); }
+}
 
-  // Return newest data from PSoC (this is a blocking call, timeout = 1 second)
-  return psocSerial.parseInt();
+void Split() {
+  // Split up the values
+   char * strtokIndx; // this is used by strtok() as an index
+  
+  strtokIndx = strtok(recChar,","); //gets the first number
+  PSoC_Measurement_uV0 = atoi(strtokIndx);     // convert this part to an integer
+  
+  strtokIndx = strtok(NULL, ","); // this continues where the previous call left off
+  PSoC_Measurement_uV1 = atoi(strtokIndx);     // convert this part to an integer
+
+  strtokIndx = strtok(NULL, ","); // this continues where the previous call left off
+  PSoC_Measurement_uV2 = atoi(strtokIndx);     // convert this part to an integer
 }
 
 
@@ -112,12 +176,16 @@ int32_t recvFromPSOC() {
 // V1 + V2 = 0.3 V
 // I1 = I2, V1/R1 = V2/R2
 // R1 = R2 * V1/V2 = R2 * (0.3 - V2)/V2
-void updateMeasurement(int32_t PSoC_Measurement_uV) {
-  float VoltageRatio = ((float)(300000 - PSoC_Measurement_uV))/PSoC_Measurement_uV;
-  MeasurementImpedance = EXTERNAL_RESISTOR_OHMS * VoltageRatio;
+void updateMeasurement() {
+  float VoltageRatio0 = ((float)(300000 - PSoC_Measurement_uV0))/PSoC_Measurement_uV0;
+  MeasurementImpedance0 = EXTERNAL_RESISTOR_OHMS * VoltageRatio0;
+  float VoltageRatio1 = ((float)(300000 - PSoC_Measurement_uV1))/PSoC_Measurement_uV1;
+  MeasurementImpedance1 = EXTERNAL_RESISTOR_OHMS * VoltageRatio1;
+  float VoltageRatio2 = ((float)(300000 - PSoC_Measurement_uV2))/PSoC_Measurement_uV2;
+  MeasurementImpedance2 = EXTERNAL_RESISTOR_OHMS * VoltageRatio2;
 }
 
 void printMeasurement() {
-  sprintf(TransmitBufferUSB, "{\"impedance\":%f}", MeasurementImpedance);
+  sprintf(TransmitBufferUSB, "{\"impedance\":[%f,%f,%f]}", MeasurementImpedance0, MeasurementImpedance1, MeasurementImpedance2);
   Serial.println(TransmitBufferUSB);
 }
