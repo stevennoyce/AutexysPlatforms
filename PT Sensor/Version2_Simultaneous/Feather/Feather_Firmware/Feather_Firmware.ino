@@ -51,6 +51,8 @@ Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 // === Setup & Loop ===
 
 void setup() {
+  asm(".global _printf_float");
+  
   Serial.begin(115200);
   psocSerial.begin(115200);
   Serial.println("Startup complete. System is ready.");
